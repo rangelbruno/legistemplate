@@ -14,6 +14,8 @@ export * from './layout/sidebar-widgets/Orders'
 export * from './layout/sidebar-widgets/Stats'
 export * from './layout/sidebar-widgets/Tasks'
 export * from './layout/theme-mode/ThemeModeSwitcher'
+export * from './AdminSidebarWidget'
+export * from './AdminQuickActions'
 
 // dropdpwns
 export * from './content/dropdown/Dropdown1'

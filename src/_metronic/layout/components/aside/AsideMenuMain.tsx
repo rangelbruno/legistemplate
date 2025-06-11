@@ -3,96 +3,82 @@ import {useIntl} from 'react-intl'
 import {KTIcon} from '../../../helpers'
 import {AsideMenuItemWithSub} from './AsideMenuItemWithSub'
 import {AsideMenuItem} from './AsideMenuItem'
+import {AdminQuickActions} from '../../../partials/AdminQuickActions'
 
 export function AsideMenuMain() {
   const intl = useIntl()
+
+  // Verificar o role do usuário para mostrar seções específicas
+  const getUserRole = () => {
+    const userData = localStorage.getItem('current_user')
+    if (userData) {
+      const user = JSON.parse(userData)
+      return user.role
+    }
+    return null
+  }
+
+  const userRole = getUserRole()
 
   return (
     <>
       <AsideMenuItem
         to='/dashboard'
         icon='black-right'
-        title={intl.formatMessage({id: 'MENU.DASHBOARD'})}
+        title='Dashboard Principal'
         fontIcon='bi-app-indicator'
       />
-      <AsideMenuItem to='/builder' icon='black-right' title='Layout Builder' fontIcon='bi-layers' />
-      <div className='menu-item'>
-        <div className='menu-content pt-8 pb-2'>
-          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Crafted</span>
-        </div>
-      </div>
-      <AsideMenuItemWithSub
-        to='/crafted/pages'
-        title='Pages'
-        fontIcon='bi-archive'
-        icon='black-right'
-      >
-        <AsideMenuItemWithSub to='/crafted/pages/profile' title='Profile' hasBullet={true}>
-          <AsideMenuItem to='/crafted/pages/profile/overview' title='Overview' hasBullet={true} />
-          <AsideMenuItem to='/crafted/pages/profile/projects' title='Projects' hasBullet={true} />
-          <AsideMenuItem to='/crafted/pages/profile/campaigns' title='Campaigns' hasBullet={true} />
-          <AsideMenuItem to='/crafted/pages/profile/documents' title='Documents' hasBullet={true} />
-          <AsideMenuItem
-            to='/crafted/pages/profile/connections'
-            title='Connections'
-            hasBullet={true}
-          />
-        </AsideMenuItemWithSub>
-
-        <AsideMenuItemWithSub to='/crafted/pages/wizards' title='Wizards' hasBullet={true}>
-          <AsideMenuItem
-            to='/crafted/pages/wizards/horizontal'
-            title='Horizontal'
-            hasBullet={true}
-          />
-          <AsideMenuItem to='/crafted/pages/wizards/vertical' title='Vertical' hasBullet={true} />
-        </AsideMenuItemWithSub>
-      </AsideMenuItemWithSub>
-      <AsideMenuItemWithSub
-        to='/crafted/accounts'
-        title='Accounts'
-        icon='black-right'
-        fontIcon='bi-person'
-      >
-        <AsideMenuItem to='/crafted/account/overview' title='Overview' hasBullet={true} />
-        <AsideMenuItem to='/crafted/account/settings' title='Settings' hasBullet={true} />
-      </AsideMenuItemWithSub>
-      <AsideMenuItemWithSub to='/error' title='Errors' fontIcon='bi-sticky' icon='black-right'>
-        <AsideMenuItem to='/error/404' title='Error 404' hasBullet={true} />
-        <AsideMenuItem to='/error/500' title='Error 500' hasBullet={true} />
-      </AsideMenuItemWithSub>
-      <AsideMenuItemWithSub
-        to='/crafted/widgets'
-        title='Widgets'
-        icon='black-right'
-        fontIcon='bi-layers'
-      >
-        <AsideMenuItem to='/crafted/widgets/lists' title='Lists' hasBullet={true} />
-        <AsideMenuItem to='/crafted/widgets/statistics' title='Statistics' hasBullet={true} />
-        <AsideMenuItem to='/crafted/widgets/charts' title='Charts' hasBullet={true} />
-        <AsideMenuItem to='/crafted/widgets/mixed' title='Mixed' hasBullet={true} />
-        <AsideMenuItem to='/crafted/widgets/tables' title='Tables' hasBullet={true} />
-        <AsideMenuItem to='/crafted/widgets/feeds' title='Feeds' hasBullet={true} />
-      </AsideMenuItemWithSub>
-      <div className='menu-item'>
-        <div className='menu-content pt-8 pb-2'>
-          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Apps</span>
-        </div>
-      </div>
-      <AsideMenuItemWithSub to='/apps/chat' title='Chat' fontIcon='bi-chat-left' icon='black-right'>
-        <AsideMenuItem to='/apps/chat/private-chat' title='Private Chat' hasBullet={true} />
-        <AsideMenuItem to='/apps/chat/group-chat' title='Group Chart' hasBullet={true} />
-        <AsideMenuItem to='/apps/chat/drawer-chat' title='Drawer Chart' hasBullet={true} />
-      </AsideMenuItemWithSub>
-      <AsideMenuItem
-        to='/apps/user-management/users'
-        icon='black-right'
-        title='User management'
-        fontIcon='bi-layers'
-      />
+      
+      {/* Seção de Desenvolvimento - Apenas para Desenvolvedores */}
+      {userRole === 'DEVELOPER' && (
+        <>
+          <div className='menu-item'>
+            <div className='menu-content pt-6 pb-2'>
+              <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Desenvolvimento</span>
+            </div>
+          </div>
+          <AsideMenuItemWithSub
+            to='/desenvolvedor'
+            title='Sistema de Tramitação'
+            fontIcon='bi-diagram-3'
+            icon='black-right'
+          >
+            <AsideMenuItem to='/desenvolvedor/dashboard' title='Dashboard' hasBullet={true} />
+            <AsideMenuItem to='/desenvolvedor/proposicoes' title='Proposições' hasBullet={true} />
+            <AsideMenuItem to='/desenvolvedor/workflow' title='Fluxo de Trabalho' hasBullet={true} />
+            <AsideMenuItem to='/desenvolvedor/fluxograma' title='Editor de Fluxogramas' hasBullet={true} />
+          </AsideMenuItemWithSub>
+        </>
+      )}
+      
+      {/* Seção de Administração - Apenas para Administradores */}
+      {userRole === 'ADMIN' && (
+        <>
+          <div className='menu-item'>
+            <div className='menu-content pt-6 pb-2'>
+              <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Administração</span>
+            </div>
+          </div>
+          <AsideMenuItemWithSub
+            to='/admin'
+            title='Painel Administrativo'
+            fontIcon='bi-shield-check'
+            icon='black-right'
+          >
+            <AsideMenuItem to='/admin/dashboard' title='Dashboard' hasBullet={true} />
+            <AsideMenuItem to='/admin/usuarios' title='Usuários' hasBullet={true} />
+            <AsideMenuItem to='/admin/configuracoes' title='Configurações' hasBullet={true} />
+            <AsideMenuItem to='/admin/relatorios' title='Relatórios' hasBullet={true} />
+          </AsideMenuItemWithSub>
+          
+          {/* Atalhos Rápidos Administrativos */}
+          <AdminQuickActions />
+        </>
+      )}
+      
       <div className='menu-item'>
         <div className='menu-content'>
-          <div className='separator mx-1 my-4'></div>
+          <div className='separator mx-1 my-6'></div>
         </div>
       </div>
       <div className='menu-item'>

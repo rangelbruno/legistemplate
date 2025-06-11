@@ -37,14 +37,7 @@ const Topbar = () => {
         {/* end::Drawer wrapper */}
       </div>
 
-      {/* begin::Sidebar Toggler */}
-      <button
-        className='btn btn-icon btn-active-icon-primary w-40px h-40px d-xxl-none ms-2 me-n2 d-none'
-        id='kt_sidebar_toggler'
-      >
-        <KTIcon iconName='setting-2' className='fs-2x' />
-      </button>
-      {/* end::Sidebar Toggler */}
+
 
       {/* begin::Theme mode */}
       <div className={'d-flex align-items-center ms-3 ms-lg-4'}>

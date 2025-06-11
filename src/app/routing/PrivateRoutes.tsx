@@ -8,6 +8,19 @@ import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 import {DisableSidebar} from '../../_metronic/layout/core'
 import {WithChildren} from '../../_metronic/helpers'
 import BuilderPageWrapper from '../pages/layout-builder/BuilderPageWrapper'
+import {getRedirectPath} from '../../lib/utils/user-helpers.simple'
+
+// Import das páginas do desenvolvedor
+import DesenvolvedorDashboard from '../desenvolvedor/dashboard/page'
+import DesenvolvedorProposicoes from '../desenvolvedor/proposicoes/page'
+import DesenvolvedorWorkflow from '../desenvolvedor/workflow/page'
+import DesenvolvedorFluxograma from '../desenvolvedor/fluxograma/page'
+
+// Import das páginas do administrador
+import AdminDashboard from '../admin/dashboard/page'
+import AdminUsuarios from '../admin/usuarios/page'
+import AdminConfiguracoes from '../admin/configuracoes/page'
+import AdminRelatorios from '../admin/relatorios/page'
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
@@ -17,15 +30,39 @@ const PrivateRoutes = () => {
   const ChatPage = lazy(() => import('../modules/apps/chat/ChatPage'))
   const UsersPage = lazy(() => import('../modules/apps/user-management/UsersPage'))
 
+  // Função para determinar redirecionamento baseado no role
+  const getRoleBasedRedirect = () => {
+    const userData = localStorage.getItem('current_user')
+    if (userData) {
+      const user = JSON.parse(userData)
+      return getRedirectPath(user.role)
+    }
+    return '/dashboard'
+  }
+
   return (
     <Routes>
       <Route element={<MasterLayout />}>
-        {/* Redirect to Dashboard after success login/registartion */}
-        <Route path='auth/*' element={<Navigate to='/dashboard' />} />
+        {/* Redirect baseado no role após login */}
+        <Route path='auth/*' element={<Navigate to={getRoleBasedRedirect()} />} />
         {/* Pages */}
         <Route path='dashboard' element={<DashboardWrapper />} />
         <Route path='builder' element={<BuilderPageWrapper />} />
         <Route path='menu-test' element={<MenuTestPage />} />
+        
+        {/* Rotas do Sistema de Tramitação */}
+        <Route path='desenvolvedor' element={<Navigate to='/desenvolvedor/dashboard' replace />} />
+        <Route path='desenvolvedor/dashboard' element={<DesenvolvedorDashboard />} />
+        <Route path='desenvolvedor/proposicoes' element={<DesenvolvedorProposicoes />} />
+        <Route path='desenvolvedor/workflow' element={<DesenvolvedorWorkflow />} />
+        <Route path='desenvolvedor/fluxograma' element={<DesenvolvedorFluxograma />} />
+        
+        {/* Rotas do Administrador */}
+        <Route path='admin' element={<Navigate to='/admin/dashboard' replace />} />
+        <Route path='admin/dashboard' element={<AdminDashboard />} />
+        <Route path='admin/usuarios' element={<AdminUsuarios />} />
+        <Route path='admin/configuracoes' element={<AdminConfiguracoes />} />
+        <Route path='admin/relatorios' element={<AdminRelatorios />} />
         {/* Lazy Modules */}
         <Route
           path='crafted/pages/profile/*'

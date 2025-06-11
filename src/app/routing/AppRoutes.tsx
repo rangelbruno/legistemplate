@@ -11,6 +11,7 @@ import {PrivateRoutes} from './PrivateRoutes'
 import {ErrorsPage} from '../modules/errors/ErrorsPage'
 import {Logout, AuthPage, useAuth} from '../modules/auth'
 import {App} from '../App'
+import {getRedirectPath} from '../../lib/utils/user-helpers.simple'
 
 /**
  * Base URL of the website.
@@ -21,6 +22,23 @@ const {BASE_URL} = import.meta.env
 
 const AppRoutes: FC = () => {
   const {currentUser} = useAuth()
+  
+  // Determinar o redirecionamento baseado no role do usuário
+  const getDefaultRoute = () => {
+    if (!currentUser) return '/auth'
+    
+    // Pegar role do localStorage (dados salvos durante login)
+    const userData = localStorage.getItem('current_user')
+    if (userData) {
+      const user = JSON.parse(userData)
+      const redirectPath = getRedirectPath(user.role)
+      console.log(`🔄 Redirecionando usuário ${user.role} para: ${redirectPath}`)
+      return redirectPath
+    }
+    
+    return '/dashboard' // Fallback
+  }
+
   return (
     <BrowserRouter basename={BASE_URL}>
       <Routes>
@@ -30,7 +48,7 @@ const AppRoutes: FC = () => {
           {currentUser ? (
             <>
               <Route path='/*' element={<PrivateRoutes />} />
-              <Route index element={<Navigate to='/dashboard' />} />
+              <Route index element={<Navigate to={getDefaultRoute()} />} />
             </>
           ) : (
             <>
