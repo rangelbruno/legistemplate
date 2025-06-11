@@ -21,8 +21,8 @@ const loginSchema = Yup.object().shape({
 })
 
 const initialValues = {
-  email: 'admin@demo.com',
-  password: 'demo',
+  email: 'dev@parlamentar.gov.br',
+  password: '123456',
 }
 
 /*
@@ -64,8 +64,8 @@ export function Login() {
     >
       {/* begin::Heading */}
       <div className='text-center mb-11'>
-        <h1 className='text-gray-900 fw-bolder mb-3'>Sign In</h1>
-        <div className='text-gray-500 fw-semibold fs-6'>Your Social Campaigns</div>
+        <h1 className='text-gray-900 fw-bolder mb-3'>Sistema Parlamentar</h1>
+        <div className='text-gray-500 fw-semibold fs-6'>Acesse sua conta</div>
       </div>
       {/* begin::Heading */}
 
@@ -127,8 +127,9 @@ export function Login() {
       ) : (
         <div className='mb-10 bg-light-info p-8 rounded'>
           <div className='text-info'>
-            Use account <strong>admin@demo.com</strong> and password <strong>demo</strong> to
-            continue.
+            <strong>👨‍💻 Desenvolvedor:</strong> dev@parlamentar.gov.br<br/>
+            <strong>👤 Admin:</strong> admin@parlamentar.gov.br<br/>
+            <strong>🔑 Senha:</strong> 123456
           </div>
         </div>
       )}

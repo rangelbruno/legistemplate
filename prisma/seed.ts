@@ -1,10 +1,14 @@
 import { PrismaClient, EstadoTramitacao, TipoProposicao, Role, AdminLevel, TipoComissao } from '@prisma/client'
 import { faker } from '@faker-js/faker'
+import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 
 async function main() {
   console.log('🌱 Iniciando seed do banco de dados...')
+  
+  // Hash padrão para desenvolvimento - senha: "123456"
+  const defaultPasswordHash = await bcrypt.hash('123456', 12)
   
   // 1. Limpar dados existentes
   console.log('🧹 Limpando dados existentes...')
@@ -26,7 +30,9 @@ async function main() {
     data: {
       email: 'admin@parlamentar.gov.br',
       name: 'Administrador Sistema',
-      role: Role.ADMIN
+      password: defaultPasswordHash,
+      role: Role.ADMIN,
+      ativo: true
     }
   })
   
@@ -35,6 +41,18 @@ async function main() {
       userId: adminUser.id,
       nivel: AdminLevel.SUPER_ADMIN,
       departamento: 'TI',
+      ativo: true
+    }
+  })
+
+  // 2.1. Criar usuário desenvolvedor
+  console.log('👨‍💻 Criando usuário desenvolvedor...')
+  const devUser = await prisma.user.create({
+    data: {
+      email: 'dev@parlamentar.gov.br',
+      name: 'Desenvolvedor Sistema',
+      password: defaultPasswordHash,
+      role: Role.DESENVOLVEDOR,
       ativo: true
     }
   })
@@ -68,7 +86,9 @@ async function main() {
       data: {
         email: faker.internet.email(),
         name: faker.person.fullName(),
-        role: Role.PARLAMENTAR
+        password: defaultPasswordHash,
+        role: Role.PARLAMENTAR,
+        ativo: true
       }
     })
     
