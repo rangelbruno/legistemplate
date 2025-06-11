@@ -1,0 +1,4 @@
+Leia o arquivo `docs/telas-react-template.md` e use-o como referência para gerar telas em React, seguindo:
+- Reaproveitamento total do template existente
+- Fluxo iterativo por tipo de usuário
+- A IA deve perguntar "Posso prosseguir para a próxima?" ao finalizar cada tela
