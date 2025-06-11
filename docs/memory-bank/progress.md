@@ -18,6 +18,7 @@
 ├── systemArchitecture.md    # Arquitetura Next.js detalhada
 ├── techStack.md             # Stack técnico e configurações
 ├── activeContext.md         # Contexto atual e próximos passos
+├── fluxos-tramitacao.md     # Fluxo completo de tramitação parlamentar
 └── progress.md              # Este arquivo de progresso
 ```
 
@@ -68,10 +69,11 @@
 #### 🛠️ **Database Setup**
 ```
 ⏳ Prisma Configuration
-├── 📋 Schema design (Users, Proposições, Tramitação)
-├── 🔄 Migrations setup
+├── 📋 Schema design (Users, Proposições, Tramitação, Estados)
+├── 🔄 State Machine implementation (25+ estados de tramitação)
 ├── 🎭 Seed data para desenvolvimento
-├── 🔍 Relationships e índices
+├── 🔍 Relationships e índices para workflow
+├── 📊 Event Bus tables (StateTransition, WorkflowProgress)
 └── 🚀 Deploy para desenvolvimento
 ```
 
@@ -81,6 +83,8 @@
 ├── 🔐 Authentication endpoints (/api/auth)
 ├── 👨‍💼 Parlamentar APIs (/api/v1/parlamentar)
 ├── 📄 Proposições APIs (/api/v1/proposicoes)
+├── 🏛️ Tramitação APIs (/api/v1/tramitacao)
+├── 🔔 Event Bus APIs (/api/v1/events)
 ├── ⚙️ Admin APIs (/api/v1/admin)
 └── 🌐 Public APIs (/api/v1/public)
 ```

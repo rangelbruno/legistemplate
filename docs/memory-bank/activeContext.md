@@ -51,6 +51,12 @@
 - **Admin**: CSR (Client-Side Rendering) para interatividade
 - **Benefício**: Performance otimizada por tipo de usuário
 
+#### 🏛️ **Fluxo de Tramitação Completo**
+- **Escolha**: Sistema de estados complexo com 25+ estados de tramitação
+- **Razão**: Conformidade total com processo legislativo real
+- **Impacto**: Sistema de workflow robusto, auditoria completa, transparência total
+- **Integração**: Event Bus + Notification Matrix + Estado Machine
+
 ### 📂 **Estrutura de Pastas Definida**
 
 #### 🎯 **Route Groups Strategy**
