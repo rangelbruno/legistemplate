@@ -1,0 +1,387 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Sistema de Tramitação Parlamentar - Schema SQLite
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ===== CORE MODELS =====
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  role      Role     @default(PUBLIC)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos específicos por role
+  parlamentar Parlamentar?
+  admin       Admin?
+
+  @@map("users")
+}
+
+model Admin {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  
+  // Dados específicos do admin
+  nivel         AdminLevel @default(OPERADOR)
+  departamento  String?
+  ativo         Boolean    @default(true)
+  
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@map("admins")
+}
+
+model Parlamentar {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id])
+  
+  // Dados do parlamentar
+  matricula     String    @unique
+  nome          String
+  partido       String
+  uf            String
+  mandatoInicio DateTime
+  mandatoFim    DateTime?
+  ativo         Boolean   @default(true)
+  
+  // Relacionamentos
+  proposicoes   Proposicao[]
+  relatorias    Relatoria[]
+  presencas     Presenca[]
+  votos         Voto[]
+  emendas       Emenda[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("parlamentares")
+}
+
+// ===== PROPOSIÇÕES E TRAMITAÇÃO =====
+
+model Proposicao {
+  id          String            @id @default(cuid())
+  numero      String
+  ano         Int
+  tipo        TipoProposicao
+  ementa      String
+  justificacao String?
+  autorId     String
+  autor       Parlamentar       @relation(fields: [autorId], references: [id])
+  
+  // Estado de tramitação
+  estadoAtual EstadoTramitacao  @default(DRAFT_INITIATED)
+  
+  // Timestamps
+  dataApresentacao DateTime
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  
+  // Relacionamentos
+  tramitacoes      TramitacaoEvento[]
+  relatorias       Relatoria[]
+  emendas          Emenda[]
+  votacoes         Votacao[]
+  
+  @@unique([numero, ano, tipo])
+  @@map("proposicoes")
+}
+
+model TramitacaoEvento {
+  id            String           @id @default(cuid())
+  proposicaoId  String
+  proposicao    Proposicao       @relation(fields: [proposicaoId], references: [id])
+  
+  // Estado da tramitação
+  estadoAnterior EstadoTramitacao?
+  estadoNovo     EstadoTramitacao
+  
+  // Contexto do evento
+  comissaoId     String?
+  comissao       Comissao?        @relation(fields: [comissaoId], references: [id])
+  responsavelId  String?
+  observacoes    String?
+  
+  // Timestamps
+  dataEvento     DateTime
+  createdAt      DateTime         @default(now())
+  
+  @@map("tramitacao_eventos")
+}
+
+// ===== ESTRUTURA ORGANIZACIONAL =====
+
+model Comissao {
+  id              String             @id @default(cuid())
+  nome            String
+  sigla           String             @unique
+  tipo            TipoComissao
+  ativa           Boolean            @default(true)
+  
+  // Relacionamentos
+  relatorias      Relatoria[]
+  tramitacoes     TramitacaoEvento[]
+  votacoes        Votacao[]
+  
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@map("comissoes")
+}
+
+model Relatoria {
+  id            String      @id @default(cuid())
+  proposicaoId  String
+  proposicao    Proposicao  @relation(fields: [proposicaoId], references: [id])
+  parlamentarId String
+  parlamentar   Parlamentar @relation(fields: [parlamentarId], references: [id])
+  comissaoId    String
+  comissao      Comissao    @relation(fields: [comissaoId], references: [id])
+  
+  // Status da relatoria
+  parecer       String?
+  dataDesignacao DateTime
+  dataEntrega   DateTime?
+  status        StatusRelatoria @default(DESIGNADO)
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("relatorias")
+}
+
+// ===== VOTAÇÕES =====
+
+model Votacao {
+  id            String         @id @default(cuid())
+  proposicaoId  String
+  proposicao    Proposicao     @relation(fields: [proposicaoId], references: [id])
+  comissaoId    String?
+  comissao      Comissao?      @relation(fields: [comissaoId], references: [id])
+  
+  // Dados da votação
+  tipo          TipoVotacao
+  dataVotacao   DateTime
+  resultado     ResultadoVotacao?
+  
+  // Resultados
+  votosFavor    Int            @default(0)
+  votosContra   Int            @default(0)
+  abstencoes    Int            @default(0)
+  
+  // Relacionamentos
+  votos         Voto[]
+  
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("votacoes")
+}
+
+model Voto {
+  id            String      @id @default(cuid())
+  votacaoId     String
+  votacao       Votacao     @relation(fields: [votacaoId], references: [id])
+  parlamentarId String
+  parlamentar   Parlamentar @relation(fields: [parlamentarId], references: [id])
+  
+  // Tipo de voto
+  tipoVoto      TipoVoto
+  
+  createdAt     DateTime    @default(now())
+
+  @@unique([votacaoId, parlamentarId])
+  @@map("votos")
+}
+
+// ===== EMENDAS =====
+
+model Emenda {
+  id            String      @id @default(cuid())
+  proposicaoId  String
+  proposicao    Proposicao  @relation(fields: [proposicaoId], references: [id])
+  autorId       String
+  autor         Parlamentar @relation(fields: [autorId], references: [id])
+  
+  // Dados da emenda
+  numero        String
+  tipo          TipoEmenda
+  texto         String
+  justificativa String?
+  
+  // Status
+  status        StatusEmenda @default(APRESENTADA)
+  dataApresentacao DateTime
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([proposicaoId, numero])
+  @@map("emendas")
+}
+
+// ===== PRESENÇA E ATIVIDADES =====
+
+model Presenca {
+  id            String      @id @default(cuid())
+  parlamentarId String
+  parlamentar   Parlamentar @relation(fields: [parlamentarId], references: [id])
+  
+  // Dados da sessão
+  tipoSessao    TipoSessao
+  dataSessao    DateTime
+  presente      Boolean
+  justificativa String?
+  
+  createdAt     DateTime    @default(now())
+
+  @@unique([parlamentarId, dataSessao, tipoSessao])
+  @@map("presencas")
+}
+
+// ===== ENUMS =====
+
+enum Role {
+  PUBLIC
+  PARLAMENTAR  
+  ADMIN
+}
+
+enum AdminLevel {
+  OPERADOR
+  GESTOR
+  SUPER_ADMIN
+}
+
+enum TipoProposicao {
+  PL    // Projeto de Lei
+  PLC   // Projeto de Lei Complementar
+  PLO   // Projeto de Lei Orçamentária
+  MP    // Medida Provisória
+  PEC   // Proposta de Emenda Constitucional
+  REQ   // Requerimento
+  INC   // Indicação
+  PDC   // Projeto de Decreto Legislativo
+}
+
+enum EstadoTramitacao {
+  // Fase 1: Criação e Recepção
+  DRAFT_INITIATED
+  SUBMITTED_FOR_REVIEW
+  UNDER_FORMAL_REVIEW
+  FORMAL_REVIEW_APPROVED
+  
+  // Fase 2: Revisão em Comissão
+  COMMITTEE_ASSIGNED
+  IN_COMMITTEE_REVIEW
+  COMMITTEE_ANALYZING
+  PENDING_RAPPORTEUR_OPINION
+  RAPPORTEUR_OPINION_ISSUED
+  IN_COMMITTEE_VOTING
+  COMMITTEE_APPROVED
+  COMMITTEE_REJECTED
+  RETURNED_TO_COMMITTEE
+  
+  // Fase 3: Sessão Plenária
+  READY_FOR_PLENARY
+  IN_PLENARY_DISCUSSION
+  PENDING_AMENDMENTS
+  IN_VOTING
+  PLENARY_APPROVED
+  PLENARY_REJECTED
+  
+  // Fase 4: Processo Bicameral
+  IN_REVIEWING_HOUSE
+  REVIEWING_HOUSE_APPROVED
+  REVIEWING_HOUSE_MODIFIED
+  IN_BICAMERAL_CONFLICT_RESOLUTION
+  
+  // Fase 5: Revisão Executiva
+  SENT_TO_EXECUTIVE
+  UNDER_EXECUTIVE_REVIEW
+  EXECUTIVE_SANCTIONED
+  EXECUTIVE_VETOED
+  VETO_OVERRIDE_VOTING
+  
+  // Fase 6: Finalização
+  PROMULGATED
+  PUBLISHED_ACTIVE
+  
+  // Estados Especiais
+  ARCHIVED
+  WITHDRAWN
+  EXPIRED
+}
+
+enum TipoComissao {
+  PERMANENTE
+  TEMPORARIA
+  ESPECIAL
+  CPI
+  MISTA
+}
+
+enum StatusRelatoria {
+  DESIGNADO
+  EM_ANALISE
+  PARECER_PRONTO
+  APRESENTADO
+}
+
+enum TipoVotacao {
+  NOMINAL
+  SIMBOLICA
+  SECRETA
+  ELETRONICA
+}
+
+enum ResultadoVotacao {
+  APROVADO
+  REJEITADO
+  RETIRADO
+  ADIADO
+}
+
+enum TipoVoto {
+  FAVOR
+  CONTRA
+  ABSTENCAO
+  OBSTRUCAO
+}
+
+enum TipoEmenda {
+  SUBSTITUTIVO
+  MODIFICATIVA
+  ADITIVA
+  SUPRESSIVA
+  AGLUTINATIVA
+}
+
+enum StatusEmenda {
+  APRESENTADA
+  EM_ANALISE
+  APROVADA
+  REJEITADA
+  RETIRADA
+}
+
+enum TipoSessao {
+  ORDINARIA
+  EXTRAORDINARIA
+  SOLENE
+  COMISSAO
+}

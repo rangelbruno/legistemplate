@@ -1,0 +1,277 @@
+import { PrismaClient } from '@prisma/client'
+import type { 
+  QueryParams, 
+  CreateInput, 
+  UpdateInput,
+  ProposicaoWithDetails 
+} from '../../types'
+import type { ProposicaoService } from '../data-service.interface'
+
+export class LocalProposicaoService implements ProposicaoService {
+  constructor(private prisma: PrismaClient) {}
+
+  async findMany(params?: QueryParams): Promise<ProposicaoWithDetails[]> {
+    const page = params?.page || 1
+    const limit = params?.limit || 10
+    const skip = (page - 1) * limit
+
+    const result = await this.prisma.proposicao.findMany({
+      skip,
+      take: limit,
+      include: {
+        autor: {
+          include: { user: true }
+        },
+        tramitacoes: {
+          orderBy: { dataEvento: 'desc' },
+          take: 5
+        }
+      },
+      orderBy: { dataApresentacao: 'desc' }
+    })
+    
+    return result as any
+  }
+
+  async findById(id: string): Promise<ProposicaoWithDetails | null> {
+    return this.prisma.proposicao.findUnique({
+      where: { id },
+      include: {
+        autor: {
+          include: { user: true }
+        },
+        tramitacoes: {
+          orderBy: { dataEvento: 'desc' },
+          include: {
+            comissao: true
+          }
+        },
+        relatorias: {
+          include: { 
+            parlamentar: true,
+            comissao: true 
+          }
+        },
+        emendas: {
+          include: {
+            autor: true
+          }
+        },
+        votacoes: {
+          include: {
+            votos: {
+              include: {
+                parlamentar: true
+              }
+            }
+          }
+        }
+      }
+    }) as ProposicaoWithDetails | null
+  }
+
+  async create(data: CreateInput<ProposicaoWithDetails>): Promise<ProposicaoWithDetails> {
+    const proposicao = await this.prisma.proposicao.create({
+      data: {
+        numero: data.numero,
+        ano: data.ano,
+        tipo: data.tipo,
+        ementa: data.ementa,
+        justificacao: data.justificacao,
+        autorId: data.autorId,
+        estadoAtual: data.estadoAtual,
+        dataApresentacao: data.dataApresentacao
+      },
+      include: {
+        autor: {
+          include: { user: true }
+        },
+        tramitacoes: true,
+        relatorias: {
+          include: { parlamentar: true }
+        },
+        emendas: true
+      }
+    })
+
+    // Criar primeiro evento de tramitação
+    await this.prisma.tramitacaoEvento.create({
+      data: {
+        proposicaoId: proposicao.id,
+        estadoAnterior: null,
+        estadoNovo: proposicao.estadoAtual,
+        dataEvento: new Date(),
+        observacoes: 'Proposição apresentada'
+      }
+    })
+
+    return proposicao as ProposicaoWithDetails
+  }
+
+  async update(id: string, data: UpdateInput<ProposicaoWithDetails>): Promise<ProposicaoWithDetails> {
+    return this.prisma.proposicao.update({
+      where: { id },
+      data: {
+        ementa: data.ementa,
+        justificacao: data.justificacao,
+        estadoAtual: data.estadoAtual
+      },
+      include: {
+        autor: {
+          include: { user: true }
+        },
+        tramitacoes: true,
+        relatorias: {
+          include: { parlamentar: true }
+        },
+        emendas: true
+      }
+    }) as ProposicaoWithDetails
+  }
+
+  async delete(id: string): Promise<void> {
+    // Deletar relacionamentos primeiro (SQLite não tem CASCADE)
+    await this.prisma.tramitacaoEvento.deleteMany({
+      where: { proposicaoId: id }
+    })
+    
+    await this.prisma.emenda.deleteMany({
+      where: { proposicaoId: id }
+    })
+
+    await this.prisma.relatoria.deleteMany({
+      where: { proposicaoId: id }
+    })
+
+    await this.prisma.proposicao.delete({
+      where: { id }
+    })
+  }
+
+  async count(filters?: Record<string, any>): Promise<number> {
+    return this.prisma.proposicao.count({
+      where: filters ? {
+        tipo: filters.tipo,
+        estadoAtual: filters.estadoAtual,
+        autorId: filters.autorId
+      } : undefined
+    })
+  }
+
+  async findByAutor(autorId: string, params?: QueryParams): Promise<ProposicaoWithDetails[]> {
+    const page = params?.page || 1
+    const limit = params?.limit || 10
+    const skip = (page - 1) * limit
+
+    return this.prisma.proposicao.findMany({
+      where: { autorId },
+      skip,
+      take: limit,
+      include: {
+        autor: {
+          include: { user: true }
+        },
+        tramitacoes: {
+          orderBy: { dataEvento: 'desc' },
+          take: 3
+        },
+        relatorias: {
+          include: { parlamentar: true }
+        },
+        emendas: true
+      },
+      orderBy: { dataApresentacao: 'desc' }
+    }) as ProposicaoWithDetails[]
+  }
+
+  async findByEstado(estado: string, params?: QueryParams): Promise<ProposicaoWithDetails[]> {
+    const page = params?.page || 1
+    const limit = params?.limit || 10
+    const skip = (page - 1) * limit
+
+    return this.prisma.proposicao.findMany({
+      where: { estadoAtual: estado as any },
+      skip,
+      take: limit,
+      include: {
+        autor: {
+          include: { user: true }
+        },
+        tramitacoes: {
+          orderBy: { dataEvento: 'desc' },
+          take: 3
+        },
+        relatorias: {
+          include: { parlamentar: true }
+        }
+      },
+      orderBy: { dataApresentacao: 'desc' }
+    }) as ProposicaoWithDetails[]
+  }
+
+  async findByTipo(tipo: string, params?: QueryParams): Promise<ProposicaoWithDetails[]> {
+    const page = params?.page || 1
+    const limit = params?.limit || 10
+    const skip = (page - 1) * limit
+
+    return this.prisma.proposicao.findMany({
+      where: { tipo: tipo as any },
+      skip,
+      take: limit,
+      include: {
+        autor: {
+          include: { user: true }
+        },
+        tramitacoes: {
+          orderBy: { dataEvento: 'desc' },
+          take: 3
+        }
+      },
+      orderBy: { dataApresentacao: 'desc' }
+    }) as ProposicaoWithDetails[]
+  }
+
+  async search(query: string, params?: QueryParams): Promise<ProposicaoWithDetails[]> {
+    const page = params?.page || 1
+    const limit = params?.limit || 10
+    const skip = (page - 1) * limit
+
+    return this.prisma.proposicao.findMany({
+      where: {
+        OR: [
+          {
+            ementa: {
+              contains: query,
+              mode: 'insensitive'
+            }
+          },
+          {
+            numero: {
+              contains: query
+            }
+          },
+          {
+            autor: {
+              nome: {
+                contains: query,
+                mode: 'insensitive'
+              }
+            }
+          }
+        ]
+      },
+      skip,
+      take: limit,
+      include: {
+        autor: {
+          include: { user: true }
+        },
+        tramitacoes: {
+          orderBy: { dataEvento: 'desc' },
+          take: 3
+        }
+      },
+      orderBy: { dataApresentacao: 'desc' }
+    }) as ProposicaoWithDetails[]
+  }
+} 
