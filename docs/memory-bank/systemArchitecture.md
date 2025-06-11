@@ -323,7 +323,7 @@ export const authConfig: NextAuthConfig = {
 }
 ```
 
-### 🗄️ **Banco de Dados (Prisma)**
+### 🗄️ **Banco de Dados (SQLite + Abstraction Layer)**
 
 ```typescript
 // src/lib/database.ts
@@ -331,18 +331,29 @@ export const prisma = new PrismaClient({
   log: ['query', 'error', 'warn'],
   datasources: {
     db: {
-      url: process.env.DATABASE_URL
+      url: process.env.DATABASE_URL // file:./dev.db
     }
   }
 })
 
-// Connection para sistemas legados
-export const legacyDB = mysql.createConnection({
-  host: process.env.LEGACY_DB_HOST,
-  user: process.env.LEGACY_DB_USER,
-  password: process.env.LEGACY_DB_PASS,
-  database: process.env.LEGACY_DB_NAME
-})
+// src/lib/data-layer.ts - Abstraction Layer
+export interface DataLayer {
+  proposicoes: ProposicaoService
+  parlamentares: ParlamentarService
+  tramitacao: TramitacaoService
+}
+
+export const dataLayer: DataLayer = {
+  proposicoes: process.env.USE_EXTERNAL_API === 'true' 
+    ? new ExternalProposicaoService() 
+    : new LocalProposicaoService(),
+  parlamentares: process.env.USE_EXTERNAL_API === 'true'
+    ? new ExternalParlamentarService()
+    : new LocalParlamentarService(),
+  tramitacao: process.env.USE_EXTERNAL_API === 'true'
+    ? new ExternalTramitacaoService()
+    : new LocalTramitacaoService()
+}
 ```
 
 ### 🌐 **APIs REST/GraphQL**

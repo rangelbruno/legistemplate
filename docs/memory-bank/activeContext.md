@@ -51,6 +51,12 @@
 - **Admin**: CSR (Client-Side Rendering) para interatividade
 - **Benefício**: Performance otimizada por tipo de usuário
 
+#### 🗄️ **Database Strategy: SQLite First**
+- **Escolha**: SQLite para desenvolvimento + API abstraction layer
+- **Razão**: Setup zero, desenvolvimento rápido, migração fácil
+- **Implementação**: APIs internas Next.js simulando APIs externas
+- **Benefício**: Troca transparente SQLite ↔ APIs externas via environment variable
+
 #### 🏛️ **Fluxo de Tramitação Completo**
 - **Escolha**: Sistema de estados complexo com 25+ estados de tramitação
 - **Razão**: Conformidade total com processo legislativo real
@@ -116,10 +122,11 @@ app/
 
 ### 📅 **Sprint 2 (Semana 2)**
 
-#### 🗄️ **Database & API Setup**
-- Prisma schema para entidades parlamentares
-- API routes base para cada área
-- Mock data para desenvolvimento
+#### 🗄️ **Database & API Setup (SQLite First)**
+- SQLite database setup com Prisma 
+- API routes internas simulando APIs externas
+- Data abstraction layer para switching futuro
+- Mock data completo para desenvolvimento
 - NextAuth.js configuração completa
 
 #### 🧩 **Core Components**

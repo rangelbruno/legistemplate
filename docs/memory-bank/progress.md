@@ -66,15 +66,16 @@
 
 ### 🗄️ **Backend Infrastructure (Sprint 2)**
 
-#### 🛠️ **Database Setup**
+#### 🛠️ **Database Setup (SQLite First)**
 ```
 ⏳ Prisma Configuration
-├── 📋 Schema design (Users, Proposições, Tramitação, Estados)
-├── 🔄 State Machine implementation (25+ estados de tramitação)
+├── 📋 SQLite setup (file:./dev.db) com schema design
+├── 🔄 State Machine implementation (25+ estados de tramitação)  
 ├── 🎭 Seed data para desenvolvimento
 ├── 🔍 Relationships e índices para workflow
 ├── 📊 Event Bus tables (StateTransition, WorkflowProgress)
-└── 🚀 Deploy para desenvolvimento
+├── 🏗️ Data abstraction layer (Local vs External APIs)
+└── 🚀 Environment toggle para switching (USE_EXTERNAL_API)
 ```
 
 #### 🌐 **API Development**

@@ -102,13 +102,19 @@ module.exports = nextConfig
   "dependencies": {
     "prisma": "^5.8.0",
     "@prisma/client": "^5.8.0",
-    "mysql2": "^3.7.0"
+    "better-sqlite3": "^9.2.2"
   },
   "devDependencies": {
     "prisma": "^5.8.0"
   }
 }
 ```
+
+#### 📊 **Estratégia de Dados - SQLite First**
+- **Desenvolvimento**: SQLite para prototipagem rápida
+- **APIs Internas**: Endpoints Next.js simulando APIs externas
+- **Abstração**: Layer de abstração para fácil migração
+- **Produção**: Migração para APIs externas sem refatoração
 
 ### 🌐 **Estado e APIs**
 
@@ -200,12 +206,13 @@ module.exports = nextConfig
 ### 🌍 **Variáveis de Ambiente (.env.local)**
 
 ```bash
-# Database
-DATABASE_URL="mysql://user:password@localhost:3306/parlamentar"
-LEGACY_DB_HOST="legacy.db.server.com"
-LEGACY_DB_USER="legacy_user"
-LEGACY_DB_PASS="legacy_password"
-LEGACY_DB_NAME="sistema_antigo"
+# Database (SQLite for Development)
+DATABASE_URL="file:./dev.db"
+
+# External APIs (for future migration)
+EXTERNAL_API_BASE_URL="https://api.parlamentar.gov.br"
+EXTERNAL_API_TOKEN="your-external-api-token"
+USE_EXTERNAL_API="false"  # Toggle entre SQLite e APIs externas
 
 # Authentication
 NEXTAUTH_URL="http://localhost:3000"
@@ -248,8 +255,8 @@ UPSTASH_REDIS_REST_TOKEN="your-upstash-token"
 ```bash
 # Copy this file to .env.local and fill in the values
 
-# Database Connection
-DATABASE_URL="mysql://user:password@localhost:3306/parlamentar"
+# Database Connection (SQLite for Development)
+DATABASE_URL="file:./dev.db"
 
 # NextAuth Configuration
 NEXTAUTH_URL="http://localhost:3000"
