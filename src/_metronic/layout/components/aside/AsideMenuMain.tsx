@@ -1,9 +1,9 @@
-
 import {useIntl} from 'react-intl'
 import {KTIcon} from '../../../helpers'
 import {AsideMenuItemWithSub} from './AsideMenuItemWithSub'
 import {AsideMenuItem} from './AsideMenuItem'
 import {AdminQuickActions} from '../../../partials/AdminQuickActions'
+import {openPrismaStudio} from '../../../../lib/database-access'
 
 export function AsideMenuMain() {
   const intl = useIntl()
@@ -48,6 +48,27 @@ export function AsideMenuMain() {
             <AsideMenuItem to='/desenvolvedor/workflow' title='Fluxo de Trabalho' hasBullet={true} />
             <AsideMenuItem to='/desenvolvedor/fluxograma' title='Editor de Fluxogramas' hasBullet={true} />
             <AsideMenuItem to='/desenvolvedor/api-docs' title='Documentação da API' hasBullet={true} />
+            
+            {/* Atalho para Banco de Dados */}
+            <div className='menu-item'>
+              <a
+                className='menu-link py-3'
+                onClick={(e) => {
+                  e.preventDefault()
+                  openPrismaStudio()
+                }}
+                style={{ cursor: 'pointer' }}
+                title='Acessar Prisma Studio (Interface do Banco de Dados)'
+              >
+                <span className='menu-bullet'>
+                  <span className='bullet bullet-dot'></span>
+                </span>
+                <span className='menu-title'>
+                  <KTIcon iconName='data' className='fs-6 me-2' />
+                  Banco de Dados
+                </span>
+              </a>
+            </div>
           </AsideMenuItemWithSub>
         </>
       )}
@@ -71,6 +92,27 @@ export function AsideMenuMain() {
             <AsideMenuItem to='/admin/configuracoes' title='Configurações' hasBullet={true} />
             <AsideMenuItem to='/admin/relatorios' title='Relatórios' hasBullet={true} />
             <AsideMenuItem to='/desenvolvedor/api-docs' title='Documentação da API' hasBullet={true} />
+            
+            {/* Atalho para Banco de Dados */}
+            <div className='menu-item'>
+              <a
+                className='menu-link py-3'
+                onClick={(e) => {
+                  e.preventDefault()
+                  openPrismaStudio()
+                }}
+                style={{ cursor: 'pointer' }}
+                title='Acessar Prisma Studio (Interface do Banco de Dados)'
+              >
+                <span className='menu-bullet'>
+                  <span className='bullet bullet-dot'></span>
+                </span>
+                <span className='menu-title'>
+                  <KTIcon iconName='data' className='fs-6 me-2' />
+                  Banco de Dados
+                </span>
+              </a>
+            </div>
           </AsideMenuItemWithSub>
           
           {/* Atalhos Rápidos Administrativos */}

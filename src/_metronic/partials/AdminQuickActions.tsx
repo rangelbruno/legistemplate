@@ -2,6 +2,7 @@
 
 import { Link } from 'react-router-dom'
 import { KTIcon } from '../helpers'
+import { openPrismaStudio } from '../../lib/database-access'
 
 /**
  * Ações Rápidas Administrativas para Sidebar Esquerdo
@@ -31,21 +32,32 @@ export function AdminQuickActions() {
       icon: 'user-tick',
       title: 'Novo Usuário',
       description: 'Criar conta',
-      color: 'primary'
+      color: 'primary',
+      type: 'link'
     },
     {
       to: '/admin/configuracoes',
       icon: 'setting-2',
       title: 'Configurar',
       description: 'Sistema',
-      color: 'warning'
+      color: 'warning',
+      type: 'link'
     },
     {
       to: '/admin/relatorios',
       icon: 'document',
       title: 'Relatório',
       description: 'Gerar análise',
-      color: 'info'
+      color: 'info',
+      type: 'link'
+    },
+    {
+      icon: 'data',
+      title: 'Banco de Dados',
+      description: 'Prisma Studio',
+      color: 'success',
+      type: 'action',
+      action: openPrismaStudio
     }
   ]
 
@@ -71,21 +83,47 @@ export function AdminQuickActions() {
       {/* Ações Rápidas */}
       {quickActions.map((action, index) => (
         <div key={index} className='menu-item'>
-          <Link to={action.to} className='menu-link'>
-            <span className='menu-icon'>
-              <div className={`symbol symbol-30px`}>
-                <div className={`symbol-label bg-light-${action.color}`}>
-                  <KTIcon iconName={action.icon} className={`fs-5 text-${action.color}`} />
+          {action.type === 'link' ? (
+            <Link to={action.to!} className='menu-link'>
+              <span className='menu-icon'>
+                <div className={`symbol symbol-30px`}>
+                  <div className={`symbol-label bg-light-${action.color}`}>
+                    <KTIcon iconName={action.icon} className={`fs-5 text-${action.color}`} />
+                  </div>
                 </div>
-              </div>
-            </span>
-            <span className='menu-title'>
-              <div className='d-flex flex-column'>
-                <span className='fs-7 fw-bold'>{action.title}</span>
-                <span className='fs-8 text-muted'>{action.description}</span>
-              </div>
-            </span>
-          </Link>
+              </span>
+              <span className='menu-title'>
+                <div className='d-flex flex-column'>
+                  <span className='fs-7 fw-bold'>{action.title}</span>
+                  <span className='fs-8 text-muted'>{action.description}</span>
+                </div>
+              </span>
+            </Link>
+          ) : (
+            <a
+              className='menu-link'
+              onClick={(e) => {
+                e.preventDefault()
+                action.action?.()
+              }}
+              style={{ cursor: 'pointer' }}
+              title={action.title === 'Banco de Dados' ? 'Acessar Prisma Studio (Interface do Banco de Dados)' : undefined}
+            >
+              <span className='menu-icon'>
+                <div className={`symbol symbol-30px`}>
+                  <div className={`symbol-label bg-light-${action.color}`}>
+                    <KTIcon iconName={action.icon} className={`fs-5 text-${action.color}`} />
+                  </div>
+                </div>
+              </span>
+              <span className='menu-title'>
+                <div className='d-flex flex-column'>
+                  <span className='fs-7 fw-bold'>{action.title}</span>
+                  <span className='fs-8 text-muted'>{action.description}</span>
+                </div>
+              </span>
+            </a>
+          )}
         </div>
       ))}
 
