@@ -15,6 +15,7 @@ import DesenvolvedorDashboard from '../desenvolvedor/dashboard/page'
 import DesenvolvedorProposicoes from '../desenvolvedor/proposicoes/page'
 import DesenvolvedorWorkflow from '../desenvolvedor/workflow/page'
 import DesenvolvedorFluxograma from '../desenvolvedor/fluxograma/page'
+import DesenvolvedorApiDocs from '../desenvolvedor/api-docs/page'
 
 // Import das páginas do administrador
 import AdminDashboard from '../admin/dashboard/page'
@@ -56,6 +57,7 @@ const PrivateRoutes = () => {
         <Route path='desenvolvedor/proposicoes' element={<DesenvolvedorProposicoes />} />
         <Route path='desenvolvedor/workflow' element={<DesenvolvedorWorkflow />} />
         <Route path='desenvolvedor/fluxograma' element={<DesenvolvedorFluxograma />} />
+        <Route path='desenvolvedor/api-docs' element={<DesenvolvedorApiDocs />} />
         
         {/* Rotas do Administrador */}
         <Route path='admin' element={<Navigate to='/admin/dashboard' replace />} />

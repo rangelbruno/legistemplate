@@ -30,7 +30,7 @@ export function AsideMenuMain() {
       />
       
       {/* Seção de Desenvolvimento - Apenas para Desenvolvedores */}
-      {userRole === 'DEVELOPER' && (
+      {userRole === 'DESENVOLVEDOR' && (
         <>
           <div className='menu-item'>
             <div className='menu-content pt-6 pb-2'>
@@ -47,6 +47,7 @@ export function AsideMenuMain() {
             <AsideMenuItem to='/desenvolvedor/proposicoes' title='Proposições' hasBullet={true} />
             <AsideMenuItem to='/desenvolvedor/workflow' title='Fluxo de Trabalho' hasBullet={true} />
             <AsideMenuItem to='/desenvolvedor/fluxograma' title='Editor de Fluxogramas' hasBullet={true} />
+            <AsideMenuItem to='/desenvolvedor/api-docs' title='Documentação da API' hasBullet={true} />
           </AsideMenuItemWithSub>
         </>
       )}
@@ -69,6 +70,7 @@ export function AsideMenuMain() {
             <AsideMenuItem to='/admin/usuarios' title='Usuários' hasBullet={true} />
             <AsideMenuItem to='/admin/configuracoes' title='Configurações' hasBullet={true} />
             <AsideMenuItem to='/admin/relatorios' title='Relatórios' hasBullet={true} />
+            <AsideMenuItem to='/desenvolvedor/api-docs' title='Documentação da API' hasBullet={true} />
           </AsideMenuItemWithSub>
           
           {/* Atalhos Rápidos Administrativos */}
