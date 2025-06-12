@@ -29,50 +29,6 @@ export function AsideMenuMain() {
         fontIcon='bi-app-indicator'
       />
       
-      {/* Seção de Desenvolvimento - Apenas para Desenvolvedores */}
-      {userRole === 'DESENVOLVEDOR' && (
-        <>
-          <div className='menu-item'>
-            <div className='menu-content pt-6 pb-2'>
-              <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Desenvolvimento</span>
-            </div>
-          </div>
-          <AsideMenuItemWithSub
-            to='/desenvolvedor'
-            title='Sistema de Tramitação'
-            fontIcon='bi-diagram-3'
-            icon='black-right'
-          >
-            <AsideMenuItem to='/desenvolvedor/dashboard' title='Dashboard' hasBullet={true} />
-            <AsideMenuItem to='/desenvolvedor/proposicoes' title='Proposições' hasBullet={true} />
-            <AsideMenuItem to='/desenvolvedor/workflow' title='Fluxo de Trabalho' hasBullet={true} />
-            <AsideMenuItem to='/desenvolvedor/fluxograma' title='Editor de Fluxogramas' hasBullet={true} />
-            <AsideMenuItem to='/desenvolvedor/api-docs' title='Documentação da API' hasBullet={true} />
-            
-            {/* Atalho para Banco de Dados */}
-            <div className='menu-item'>
-              <a
-                className='menu-link py-3'
-                onClick={(e) => {
-                  e.preventDefault()
-                  openPrismaStudio()
-                }}
-                style={{ cursor: 'pointer' }}
-                title='Acessar Prisma Studio (Interface do Banco de Dados)'
-              >
-                <span className='menu-bullet'>
-                  <span className='bullet bullet-dot'></span>
-                </span>
-                <span className='menu-title'>
-                  <KTIcon iconName='data' className='fs-6 me-2' />
-                  Banco de Dados
-                </span>
-              </a>
-            </div>
-          </AsideMenuItemWithSub>
-        </>
-      )}
-      
       {/* Seção de Administração - Apenas para Administradores */}
       {userRole === 'ADMIN' && (
         <>
@@ -91,7 +47,7 @@ export function AsideMenuMain() {
             <AsideMenuItem to='/admin/usuarios' title='Usuários' hasBullet={true} />
             <AsideMenuItem to='/admin/configuracoes' title='Configurações' hasBullet={true} />
             <AsideMenuItem to='/admin/relatorios' title='Relatórios' hasBullet={true} />
-            <AsideMenuItem to='/desenvolvedor/api-docs' title='Documentação da API' hasBullet={true} />
+            <AsideMenuItem to='/admin/api-docs' title='Documentação da API' hasBullet={true} />
             
             {/* Atalho para Banco de Dados */}
             <div className='menu-item'>

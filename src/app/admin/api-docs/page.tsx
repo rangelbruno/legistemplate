@@ -98,7 +98,7 @@ export default function ApiDocsPage() {
     "id": 1,
     "nome": "João Silva",
     "email": "usuario@exemplo.com",
-    "role": "DESENVOLVEDOR"
+    "role": "ADMIN"
   }
 }`
           }
@@ -449,12 +449,12 @@ MOCAO: titulo, ementa, textoCompleto
 // Parâmetros de Query (opcionais):
 // - page: número da página (padrão: 1)
 // - limit: itens por página (padrão: 20, máximo: 100)
-// - role: filtrar por função (ADMIN, PARLAMENTAR, DESENVOLVEDOR, PUBLICO)
+// - role: filtrar por função (ADMIN, PARLAMENTAR, PUBLICO)
 // - status: filtrar por status (ATIVO, INATIVO, SUSPENSO)
 // - search: buscar por nome ou email
 
 // Exemplo de Requisição:
-GET /api/usuarios?page=1&limit=10&role=DESENVOLVEDOR&status=ATIVO
+GET /api/usuarios?page=1&limit=10&role=ADMIN&status=ATIVO
 
 // Resposta (200 OK):
 {
@@ -463,7 +463,7 @@ GET /api/usuarios?page=1&limit=10&role=DESENVOLVEDOR&status=ATIVO
       "id": 1,
       "nome": "João da Silva",
       "email": "joao@sistema.gov.br",
-      "role": "DESENVOLVEDOR",
+      "role": "ADMIN",
       "status": "ATIVO",
       "createdAt": "2024-01-15T10:30:00Z",
       "lastLogin": "2024-01-20T14:22:00Z"
@@ -502,7 +502,7 @@ GET /api/usuarios?page=1&limit=10&role=DESENVOLVEDOR&status=ATIVO
   "id": 1,
   "nome": "João da Silva",
   "email": "joao@sistema.gov.br",
-  "role": "DESENVOLVEDOR",
+  "role": "ADMIN",
   "status": "ATIVO",
   "permissoes": [
     "api.read",
@@ -556,7 +556,7 @@ GET /api/usuarios?page=1&limit=10&role=DESENVOLVEDOR&status=ATIVO
   "id": 3,
   "nome": "Carlos Martins",
   "email": "carlos@sistema.gov.br",
-  "role": "DESENVOLVEDOR",
+  "role": "ADMIN",
   "status": "ATIVO",
   "profile": {
     "telefone": "+55 11 88888-8888",
@@ -610,7 +610,7 @@ GET /api/usuarios?page=1&limit=10&role=DESENVOLVEDOR&status=ATIVO
   "id": 3,
   "nome": "Carlos Martins Junior",
   "email": "carlos.junior@sistema.gov.br",
-  "role": "DESENVOLVEDOR",
+  "role": "ADMIN",
   "status": "ATIVO",
   "profile": {
     "telefone": "+55 11 77777-7777",
@@ -666,7 +666,7 @@ GET /api/usuarios?page=1&limit=10&role=DESENVOLVEDOR&status=ATIVO
   "nome": "string (obrigatório, 2-100 caracteres)",
   "email": "string (obrigatório, único, formato email válido)",
   "password": "string (obrigatório no POST, 8-50 caracteres, hash bcrypt)",
-  "role": "enum (obrigatório: ADMIN, PARLAMENTAR, DESENVOLVEDOR, PUBLICO)",
+  "role": "enum (obrigatório: ADMIN, PARLAMENTAR, PUBLICO)",
   "status": "enum (padrão: ATIVO, valores: ATIVO, INATIVO, SUSPENSO)",
   "profile": {
     "telefone": "string (opcional, formato: +55 XX XXXXX-XXXX)",
@@ -682,7 +682,7 @@ GET /api/usuarios?page=1&limit=10&role=DESENVOLVEDOR&status=ATIVO
 // Roles e Permissões:
 ADMIN: Acesso total ao sistema
 PARLAMENTAR: Criar/editar proposições, votar
-DESENVOLVEDOR: Acesso à API, documentação
+// DESENVOLVEDOR removido do sistema
 PUBLICO: Apenas leitura de proposições públicas
 
 // Códigos de Status HTTP:
@@ -764,7 +764,7 @@ GET /api/relatorios/estatisticas?periodo=MENSAL&dataInicio=2024-01-01&dataFim=20
     "porRole": {
       "PARLAMENTAR": 21,
       "ADMIN": 3,
-      "DESENVOLVEDOR": 8,
+      // "DESENVOLVEDOR": 8, (removido)
       "PUBLICO": 13
     },
     "produtividade": {
@@ -1306,7 +1306,7 @@ function validarWebhook($headers, $payload, $secret) {
       <PageTitle 
         breadcrumbs={[
           { title: 'Sistema', path: '/dashboard', isSeparator: false, isActive: false },
-          { title: 'API', path: '/desenvolvedor', isSeparator: false, isActive: false }
+          { title: 'API', path: '/admin/api-docs', isSeparator: false, isActive: false }
         ]}
       >
         Documentação da API

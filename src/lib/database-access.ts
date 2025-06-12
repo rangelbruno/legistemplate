@@ -1,7 +1,7 @@
 /**
  * Utilitário para Acesso ao Banco de Dados - Prisma Studio
  * 
- * Gerencia o acesso ao Prisma Studio para usuários admin e desenvolvedor
+ * Gerencia o acesso ao Prisma Studio para usuários admin
  */
 
 /**
@@ -137,7 +137,7 @@ export const canAccessDatabase = (): boolean => {
   
   try {
     const user = JSON.parse(userData)
-    return user.role === 'ADMIN' || user.role === 'DESENVOLVEDOR'
+    return user.role === 'ADMIN'
   } catch {
     return false
   }

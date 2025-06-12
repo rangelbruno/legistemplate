@@ -12,14 +12,6 @@ export const REQUEST_PASSWORD_URL = `${API_URL}/forgot_password`;
 // Dados simulados baseados no nosso seed
 const MOCK_USERS = [
   {
-    id: 'dev_user',
-    email: 'dev@parlamentar.gov.br',
-    name: 'Desenvolvedor Sistema',
-    password: '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LTqG6nHsAa5HhF8KG', // hash de "123456"
-    role: 'DESENVOLVEDOR',
-    ativo: true
-  },
-  {
     id: 'admin_user', 
     email: 'admin@parlamentar.gov.br',
     name: 'Administrador Sistema',
@@ -174,8 +166,6 @@ function getOccupationByRole(role: string): string {
       return 'Parlamentar'
     case 'ADMIN':
       return 'Administrador do Sistema'
-    case 'DESENVOLVEDOR':
-      return 'Desenvolvedor'
     default:
       return 'Usuário'
   }

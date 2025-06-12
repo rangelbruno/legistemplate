@@ -1,141 +1,110 @@
-# 📚 Documentação da API - Sistema de Tramitação Parlamentar
+# 📚 API Documentation - Sistema Parlamentar
 
-## 🎯 Resumo da Implementação
+## 🎯 **Status: Implementado e Funcional**
 
-Foi criada uma página completa de documentação da API seguindo o padrão de layout do sistema, localizada em `/desenvolvedor/api-docs`.
+A documentação da API foi **completamente integrada** ao sistema, permitindo que **apenas administradores** acessem as especificações técnicas e endpoints disponíveis.
 
-## 🗂️ Estrutura de Arquivos Criados
+---
 
-```
-src/app/desenvolvedor/api-docs/
-└── page.tsx                    # Página principal da documentação
-```
+## 🔧 **Implementação Realizada**
 
-## 🔧 Modificações Realizadas
+### ✅ **Funcionalidades Ativas:**
+- ✅ **Documentação Completa**: Todos os endpoints do sistema parlamentar documentados
+- ✅ **Interface Elegante**: Design integrado ao template Metronic
+- ✅ **Controle de Acesso**: Visível apenas para role ADMIN
+- ✅ **Link "Documentação da API" adicionado na seção de ADMIN
+- ✅ **Navegação Integrada**: Totalmente incorporada ao menu lateral
+- ✅ **Visibilidade restrita apenas para roles ADMIN
 
-### 1. Menu Principal (`src/_metronic/layout/components/aside/AsideMenuMain.tsx`)
-- ✅ Link "Documentação da API" adicionado na seção de DESENVOLVEDOR  
-- ✅ Link "Documentação da API" adicionado na seção de ADMIN
-- ✅ Visibilidade restrita apenas para roles ADMIN e DESENVOLVEDOR
+---
 
-### 2. Rotas (`src/app/routing/PrivateRoutes.tsx`)
-- ✅ Importação do componente `DesenvolvedorApiDocs`
-- ✅ Rota `/desenvolvedor/api-docs` configurada
+## 🚀 **Como Acessar**
 
-### 3. Página de Documentação (`src/app/desenvolvedor/api-docs/page.tsx`)
-- ✅ Layout responsivo com sidebar e conteúdo principal
-- ✅ Categorias interativas de documentação
-- ✅ Sistema de busca funcional
-- ✅ FAQ expansível/recolhível
-- ✅ Exemplos de código com syntax highlighting
-- ✅ Informações técnicas da API
-- ✅ Links úteis (Swagger, Postman, Status)
-
-## 📋 Funcionalidades Implementadas
-
-### 🎨 Interface
-- **Design Responsivo**: Adapta-se a desktop e mobile
-- **Sidebar Navegável**: Categorias com ícones e descrições
-- **Busca Inteligente**: Filtra perguntas e respostas
-- **Acordeão Interativo**: FAQ expansível com Bootstrap
-
-### 📖 Conteúdo
-- **6 Categorias Principais**:
-  - 🔐 Autenticação (JWT, login, renovação de tokens)
-  - 📄 Proposições (CRUD, tipos, campos obrigatórios)
-  - 🔄 Tramitação (workflow, estados, ações)
-  - 👥 Usuários (gestão, permissões, roles)
-  - 📊 Relatórios (geração, formatos, agendamento)
-  - 🔗 Webhooks (configuração, validação, retry)
-
-### 💻 Exemplos de Código
-- **JSON Examples**: Requisições e respostas formatadas
-- **Syntax Highlighting**: Código destacado com cores
-- **Headers HTTP**: Exemplos de autenticação
-- **Payloads Completos**: Estruturas de dados reais
-
-### 🔧 Informações Técnicas
-- **Base URL**: https://api.sistema-tramitacao.gov.br/v1
-- **Formatos**: JSON, multipart/form-data
-- **Rate Limiting**: Configurado por tipo de usuário
-- **Autenticação**: JWT Bearer tokens
-
-## 🎯 Categorias e FAQ
-
-### 1. **Autenticação** 🔐
-- Como funciona a autenticação
-- Obter token de acesso (com exemplo)
-- Validade dos tokens
-- Renovação de tokens expirados
-
-### 2. **Proposições** 📄
-- Listar proposições
-- Criar nova proposição (com exemplo)
-- Atualizar proposições
-- Tipos disponíveis
-
-### 3. **Tramitação** 🔄
-- Workflow state machine
-- Avançar no workflow
-- Histórico de tramitação
-- Ações permitidas por estado
-
-### 4. **Usuários** 👥
-- Listar usuários (paginação)
-- Criar usuários (roles)
-- Atualizar perfis
-- Gerenciar permissões
-
-### 5. **Relatórios** 📊
-- Tipos disponíveis
-- Geração em PDF/Excel/CSV
-- Agendamento automático
-- Limites e background processing
-
-### 6. **Webhooks** 🔗
-- Configuração de endpoints
-- Formato de payloads
-- Validação HMAC-SHA256
-- Política de retry
-
-## 🚀 Como Acessar
-
-### Para Desenvolvedores:
-1. **Login** no sistema como DESENVOLVEDOR
-2. **No menu lateral** → Sistema de Tramitação → Documentação da API
-
-### Para Administradores:
-1. **Login** no sistema como ADMIN  
-2. **No menu lateral** → Painel Administrativo → Documentação da API
-
-### Navegação na Página:
-3. **Explore** as categorias no sidebar
-4. **Use** a busca para encontrar informações específicas
-5. **Expanda** as perguntas para ver exemplos de código
-
-## 🎨 Padrão de Design
-
-A página segue rigorosamente o padrão visual estabelecido:
-- ✅ Classes Bootstrap/Metronic consistentes
-- ✅ Cores e ícones padronizados
-- ✅ Layout responsivo
-- ✅ Integração com DesenvolvedorLayout
-- ✅ Navegação consistente
-
-## 🔄 Navegação
-
-```
-/desenvolvedor/dashboard     → Dashboard principal
-/desenvolvedor/proposicoes   → Gestão de proposições  
-/desenvolvedor/workflow      → Visualização do workflow
-/desenvolvedor/api-docs      → 📚 Documentação da API (NOVO)
+### **1. Fazer Login como Administrador:**
+```bash
+# Credenciais de teste:
+Email: admin@parlamentar.gov.br
+Senha: 123456
 ```
 
-## 💡 Melhorias Futuras
+### **2. Acessar via Menu Lateral:**
+```
+📍 Painel Administrativo
+   ├── Dashboard
+   ├── Usuários  
+   ├── Configurações
+   ├── Relatórios
+   └── 📚 Documentação da API ← AQUI
+```
 
-- [ ] Integração com Swagger UI embebido
-- [ ] Testador de API interativo
-- [ ] Geração automática de SDKs
-- [ ] Exemplos em múltiplas linguagens
-- [ ] Versionamento da documentação
-- [ ] Métricas de uso da API 
+### **3. Ou Acessar Diretamente:**
+```
+http://localhost:5175/metronic8/react/demo3/admin/api-docs
+```
+
+---
+
+## 📋 **Conteúdo da Documentação**
+
+### **🎯 Seções Implementadas:**
+1. **👤 Usuários**: CRUD completo, autenticação, roles
+2. **🏛️ Parlamentares**: Gestão de representantes  
+3. **📄 Proposições**: Sistema de tramitação legislativa
+4. **🗳️ Votações**: Gestão de sessões e resultados
+5. **🏛️ Comissões**: Estrutura organizacional
+6. **📊 Relatórios**: Endpoints de estatísticas
+7. **🔍 Buscas**: Sistema de pesquisa avançada
+
+### **🔐 Autenticação:**
+- Token JWT para todas as requisições
+- Controle de acesso baseado em roles
+- Endpoints protegidos por permissões
+
+---
+
+## 🎨 **Interface e Design**
+
+### ✅ **Características:**
+- **Totalmente Responsiva**: Funciona em desktop e mobile
+- **Design Coerente**: Integrada ao template Metronic
+- **Navegação Intuitiva**: Seções bem organizadas
+- **Exemplos Práticos**: Requests e responses reais
+- **Códigos de Status**: HTTP status codes explicados
+
+---
+
+## 🔒 **Controle de Acesso**
+
+### **Visibilidade por Role:**
+- **🔴 ADMIN** → ✅ **Acesso Total**
+- **🟡 PARLAMENTAR** → ❌ Sem acesso
+- **🟢 PUBLICO** → ❌ Sem acesso
+
+---
+
+## 📂 **Estrutura de Arquivos**
+
+```
+src/app/admin/api-docs/
+└── page.tsx          # Documentação completa da API
+```
+
+---
+
+## 🧪 **Testado e Validado**
+
+### ✅ **Cenários Testados:**
+1. **Login** como ADMIN → ✅ **Menu visível e funcional**
+2. **Navegação** entre seções → ✅ **Smooth scrolling ativo**  
+3. **Responsividade** → ✅ **Funciona em diferentes telas**
+4. **Integração** com template → ✅ **Design coerente**
+
+---
+
+## 🎯 **Resultado Final**
+
+### **✨ Status: PRONTO PARA PRODUÇÃO**
+
+A documentação da API está **100% integrada** ao sistema, proporcionando uma **experiência profissional** para administradores que precisam integrar com as APIs do sistema parlamentar.
+
+**🚀 Acesse agora:** http://localhost:5175/metronic8/react/demo3/admin/api-docs 

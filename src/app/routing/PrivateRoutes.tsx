@@ -10,18 +10,12 @@ import {WithChildren} from '../../_metronic/helpers'
 import BuilderPageWrapper from '../pages/layout-builder/BuilderPageWrapper'
 import {getRedirectPath} from '../../lib/utils/user-helpers.simple'
 
-// Import das páginas do desenvolvedor
-import DesenvolvedorDashboard from '../desenvolvedor/dashboard/page'
-import DesenvolvedorProposicoes from '../desenvolvedor/proposicoes/page'
-import DesenvolvedorWorkflow from '../desenvolvedor/workflow/page'
-import DesenvolvedorFluxograma from '../desenvolvedor/fluxograma/page'
-import DesenvolvedorApiDocs from '../desenvolvedor/api-docs/page'
-
 // Import das páginas do administrador
 import AdminDashboard from '../admin/dashboard/page'
 import AdminUsuarios from '../admin/usuarios/page'
 import AdminConfiguracoes from '../admin/configuracoes/page'
 import AdminRelatorios from '../admin/relatorios/page'
+import AdminApiDocs from '../admin/api-docs/page'
 
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
@@ -51,20 +45,14 @@ const PrivateRoutes = () => {
         <Route path='builder' element={<BuilderPageWrapper />} />
         <Route path='menu-test' element={<MenuTestPage />} />
         
-        {/* Rotas do Sistema de Tramitação */}
-        <Route path='desenvolvedor' element={<Navigate to='/desenvolvedor/dashboard' replace />} />
-        <Route path='desenvolvedor/dashboard' element={<DesenvolvedorDashboard />} />
-        <Route path='desenvolvedor/proposicoes' element={<DesenvolvedorProposicoes />} />
-        <Route path='desenvolvedor/workflow' element={<DesenvolvedorWorkflow />} />
-        <Route path='desenvolvedor/fluxograma' element={<DesenvolvedorFluxograma />} />
-        <Route path='desenvolvedor/api-docs' element={<DesenvolvedorApiDocs />} />
-        
         {/* Rotas do Administrador */}
         <Route path='admin' element={<Navigate to='/admin/dashboard' replace />} />
         <Route path='admin/dashboard' element={<AdminDashboard />} />
         <Route path='admin/usuarios' element={<AdminUsuarios />} />
         <Route path='admin/configuracoes' element={<AdminConfiguracoes />} />
         <Route path='admin/relatorios' element={<AdminRelatorios />} />
+        <Route path='admin/api-docs' element={<AdminApiDocs />} />
+        
         {/* Lazy Modules */}
         <Route
           path='crafted/pages/profile/*'

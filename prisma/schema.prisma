@@ -261,7 +261,6 @@ enum Role {
   PUBLIC
   PARLAMENTAR  
   ADMIN
-  DESENVOLVEDOR
 }
 
 enum AdminLevel {

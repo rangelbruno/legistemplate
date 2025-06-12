@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
  * Página Principal da Área do Administrador
  * 
  * Redireciona automaticamente para o dashboard
- * Segue o mesmo padrão da área do desenvolvedor
+ * Dashboard administrativo principal
  */
 export default function AdminPage() {
   const navigate = useNavigate()

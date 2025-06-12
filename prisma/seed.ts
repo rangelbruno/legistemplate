@@ -45,17 +45,7 @@ async function main() {
     }
   })
 
-  // 2.1. Criar usuário desenvolvedor
-  console.log('👨‍💻 Criando usuário desenvolvedor...')
-  const devUser = await prisma.user.create({
-    data: {
-      email: 'dev@parlamentar.gov.br',
-      name: 'Desenvolvedor Sistema',
-      password: defaultPasswordHash,
-      role: Role.DESENVOLVEDOR,
-      ativo: true
-    }
-  })
+
   
   // 3. Criar comissões
   console.log('🏛️ Criando comissões...')
