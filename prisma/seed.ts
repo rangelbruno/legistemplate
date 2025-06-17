@@ -1,6 +1,7 @@
 import { PrismaClient, EstadoTramitacao, TipoProposicao, Role, AdminLevel, TipoComissao } from '@prisma/client'
 import { faker } from '@faker-js/faker'
 import bcrypt from 'bcryptjs'
+import { seedConfiguracoes } from './seeds/configuracoes-seed'
 
 const prisma = new PrismaClient()
 
@@ -163,6 +164,9 @@ async function main() {
       }
     })
   }
+  
+  // 8. Executar seed das configurações
+  await seedConfiguracoes()
   
   console.log('✅ Seed concluído com sucesso!')
   console.log(`📊 Dados criados:`)

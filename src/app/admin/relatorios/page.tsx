@@ -1,6 +1,7 @@
 'use client'
 
 import AdministradorLayout from '../layout'
+import { PageTitle } from '../../../_metronic/layout/core'
 
 /**
  * Página de Relatórios e Estatísticas - Administrador
@@ -11,27 +12,26 @@ import AdministradorLayout from '../layout'
 export default function AdminRelatorios() {
   return (
     <AdministradorLayout>
+      <PageTitle 
+        breadcrumbs={[
+          { title: 'Administração', path: '/admin', isSeparator: false, isActive: false },
+          { title: 'Relatórios', path: '/admin/relatorios', isSeparator: false, isActive: false }
+        ]}
+      >
+        Relatórios e Estatísticas
+      </PageTitle>
+      
       <div className="admin-relatorios">
-        {/* Header da página */}
-        <div className="d-flex justify-content-between align-items-center mb-7">
-          <div>
-            <h1 className="page-heading d-flex text-dark fw-bold fs-3 mb-0">
-              Relatórios e Estatísticas
-            </h1>
-            <span className="text-muted fs-7">
-              Relatórios gerenciais e métricas do sistema de tramitação
-            </span>
-          </div>
-          <div className="d-flex gap-2">
-            <button className="btn btn-light">
-              <i className="bi bi-funnel fs-4 me-2"></i>
-              Filtros
-            </button>
-            <button className="btn btn-primary">
-              <i className="bi bi-download fs-4 me-2"></i>
-              Exportar
-            </button>
-          </div>
+        {/* Botões de ação */}
+        <div className="d-flex justify-content-end gap-2 mb-7">
+          <button className="btn btn-light">
+            <i className="bi bi-funnel fs-4 me-2"></i>
+            Filtros
+          </button>
+          <button className="btn btn-primary">
+            <i className="bi bi-download fs-4 me-2"></i>
+            Exportar
+          </button>
         </div>
 
         {/* Grid de tipos de relatórios */}

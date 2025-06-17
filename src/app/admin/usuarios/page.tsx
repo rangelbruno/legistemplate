@@ -1,6 +1,7 @@
 'use client'
 
 import AdministradorLayout from '../layout'
+import { PageTitle } from '../../../_metronic/layout/core'
 
 /**
  * Página de Gerenciamento de Usuários - Administrador
@@ -11,17 +12,18 @@ import AdministradorLayout from '../layout'
 export default function AdminUsuariosPage() {
   return (
     <AdministradorLayout>
+      <PageTitle 
+        breadcrumbs={[
+          { title: 'Administração', path: '/admin', isSeparator: false, isActive: false },
+          { title: 'Gerenciamento', path: '/admin/usuarios', isSeparator: false, isActive: false }
+        ]}
+      >
+        Gerenciamento de Usuários
+      </PageTitle>
+      
       <div className="admin-usuarios">
-        {/* Header da página */}
-        <div className="d-flex justify-content-between align-items-center mb-7">
-          <div>
-            <h1 className="page-heading d-flex text-dark fw-bold fs-3 mb-0">
-              Gerenciamento de Usuários
-            </h1>
-            <span className="text-muted fs-7">
-              Administrar usuários e permissões do sistema
-            </span>
-          </div>
+        {/* Botão de ação */}
+        <div className="d-flex justify-content-end mb-7">
           <button className="btn btn-primary">
             <i className="bi bi-person-plus fs-4 me-2"></i>
             Novo Usuário

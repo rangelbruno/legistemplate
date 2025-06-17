@@ -255,6 +255,300 @@ model Presenca {
   @@map("presencas")
 }
 
+// ===== SISTEMA DE PARAMETRIZAÇÃO =====
+
+// 1. Configuração Básica do Sistema
+model SistemaConfiguracaoGeral {
+  id                  String   @id @default(cuid())
+  nomeInstituicao     String
+  sigla               String?
+  logoPrincipal       String?  // URL ou base64 da imagem
+  logoSecundario      String?
+  favicon             String?
+  corPrimaria         String?  // hex color
+  corSecundaria       String?
+  corDestaque         String?
+  enderecoCompleto    String?
+  telefone            String?
+  email               String?
+  website             String?
+  cnpj                String?
+  timezone            String   @default("America/Sao_Paulo")
+  idiomapadrao        String   @default("pt-BR")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("sistema_configuracao_geral")
+}
+
+// 2. Configurações de Sessão Legislativa
+model SessaoLegislativaConfig {
+  id                     String          @id @default(cuid())
+  nome                   String
+  dataInicio             DateTime
+  dataFim                DateTime
+  tipo                   TipoSessaoLegislativa
+  ativa                  Boolean         @default(false)
+  calendarioSessoes      String?         // JSON com dias da semana
+  horarioPadraoInicio    String?         // formato HH:mm
+  horarioPadraoFim       String?
+  quorumMinimo           Int?
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+
+  @@map("sessao_legislativa_config")
+}
+
+// 3. Perfis e Permissões
+model SistemaPerfis {
+  id           String    @id @default(cuid())
+  nome         String
+  descricao    String?
+  nivelAcesso  Int       // 1-5 (público até admin)
+  ativo        Boolean   @default(true)
+  permissoes   String?   // JSON estrutura de permissões
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  // Relacionamentos
+  perfilPermissoes PerfilPermissoes[]
+
+  @@map("sistema_perfis")
+}
+
+model PerfilPermissoes {
+  id               String        @id @default(cuid())
+  perfilId         String
+  perfil           SistemaPerfis @relation(fields: [perfilId], references: [id])
+  modulo           String
+  funcionalidade   String
+  podeVisualizar   Boolean       @default(false)
+  podeCriar        Boolean       @default(false)
+  podeEditar       Boolean       @default(false)
+  podeExcluir      Boolean       @default(false)
+  podeAprovar      Boolean       @default(false)
+
+  @@map("perfil_permissoes")
+}
+
+// 4. Configurações de Autenticação
+model SistemaAutenticacaoConfig {
+  id                    String   @id @default(cuid())
+  senhaMinLength        Int      @default(8)
+  senhaRequereNumeros   Boolean  @default(true)
+  senhaRequereEspeciais Boolean  @default(true)
+  senhaExpiraDias       Int?     @default(90)
+  oauth2Google          Boolean  @default(false)
+  oauth2Microsoft       Boolean  @default(false)
+  oauth2GovBr           Boolean  @default(false)
+  certificadoDigital    Boolean  @default(false)
+  sessaoTimeoutMinutos  Int      @default(60)
+  mfaObrigatorio        Boolean  @default(false)
+  ipWhitelistAtivo      Boolean  @default(false)
+  ipWhitelist           String?  // JSON array de IPs
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("sistema_autenticacao_config")
+}
+
+// 5. Tipos de Documentos
+model DocumentoTipos {
+  id                  String              @id @default(cuid())
+  nome                String
+  sigla               String?
+  numeracaoFormato    String              // ex: "PL {numero}/{ano}"
+  workflowId          String?
+  workflow            Workflows?          @relation(fields: [workflowId], references: [id])
+  templateConteudo    String?             // HTML template
+  camposObrigatorios  String?             // JSON
+  validacoes          String?             // JSON
+  prazoTramitacao     Int?                // dias
+  ativo               Boolean             @default(true)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  
+  // Relacionamentos
+  templates           DocumentoTemplates[]
+
+  @@map("documento_tipos")
+}
+
+// 6. Templates de Documentos
+model DocumentoTemplates {
+  id                String         @id @default(cuid())
+  nome              String
+  tipoDocumentoId   String
+  tipoDocumento     DocumentoTipos @relation(fields: [tipoDocumentoId], references: [id])
+  conteudoHtml      String         // Template HTML
+  variaveis         String?        // JSON {nome_parlamentar}, {data_sessao}, etc.
+  cabecalho         String?
+  rodape            String?
+  margens           String?        // JSON configuração de impressão
+  versao            Int            @default(1)
+  ativo             Boolean        @default(true)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@map("documento_templates")
+}
+
+// 7. Workflows
+model Workflows {
+  id          String           @id @default(cuid())
+  nome        String
+  descricao   String?
+  etapas      String?          // JSON estrutura das etapas
+  ativo       Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  
+  // Relacionamentos
+  etapasWorkflow WorkflowEtapas[]
+  documentoTipos DocumentoTipos[]
+
+  @@map("workflows")
+}
+
+model WorkflowEtapas {
+  id                    String     @id @default(cuid())
+  workflowId            String
+  workflow              Workflows  @relation(fields: [workflowId], references: [id])
+  ordem                 Int
+  nome                  String
+  responsavelPerfilId   String?
+  prazoDias             Int?
+  obrigatoria           Boolean    @default(true)
+  paralela              Boolean    @default(false)
+  condicoes             String?    // JSON condições para execução
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+
+  @@map("workflow_etapas")
+}
+
+// 8. Configurações de Prazos
+model SistemaPrazosConfig {
+  id                        String   @id @default(cuid())
+  tipoPrazo                 String   // relatoria, emenda, votacao
+  diasUteis                 Int
+  permiteProrrogacao        Boolean  @default(false)
+  maximoProrrogacoes        Int?
+  notificarDiasAntes        Int?
+  escalonarAposVencimento   Boolean  @default(false)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  @@map("sistema_prazos_config")
+}
+
+// 9. Feriados
+model FeriadosMunicipais {
+  id          String              @id @default(cuid())
+  data        DateTime
+  descricao   String
+  tipo        TipoFeriado
+  recorrente  Boolean             @default(false)
+  createdAt   DateTime            @default(now())
+
+  @@map("feriados_municipais")
+}
+
+// 10. Configurações de Numeração
+model SistemaNumeracaoConfig {
+  id                String   @id @default(cuid())
+  tipoDocumento     String
+  formato           String   // {tipo}-{numero}/{ano}
+  contadorAtual     Int      @default(0)
+  reiniciaAnualmente Boolean @default(true)
+  prefixo           String?
+  sufixo            String?
+  digitosMinimos    Int      @default(3)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("sistema_numeracao_config")
+}
+
+// 11. Configurações de Notificações
+model SistemaNotificacoesConfig {
+  id                       String   @id @default(cuid())
+  tipoEvento               String   // documento_criado, prazo_vencendo
+  enviarEmail              Boolean  @default(true)
+  enviarSms                Boolean  @default(false)
+  enviarPush               Boolean  @default(true)
+  templateEmail            String?
+  templateSms              String?
+  destinatariosAutomaticos String?  // JSON perfis que recebem
+  diasAntecedencia         Int?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@map("sistema_notificacoes_config")
+}
+
+// 12. Configurações de Integração
+model SistemaIntegracoesConfig {
+  id                    String    @id @default(cuid())
+  nomeIntegracao        String    // gov.br, receita_federal, tse
+  endpointUrl           String?
+  apiKey                String?
+  metodoAuth            MetodoAuth?
+  ativa                 Boolean   @default(true)
+  configuracoesExtras   String?   // JSON
+  ultimaSincronizacao   DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("sistema_integracoes_config")
+}
+
+// 13. Configurações de Transparência
+model TransparenciaConfig {
+  id                        String   @id @default(cuid())
+  mostrarVotacoesNominais   Boolean  @default(true)
+  mostrarPresencas          Boolean  @default(true)
+  mostrarSalarios           Boolean  @default(true)
+  mostrarGastosGabinete     Boolean  @default(true)
+  permitirDownloadDocumentos Boolean @default(true)
+  textoLeiAcessoInformacao  String?
+  emailOuvidoria            String?
+  prazoRespostaDias         Int      @default(20)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  @@map("transparencia_config")
+}
+
+// 14. Configurações de Backup
+model SistemaBackupConfig {
+  id                 String            @id @default(cuid())
+  frequenciaBackup   FrequenciaBackup
+  horarioBackup      String?           // formato HH:mm
+  localArmazenamento String?           // S3, local, etc.
+  retencaoDias       Int               @default(90)
+  criptografiaAtiva  Boolean           @default(true)
+  notificarFalhas    Boolean           @default(true)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  @@map("sistema_backup_config")
+}
+
+// 15. Histórico de Configurações
+model ConfigHistorico {
+  id            String   @id @default(cuid())
+  tabela        String   // nome da tabela configurada
+  registroId    String   // ID do registro alterado
+  usuarioId     String   // usuário que fez a alteração
+  valoresAntes  String?  // JSON dos valores anteriores
+  valoresDepois String?  // JSON dos novos valores
+  observacoes   String?
+  createdAt     DateTime @default(now())
+
+  @@map("config_historico")
+}
+
 // ===== ENUMS =====
 
 enum Role {
@@ -386,4 +680,28 @@ enum TipoSessao {
   EXTRAORDINARIA
   SOLENE
   COMISSAO
+}
+
+enum TipoSessaoLegislativa {
+  ORDINARIA
+  EXTRAORDINARIA
+  ESPECIAL
+}
+
+enum TipoFeriado {
+  NACIONAL
+  ESTADUAL
+  MUNICIPAL
+}
+
+enum MetodoAuth {
+  API_KEY
+  OAUTH2
+  BASIC
+}
+
+enum FrequenciaBackup {
+  DIARIO
+  SEMANAL
+  MENSAL
 }

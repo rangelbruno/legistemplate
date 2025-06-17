@@ -388,7 +388,11 @@ export default function AdminDashboardPage() {
   return (
     <AdministradorLayout>
       <DisableSidebar>
-        <PageTitle description='Painel de controle administrativo do sistema parlamentar' breadcrumbs={[]}>
+        <PageTitle 
+          breadcrumbs={[
+            { title: 'Administração', path: '/admin', isSeparator: false, isActive: false }
+          ]}
+        >
           Dashboard Administrativo
         </PageTitle>
         <AdminDashboardContent />
