@@ -1,229 +1,253 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import AdministradorLayout from '../layout'
-import { ConfigSidebar } from '../../../components/admin/config/ConfigSidebar'
-import { ConfigContent } from '../../../components/admin/config/ConfigContent'
-import { FixedActionBar } from '../../../components/admin/config/FixedActionBar'
-import { ConfigProvider } from '../../../context/ConfigContext'
 import { PageTitle } from '../../../_metronic/layout/core'
 
 /**
- * Página Principal de Parametrização do Sistema Parlamentar
+ * Página Principal de Configurações do Sistema
  * 
- * Interface administrativa completa que permite a parametrização total
- * do sistema parlamentar sem necessidade de alterações no código.
- * Todas as configurações são armazenadas no banco de dados.
+ * Interface com cards de atalhos para diferentes áreas de configuração.
+ * Cada card direciona para uma página específica de configuração.
  */
 export default function AdminConfiguracoes() {
-  const [activeSection, setActiveSection] = useState('sistema-basico')
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-
-  // Configurações organizadas por seção
+  // Configurações organizadas por categoria com suas respectivas páginas
   const configSections = [
     {
       id: 'sistema-basico',
       title: 'Sistema Básico',
       icon: 'bi-sliders',
-      description: 'Configurações gerais da instituição',
-      categories: ['geral']
+      description: 'Configurações gerais da instituição e parâmetros básicos do sistema',
+      path: '/admin/configuracoes/sistema-basico',
+      color: 'primary'
     },
     {
       id: 'usuarios-permissoes',
       title: 'Usuários e Permissões',
       icon: 'bi-people',
-      description: 'Gestão de perfis e controle de acesso',
-      categories: ['perfis', 'autenticacao']
+      description: 'Gestão de perfis de usuário e controle de acesso ao sistema',
+      path: '/admin/configuracoes/usuarios-permissoes',
+      color: 'success'
     },
     {
       id: 'documentos-templates',
       title: 'Documentos e Templates',
       icon: 'bi-file-text',
-      description: 'Tipos de documentos e templates',
-      categories: ['documento-tipos', 'workflows']
+      description: 'Configuração de tipos de documentos e templates do sistema',
+      path: '/admin/configuracoes/documentos-templates',
+      color: 'info'
     },
     {
       id: 'estrutura-parlamentar',
       title: 'Estrutura Parlamentar',
       icon: 'bi-building',
-      description: 'Parlamentares, comissões e mesa diretora',
-      categories: ['parlamentares', 'comissoes', 'mesa-diretora']
+      description: 'Gestão de parlamentares, comissões e mesa diretora',
+      path: '/admin/configuracoes/estrutura-parlamentar',
+      color: 'warning'
     },
     {
       id: 'processos-prazos',
       title: 'Processos e Prazos',
       icon: 'bi-clock',
-      description: 'Configuração de prazos e calendário',
-      categories: ['prazos', 'feriados', 'numeracao']
+      description: 'Configuração de prazos processuais e calendário legislativo',
+      path: '/admin/configuracoes/processos-prazos',
+      color: 'danger'
     },
     {
       id: 'calendario-sessoes',
       title: 'Calendário de Sessões',
       icon: 'bi-calendar-event',
-      description: 'Agendar sessões ordinárias e extraordinárias',
-      categories: ['sessoes-ordinarias', 'sessoes-extraordinarias', 'calendario']
+      description: 'Agendamento de sessões ordinárias e extraordinárias',
+      path: '/admin/configuracoes/calendario-sessoes',
+      color: 'dark'
     },
     {
       id: 'integracoes',
       title: 'Integrações',
       icon: 'bi-link-45deg',
-      description: 'APIs externas e sincronizações',
-      categories: ['integracoes', 'notificacoes']
+      description: 'Configuração de APIs externas e sincronizações',
+      path: '/admin/configuracoes/integracoes',
+      color: 'primary'
     },
     {
       id: 'configuracoes-tecnicas',
       title: 'Configurações Técnicas',
       icon: 'bi-gear',
-      description: 'Backup, segurança e performance',
-      categories: ['transparencia', 'backup']
+      description: 'Backup, segurança, performance e transparência',
+      path: '/admin/configuracoes/configuracoes-tecnicas',
+      color: 'secondary'
     }
   ]
 
-  // Aviso ao sair da página com alterações não salvas
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault()
-        e.returnValue = 'Você tem alterações não salvas. Deseja sair mesmo assim?'
-      }
-    }
-
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [hasUnsavedChanges])
-
   return (
-    <ConfigProvider>
-      <AdministradorLayout>
-        <PageTitle 
-          breadcrumbs={[
-            { title: 'Administração', path: '/admin', isSeparator: false, isActive: false },
-            { title: 'Parametrização', path: '/admin/configuracoes', isSeparator: false, isActive: false }
-          ]}
-        >
-          Configurações do Sistema
-        </PageTitle>
-        
-        <div className="admin-parametrizacao">
-          {/* Status de alterações */}
-          {hasUnsavedChanges && (
-            <div className="alert alert-warning d-flex align-items-center mb-7">
-              <i className="bi bi-exclamation-triangle fs-2 me-3"></i>
-              <div>
-                <strong>Alterações não salvas</strong>
-                <div className="text-muted">Você tem configurações pendentes. Lembre-se de salvar suas alterações.</div>
+    <AdministradorLayout>
+      <PageTitle 
+        breadcrumbs={[
+          { title: 'Administração', path: '/admin', isSeparator: false, isActive: false },
+          { title: 'Configurações', path: '/admin/configuracoes', isSeparator: false, isActive: true }
+        ]}
+      >
+        Configurações do Sistema
+      </PageTitle>
+      
+      <div className="configuracoes-overview">
+        {/* Header da página */}
+        <div className="card mb-7">
+          <div className="card-body">
+            <div className="d-flex align-items-center">
+              <div className="symbol symbol-60px symbol-circle bg-light-primary me-4">
+                <div className="symbol-label">
+                  <i className="bi bi-gear-fill text-primary fs-1"></i>
+                </div>
               </div>
-            </div>
-          )}
-
-          {/* Layout principal com sidebar e conteúdo */}
-          <div className="row g-7">
-            {/* Sidebar de navegação */}
-            <div className="col-lg-3">
-              <ConfigSidebar
-                sections={configSections}
-                activeSection={activeSection}
-                onSectionChange={setActiveSection}
-              />
-            </div>
-
-            {/* Área de conteúdo */}
-            <div className="col-lg-9">
-              <ConfigContent
-                activeSection={activeSection}
-                sections={configSections}
-                onConfigChange={() => setHasUnsavedChanges(true)}
-                isLoading={isLoading}
-              />
+              <div className="flex-grow-1">
+                <h1 className="text-gray-800 fw-bold mb-1">
+                  Configurações do Sistema
+                </h1>
+                <p className="text-muted mb-0">
+                  Gerencie todas as configurações do sistema parlamentar. Selecione uma área para começar.
+                </p>
+              </div>
+              <div className="d-flex align-items-center">
+                <span className="badge badge-light-success fs-7">
+                  <i className="bi bi-check-circle me-1"></i>
+                  Sistema Ativo
+                </span>
+              </div>
             </div>
           </div>
+        </div>
 
-          {/* Barra de ações fixa */}
-          <FixedActionBar
-            hasUnsavedChanges={hasUnsavedChanges}
-            isLoading={isLoading}
-            onSave={() => {
-              setIsLoading(true)
-              // Lógica de salvamento será implementada no contexto
-              setTimeout(() => {
-                setIsLoading(false)
-                setHasUnsavedChanges(false)
-              }, 2000)
-            }}
-            onCancel={() => {
-              if (hasUnsavedChanges) {
-                const confirm = window.confirm('Descartar todas as alterações não salvas?')
-                if (confirm) {
-                  setHasUnsavedChanges(false)
-                  // Recarregar configurações
-                }
-              }
-            }}
-            onExport={() => {
-              // Implementar exportação
-              console.log('Exportar configurações')
-            }}
-            onImport={() => {
-              // Implementar importação
-              console.log('Importar configurações')
-            }}
-          />
-
-          {/* Indicador de carregamento global */}
-          {isLoading && (
-            <div className="loading-overlay">
-              <div className="loading-spinner">
-                <div className="spinner-border text-primary" role="status">
-                  <span className="visually-hidden">Carregando...</span>
+        {/* Grid de cards de configuração */}
+        <div className="row g-6 g-xl-9">
+          {configSections.map((section) => (
+            <div key={section.id} className="col-md-6 col-xl-4">
+                             <Link to={section.path} className="text-decoration-none">
+                <div className={`card card-hover card-flush h-100 config-card border-hover-${section.color}`}>
+                  <div className="card-body d-flex flex-column justify-content-between">
+                    <div>
+                      <div className="d-flex align-items-center mb-4">
+                        <div className={`symbol symbol-50px symbol-circle bg-light-${section.color} me-3`}>
+                          <div className="symbol-label">
+                            <i className={`${section.icon} text-${section.color} fs-2`}></i>
+                          </div>
+                        </div>
+                        <div className="flex-grow-1">
+                          <h3 className="text-gray-800 fw-bold mb-1 fs-5">
+                            {section.title}
+                          </h3>
+                        </div>
+                      </div>
+                      
+                      <p className="text-muted mb-4 fs-6">
+                        {section.description}
+                      </p>
+                    </div>
+                    
+                    <div className="d-flex align-items-center justify-content-between">
+                      <span className={`badge badge-light-${section.color} fs-8`}>
+                        Configurar
+                      </span>
+                      <i className={`bi bi-arrow-right text-${section.color} fs-3`}></i>
+                    </div>
+                  </div>
                 </div>
-                <div className="mt-3 text-muted">
-                  Salvando configurações...
+              </Link>
+            </div>
+          ))}
+        </div>
+
+        {/* Card de informações adicionais */}
+        <div className="card mt-7">
+          <div className="card-body">
+            <div className="row align-items-center">
+              <div className="col-lg-8">
+                <div className="d-flex align-items-center">
+                  <div className="symbol symbol-40px symbol-circle bg-light-info me-3">
+                    <div className="symbol-label">
+                      <i className="bi bi-info-circle text-info fs-3"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-gray-800 fw-bold mb-1">
+                      Dicas importantes
+                    </h4>
+                    <p className="text-muted mb-0">
+                      Sempre faça backup das configurações antes de realizar alterações importantes.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-lg-4 text-lg-end">
+                <div className="d-flex flex-wrap gap-2 justify-content-lg-end">
+                  <button className="btn btn-light btn-sm">
+                    <i className="bi bi-download me-1"></i>
+                    Exportar
+                  </button>
+                  <button className="btn btn-light btn-sm">
+                    <i className="bi bi-upload me-1"></i>
+                    Importar
+                  </button>
                 </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
+      </div>
 
-        {/* Estilos customizados */}
-        <style>{`
-          .admin-parametrizacao {
-            min-height: 100vh;
-            padding-bottom: 100px; /* Espaço para barra de ações */
-          }
+      {/* Estilos customizados */}
+      <style>{`
+        .configuracoes-overview {
+          min-height: 100vh;
+        }
 
-          .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-          }
+        .config-card {
+          transition: all 0.3s ease;
+          cursor: pointer;
+          border: 2px solid transparent;
+        }
 
-          .loading-spinner {
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          }
+        .config-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
 
-          .alert-warning {
-            animation: pulse 2s infinite;
-          }
+        .border-hover-primary:hover {
+          border-color: var(--bs-primary) !important;
+        }
 
-          @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.95; }
-            100% { opacity: 1; }
-          }
-        `}</style>
-      </AdministradorLayout>
-    </ConfigProvider>
+        .border-hover-success:hover {
+          border-color: var(--bs-success) !important;
+        }
+
+        .border-hover-info:hover {
+          border-color: var(--bs-info) !important;
+        }
+
+        .border-hover-warning:hover {
+          border-color: var(--bs-warning) !important;
+        }
+
+        .border-hover-danger:hover {
+          border-color: var(--bs-danger) !important;
+        }
+
+        .border-hover-dark:hover {
+          border-color: var(--bs-dark) !important;
+        }
+
+        .border-hover-secondary:hover {
+          border-color: var(--bs-secondary) !important;
+        }
+
+        .card-hover {
+          transition: all 0.15s ease-in-out;
+        }
+
+        .card-hover:hover {
+          transform: translateY(-1px);
+        }
+      `}</style>
+    </AdministradorLayout>
   )
 } 

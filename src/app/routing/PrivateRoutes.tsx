@@ -19,6 +19,16 @@ import AdminConfiguracoes from '../admin/configuracoes/page'
 import AdminRelatorios from '../admin/relatorios/page'
 import AdminApiDocs from '../admin/api-docs/page'
 
+// Import das páginas de configurações específicas
+import SistemaBasico from '../admin/configuracoes/sistema-basico/page'
+import UsuariosPermissoes from '../admin/configuracoes/usuarios-permissoes/page'
+import CalendarioSessoes from '../admin/configuracoes/calendario-sessoes/page'
+import DocumentosTemplates from '../admin/configuracoes/documentos-templates/page'
+import EstruturaParlamentar from '../admin/configuracoes/estrutura-parlamentar/page'
+import ProcessosPrazos from '../admin/configuracoes/processos-prazos/page'
+import Integracoes from '../admin/configuracoes/integracoes/page'
+import ConfiguracoesTecnicas from '../admin/configuracoes/configuracoes-tecnicas/page'
+
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
   const WizardsPage = lazy(() => import('../modules/wizards/WizardsPage'))
@@ -56,6 +66,16 @@ const PrivateRoutes = () => {
         <Route path='admin/configuracoes' element={<AdminConfiguracoes />} />
         <Route path='admin/relatorios' element={<AdminRelatorios />} />
         <Route path='admin/api-docs' element={<AdminApiDocs />} />
+        
+        {/* Rotas de Configurações Específicas */}
+        <Route path='admin/configuracoes/sistema-basico' element={<SistemaBasico />} />
+        <Route path='admin/configuracoes/usuarios-permissoes' element={<UsuariosPermissoes />} />
+        <Route path='admin/configuracoes/calendario-sessoes' element={<CalendarioSessoes />} />
+        <Route path='admin/configuracoes/documentos-templates' element={<DocumentosTemplates />} />
+        <Route path='admin/configuracoes/estrutura-parlamentar' element={<EstruturaParlamentar />} />
+        <Route path='admin/configuracoes/processos-prazos' element={<ProcessosPrazos />} />
+        <Route path='admin/configuracoes/integracoes' element={<Integracoes />} />
+        <Route path='admin/configuracoes/configuracoes-tecnicas' element={<ConfiguracoesTecnicas />} />
         
         {/* Lazy Modules */}
         <Route
