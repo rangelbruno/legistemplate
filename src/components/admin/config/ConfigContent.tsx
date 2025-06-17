@@ -3,13 +3,14 @@
 import React from 'react'
 import { useConfig } from '../../../context/ConfigContext'
 import { ConfiguracoesGerais } from './sections/ConfiguracoesGerais'
-import { ConfiguracoesSessao } from './sections/ConfiguracoesSessao'
+
 import { ConfiguracoesPerfis } from './sections/ConfiguracoesPerfis'
 import { ConfiguracoesAutenticacao } from './sections/ConfiguracoesAutenticacao'
 import { ConfiguracoesDocumentos } from './sections/ConfiguracoesDocumentos'
 import { ConfiguracoesWorkflows } from './sections/ConfiguracoesWorkflows'
 import { ConfiguracoesIntegracoes } from './sections/ConfiguracoesIntegracoes'
 import { ConfiguracoesTransparencia } from './sections/ConfiguracoesTransparencia'
+import { CalendarioSessoes } from './sections/CalendarioSessoes'
 
 interface ConfigSection {
   id: string
@@ -119,12 +120,6 @@ function renderSectionContent(sectionId: string, configurations: any, onConfigCh
               onChange={onConfigChange}
             />
           </div>
-          <div className="col-12">
-            <ConfiguracoesSessao 
-              config={configurations.sessaoLegislativa} 
-              onChange={onConfigChange}
-            />
-          </div>
         </div>
       )
 
@@ -170,6 +165,18 @@ function renderSectionContent(sectionId: string, configurations: any, onConfigCh
           <div className="col-12">
             <ConfiguracoesIntegracoes 
               config={configurations.integracoes} 
+              onChange={onConfigChange}
+            />
+          </div>
+        </div>
+      )
+
+    case 'calendario-sessoes':
+      return (
+        <div className="row g-7">
+          <div className="col-12">
+            <CalendarioSessoes 
+              config={configurations.sessoes} 
               onChange={onConfigChange}
             />
           </div>
@@ -233,7 +240,10 @@ function getCategoryLabel(category: string): string {
     'integracoes': 'Integrações',
     'notificacoes': 'Notificações',
     'transparencia': 'Portal de Transparência',
-    'backup': 'Backup e Recuperação'
+    'backup': 'Backup e Recuperação',
+    'sessoes-ordinarias': 'Sessões Ordinárias',
+    'sessoes-extraordinarias': 'Sessões Extraordinárias',
+    'calendario': 'Calendário'
   }
   
   return labels[category] || category

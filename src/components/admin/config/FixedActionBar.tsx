@@ -153,7 +153,7 @@ export function FixedActionBar({
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .fixed-action-bar {
           position: fixed;
           bottom: 0;

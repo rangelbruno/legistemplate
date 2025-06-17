@@ -27,7 +27,7 @@ export default function AdminConfiguracoes() {
       title: 'Sistema Básico',
       icon: 'bi-sliders',
       description: 'Configurações gerais da instituição',
-      categories: ['geral', 'sessao-legislativa']
+      categories: ['geral']
     },
     {
       id: 'usuarios-permissoes',
@@ -56,6 +56,13 @@ export default function AdminConfiguracoes() {
       icon: 'bi-clock',
       description: 'Configuração de prazos e calendário',
       categories: ['prazos', 'feriados', 'numeracao']
+    },
+    {
+      id: 'calendario-sessoes',
+      title: 'Calendário de Sessões',
+      icon: 'bi-calendar-event',
+      description: 'Agendar sessões ordinárias e extraordinárias',
+      categories: ['sessoes-ordinarias', 'sessoes-extraordinarias', 'calendario']
     },
     {
       id: 'integracoes',

@@ -101,7 +101,7 @@ export function ConfigSidebar({ sections, activeSection, onSectionChange }: Conf
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .config-sidebar .list-group-item {
           border: none;
           border-bottom: 1px solid #f1f1f2;
@@ -146,7 +146,10 @@ function getCategoryLabel(category: string): string {
     'integracoes': 'APIs',
     'notificacoes': 'Notifs',
     'transparencia': 'Portal',
-    'backup': 'Backup'
+    'backup': 'Backup',
+    'sessoes-ordinarias': 'Ordinárias',
+    'sessoes-extraordinarias': 'Extraordinárias',
+    'calendario': 'Calendário'
   }
   
   return labels[category] || category

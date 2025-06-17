@@ -34,6 +34,34 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
   const loadConfigurations = async () => {
     setLoading(true)
     try {
+      // Temporariamente usando dados mock até a API estar pronta
+      const mockConfigurations = {
+        geral: {
+          nomeInstituicao: 'Câmara Municipal',
+          siglaInstituicao: 'CM',
+          cnpj: '',
+          email: '',
+          telefone: '',
+          site: '',
+          endereco: '',
+          logo: null
+        },
+        sessoes: [],
+        perfis: {},
+        autenticacao: {},
+        documentoTipos: {},
+        workflows: {},
+        integracoes: {},
+        transparencia: {},
+        backup: {}
+      }
+      
+      setConfigurations(mockConfigurations)
+      setOriginalConfigurations(JSON.parse(JSON.stringify(mockConfigurations)))
+      setHasChanges(false)
+      
+      // TODO: Descomentar quando a API estiver pronta
+      /*
       const response = await fetch('/api/v1/admin/config')
       if (response.ok) {
         const data = await response.json()
@@ -43,6 +71,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
       } else {
         console.error('Erro ao carregar configurações')
       }
+      */
     } catch (error) {
       console.error('Erro ao carregar configurações:', error)
     } finally {
