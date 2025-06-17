@@ -46,6 +46,26 @@ model Admin {
   @@map("admins")
 }
 
+model Partido {
+  id          String    @id @default(cuid())
+  sigla       String    @unique // Ex: PT, PSDB, MDB
+  nome        String    // Ex: Partido dos Trabalhadores
+  numero      Int       @unique // Número eleitoral do partido
+  fundacao    DateTime? // Data de fundação
+  presidente  String?   // Nome do presidente nacional
+  website     String?   // Site oficial
+  logo        String?   // URL ou caminho para logo
+  ativo       Boolean   @default(true)
+  
+  // Relacionamentos
+  parlamentares Parlamentar[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("partidos")
+}
+
 model Parlamentar {
   id            String    @id @default(cuid())
   userId        String    @unique
@@ -54,11 +74,25 @@ model Parlamentar {
   // Dados do parlamentar
   matricula     String    @unique
   nome          String
-  partido       String
+  partidoId     String    // Relacionamento com partido
+  partido       Partido   @relation(fields: [partidoId], references: [id])
   uf            String
   mandatoInicio DateTime
   mandatoFim    DateTime?
   ativo         Boolean   @default(true)
+  
+  // Dados específicos para Vereadores
+  cargo         CargoParlamentar? @default(VEREADOR)
+  presidenteCamara Boolean @default(false) // Se é presidente da câmara
+  dataEleiçaoPresidencia DateTime? // Data quando foi eleito presidente
+  mandatoPresidenciaFim DateTime? // Fim do mandato de presidência
+  
+  // Dados adicionais
+  telefone      String?
+  endereco      String?
+  profissao     String?
+  biografia     String?
+  foto          String?   // URL ou caminho para foto do parlamentar
   
   // Relacionamentos
   proposicoes   Proposicao[]
@@ -698,6 +732,13 @@ enum MetodoAuth {
   API_KEY
   OAUTH2
   BASIC
+}
+
+enum CargoParlamentar {
+  VEREADOR
+  PREFEITO
+  VICE_PREFEITO
+  SECRETARIO
 }
 
 enum FrequenciaBackup {

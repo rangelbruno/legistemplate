@@ -49,9 +49,16 @@ export function AdminSidebarWidget() {
       color: 'primary'
     },
     {
+      to: '/admin/vereadores',
+      label: 'Vereadores',
+      icon: 'people',
+      description: 'Gerenciar vereadores',
+      color: 'success'
+    },
+    {
       to: '/admin/usuarios',
       label: 'Usuários',
-      icon: 'people',
+      icon: 'user-tick',
       description: 'Gerenciar usuários',
       color: 'info'
     },
@@ -67,7 +74,7 @@ export function AdminSidebarWidget() {
       label: 'Relatórios',
       icon: 'graph-up',
       description: 'Analytics e reports',
-      color: 'success'
+      color: 'danger'
     }
   ]
 

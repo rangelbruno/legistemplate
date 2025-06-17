@@ -44,6 +44,8 @@ export function AsideMenuMain() {
             icon='black-right'
           >
             <AsideMenuItem to='/admin/dashboard' title='Dashboard' hasBullet={true} />
+            <AsideMenuItem to='/admin/vereadores' title='Vereadores' hasBullet={true} />
+            <AsideMenuItem to='/admin/partidos' title='Partidos' hasBullet={true} />
             <AsideMenuItem to='/admin/usuarios' title='Usuários' hasBullet={true} />
             <AsideMenuItem to='/admin/configuracoes' title='Configurações' hasBullet={true} />
             <AsideMenuItem to='/admin/relatorios' title='Relatórios' hasBullet={true} />

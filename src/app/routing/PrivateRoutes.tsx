@@ -12,6 +12,8 @@ import {getRedirectPath} from '../../lib/utils/user-helpers.simple'
 
 // Import das páginas do administrador
 import AdminDashboard from '../admin/dashboard/page'
+import AdminVereadores from '../admin/vereadores/page'
+import AdminPartidos from '../admin/partidos/page'
 import AdminUsuarios from '../admin/usuarios/page'
 import AdminConfiguracoes from '../admin/configuracoes/page'
 import AdminRelatorios from '../admin/relatorios/page'
@@ -48,6 +50,8 @@ const PrivateRoutes = () => {
         {/* Rotas do Administrador */}
         <Route path='admin' element={<Navigate to='/admin/dashboard' replace />} />
         <Route path='admin/dashboard' element={<AdminDashboard />} />
+        <Route path='admin/vereadores' element={<AdminVereadores />} />
+        <Route path='admin/partidos' element={<AdminPartidos />} />
         <Route path='admin/usuarios' element={<AdminUsuarios />} />
         <Route path='admin/configuracoes' element={<AdminConfiguracoes />} />
         <Route path='admin/relatorios' element={<AdminRelatorios />} />
