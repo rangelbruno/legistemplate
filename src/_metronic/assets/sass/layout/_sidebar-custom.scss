@@ -1,0 +1,428 @@
+// Estilos customizados para hierarquia do sidebar - Estilo limpo e moderno
+
+// Seções principais com estilo minimalista
+.menu-section {
+  font-weight: 500;
+  color: #6c757d;
+  letter-spacing: 0.5px;
+}
+
+// Menu limpo e moderno com performance otimizada
+.menu-item {
+  .menu-link {
+    transition: background-color 0.2s ease;
+    border-radius: 6px;
+    margin: 1px 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #f8f9fa;
+    }
+    
+    // Estado ativo similar à imagem de referência
+    &.active {
+      background-color: #343a40;
+      color: white;
+      
+      .menu-title {
+        color: white;
+      }
+      
+      .menu-bullet .bullet {
+        background-color: white;
+      }
+    }
+  }
+  
+  // Otimização para accordions
+  &.menu-accordion {
+    .menu-sub {
+      overflow: hidden;
+      will-change: height;
+      transform: translateZ(0); // Force GPU acceleration
+    }
+    
+    // Prevenir scroll automático durante animação
+    &.showing,
+    &.hiding {
+      .menu-sub {
+        contain: layout style;
+      }
+    }
+  }
+  
+  // Submenus com indentação mínima
+  .menu-sub {
+    .menu-item {
+      .menu-link {
+        padding-left: 45px;
+        font-size: 0.95rem;
+        
+        &:hover {
+          background-color: #f1f3f4;
+        }
+        
+        &.active {
+          background-color: #495057;
+        }
+      }
+    }
+  }
+}
+
+// Container do menu com scroll otimizado
+#kt_aside_menu {
+  scroll-behavior: auto; // Desabilitar smooth scroll
+  
+  // Prevenir reflow durante animações
+  .menu {
+    contain: layout;
+  }
+  
+  // Melhorar performance de scroll
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+// Cores dos ícones por categoria baseadas em estudos de UX
+// Dashboard - Azul (confiança, estabilidade)
+[data-menu-category="dashboard"] {
+  .menu-icon,
+  .menu-icon svg,
+  .menu-icon i {
+    color: #2563eb !important; // blue-600
+    fill: #2563eb !important;
+  }
+  
+  .menu-link:hover .menu-icon,
+  .menu-link:hover .menu-icon svg,
+  .menu-link:hover .menu-icon i {
+    color: #1d4ed8 !important; // blue-700
+    fill: #1d4ed8 !important;
+  }
+  
+  .menu-link.active .menu-icon,
+  .menu-link.active .menu-icon svg,
+  .menu-link.active .menu-icon i {
+    color: #1e40af !important; // blue-800
+    fill: #1e40af !important;
+  }
+}
+
+// Visão Geral - Verde (crescimento, harmonia)
+[data-menu-category="overview"] {
+  .menu-icon,
+  .menu-icon svg,
+  .menu-icon i {
+    color: #059669 !important; // emerald-600
+    fill: #059669 !important;
+  }
+  
+  .menu-link:hover .menu-icon,
+  .menu-link:hover .menu-icon svg,
+  .menu-link:hover .menu-icon i {
+    color: #047857 !important; // emerald-700
+    fill: #047857 !important;
+  }
+  
+  .menu-link.active .menu-icon,
+  .menu-link.active .menu-icon svg,
+  .menu-link.active .menu-icon i {
+    color: #065f46 !important; // emerald-800
+    fill: #065f46 !important;
+  }
+}
+
+// Administração - Roxo (autoridade, sofisticação)
+[data-menu-category="admin"] {
+  .menu-icon,
+  .menu-icon svg,
+  .menu-icon i {
+    color: #7c3aed !important; // violet-600
+    fill: #7c3aed !important;
+  }
+  
+  .menu-link:hover .menu-icon,
+  .menu-link:hover .menu-icon svg,
+  .menu-link:hover .menu-icon i {
+    color: #6d28d9 !important; // violet-700
+    fill: #6d28d9 !important;
+  }
+  
+  .menu-link.active .menu-icon,
+  .menu-link.active .menu-icon svg,
+  .menu-link.active .menu-icon i {
+    color: #5b21b6 !important; // violet-800
+    fill: #5b21b6 !important;
+  }
+}
+
+// Parlamentar - Laranja (energia, criatividade)
+[data-menu-category="parliamentary"] {
+  .menu-icon,
+  .menu-icon svg,
+  .menu-icon i {
+    color: #ea580c !important; // orange-600
+    fill: #ea580c !important;
+  }
+  
+  .menu-link:hover .menu-icon,
+  .menu-link:hover .menu-icon svg,
+  .menu-link:hover .menu-icon i {
+    color: #c2410c !important; // orange-700
+    fill: #c2410c !important;
+  }
+  
+  .menu-link.active .menu-icon,
+  .menu-link.active .menu-icon svg,
+  .menu-link.active .menu-icon i {
+    color: #9a3412 !important; // orange-800
+    fill: #9a3412 !important;
+  }
+}
+
+// Secretaria - Teal (calma, organização)
+[data-menu-category="secretary"] {
+  .menu-icon,
+  .menu-icon svg,
+  .menu-icon i {
+    color: #0d9488 !important; // teal-600
+    fill: #0d9488 !important;
+  }
+  
+  .menu-link:hover .menu-icon,
+  .menu-link:hover .menu-icon svg,
+  .menu-link:hover .menu-icon i {
+    color: #0f766e !important; // teal-700
+    fill: #0f766e !important;
+  }
+  
+  .menu-link.active .menu-icon,
+  .menu-link.active .menu-icon svg,
+  .menu-link.active .menu-icon i {
+    color: #115e59 !important; // teal-800
+    fill: #115e59 !important;
+  }
+}
+
+// Público - Azul acinzentado (neutralidade, acessibilidade)
+[data-menu-category="public"] {
+  .menu-icon,
+  .menu-icon svg,
+  .menu-icon i {
+    color: #475569 !important; // slate-600
+    fill: #475569 !important;
+  }
+  
+  .menu-link:hover .menu-icon,
+  .menu-link:hover .menu-icon svg,
+  .menu-link:hover .menu-icon i {
+    color: #334155 !important; // slate-700
+    fill: #334155 !important;
+  }
+  
+  .menu-link.active .menu-icon,
+  .menu-link.active .menu-icon svg,
+  .menu-link.active .menu-icon i {
+    color: #1e293b !important; // slate-800
+    fill: #1e293b !important;
+  }
+}
+
+// Força a aplicação das cores em todos os tipos de ícones
+.menu-item {
+  .menu-icon {
+    svg, i, span {
+      transition: color 0.2s ease, fill 0.2s ease !important;
+    }
+  }
+}
+
+// Sobrescrever estilos padrão do framework para garantir cores
+#kt_aside_menu {
+  // Dashboard - Azul
+  [data-menu-category="dashboard"] .menu-icon * {
+    color: #2563eb !important;
+    fill: #2563eb !important;
+  }
+  
+  // Visão Geral - Verde
+  [data-menu-category="overview"] .menu-icon * {
+    color: #059669 !important;
+    fill: #059669 !important;
+  }
+  
+  // Administração - Roxo
+  [data-menu-category="admin"] .menu-icon * {
+    color: #7c3aed !important;
+    fill: #7c3aed !important;
+  }
+  
+  // Parlamentar - Laranja
+  [data-menu-category="parliamentary"] .menu-icon * {
+    color: #ea580c !important;
+    fill: #ea580c !important;
+  }
+  
+  // Secretaria - Teal
+  [data-menu-category="secretary"] .menu-icon * {
+    color: #0d9488 !important;
+    fill: #0d9488 !important;
+  }
+  
+  // Público - Azul acinzentado
+  [data-menu-category="public"] .menu-icon * {
+    color: #475569 !important;
+    fill: #475569 !important;
+  }
+}
+
+// Aplicar cores baseadas no conteúdo do link (mais específico)
+#kt_aside_menu {
+  // Dashboard - Azul (confiança, estabilidade)
+  .menu-link[href*="/dashboard"] .menu-icon,
+  .menu-link[href*="/dashboard"] .menu-icon svg,
+  .menu-link[href*="/dashboard"] .menu-icon i {
+    color: #2563eb !important;
+    fill: #2563eb !important;
+  }
+  
+  // Visão Geral - Verde (crescimento, harmonia)  
+  .menu-link[href*="/configuracoes"] .menu-icon,
+  .menu-link[href*="/configuracoes"] .menu-icon svg,
+  .menu-link[href*="/configuracoes"] .menu-icon i {
+    color: #059669 !important;
+    fill: #059669 !important;
+  }
+  
+  // Administração - Roxo (autoridade, sofisticação)
+  .menu-link[href*="/admin/gestao"] .menu-icon,
+  .menu-link[href*="/admin/gestao"] .menu-icon svg,
+  .menu-link[href*="/admin/gestao"] .menu-icon i,
+  .menu-link[href*="/admin/relatorios"] .menu-icon,
+  .menu-link[href*="/admin/relatorios"] .menu-icon svg,
+  .menu-link[href*="/admin/relatorios"] .menu-icon i,
+  .menu-link[href*="/admin/dev-tools"] .menu-icon,
+  .menu-link[href*="/admin/dev-tools"] .menu-icon svg,
+  .menu-link[href*="/admin/dev-tools"] .menu-icon i,
+  .menu-link[href*="/admin/api-docs"] .menu-icon,
+  .menu-link[href*="/admin/api-docs"] .menu-icon svg,
+  .menu-link[href*="/admin/api-docs"] .menu-icon i {
+    color: #7c3aed !important;
+    fill: #7c3aed !important;
+  }
+  
+  // Parlamentar - Laranja (energia, criatividade)
+  .menu-link[href*="/parlamentar"] .menu-icon,
+  .menu-link[href*="/parlamentar"] .menu-icon svg,
+  .menu-link[href*="/parlamentar"] .menu-icon i {
+    color: #ea580c !important;
+    fill: #ea580c !important;
+  }
+  
+  // Secretaria - Teal (calma, organização)
+  .menu-link[href*="/secretaria"] .menu-icon,
+  .menu-link[href*="/secretaria"] .menu-icon svg,
+  .menu-link[href*="/secretaria"] .menu-icon i {
+    color: #0d9488 !important;
+    fill: #0d9488 !important;
+  }
+  
+  // Público - Azul acinzentado (neutralidade, acessibilidade)
+  .menu-link[href*="/publico"] .menu-icon,
+  .menu-link[href*="/publico"] .menu-icon svg,
+  .menu-link[href*="/publico"] .menu-icon i {
+    color: #475569 !important;
+    fill: #475569 !important;
+  }
+}
+
+// Força ainda mais específica para ícones SVG do KTIcon
+.menu-icon svg {
+  color: inherit !important;
+  fill: inherit !important;
+  
+  * {
+    color: inherit !important;
+    fill: inherit !important;
+  }
+}
+
+// Separadores visuais simples
+.separator {
+  background-color: #e9ecef;
+  height: 1px;
+  margin: 8px 0;
+}
+
+// Espaçamento limpo para seções
+.menu-content {
+  &.pt-4 {
+    padding-top: 1rem !important;
+  }
+  
+  &.pb-1 {
+    padding-bottom: 0.25rem !important;
+  }
+}
+
+// Bullets simples
+.menu-bullet {
+  .bullet {
+    &.bullet-dot {
+      background-color: #6c757d;
+      width: 4px;
+      height: 4px;
+    }
+  }
+}
+
+// Responsividade
+@media (max-width: 991px) {
+  .menu-item .menu-link {
+    margin: 1px 8px;
+    padding: 8px 12px;
+  }
+  
+  .menu-sub .menu-item .menu-link {
+    padding-left: 35px;
+  }
+}
+
+// Modo escuro
+[data-bs-theme="dark"] {
+  .menu-item .menu-link {
+    &:hover {
+      background-color: #495057;
+    }
+    
+    &.active {
+      background-color: #6c757d;
+    }
+  }
+  
+  .menu-sub .menu-item .menu-link {
+    &:hover {
+      background-color: #343a40;
+    }
+    
+    &.active {
+      background-color: #495057;
+    }
+  }
+} 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useRef} from 'react'
 import clsx from 'clsx'
 import {useLocation} from 'react-router'
 import {checkIsActive, KTIcon, WithChildren} from '../../../helpers'
@@ -24,6 +24,34 @@ const AsideMenuItemWithSub: React.FC<Props & WithChildren> = ({
   const isActive = checkIsActive(pathname, to)
   const {config} = useLayout()
   const {aside} = config
+  const scrollPositionRef = useRef<number>(0)
+
+  // Função simples para prevenir scroll indesejado (aplicada apenas se necessário)
+  useEffect(() => {
+    // Aplicar prevenção de scroll apenas após o menu estar funcionando
+    const timer = setTimeout(() => {
+      const menuItems = document.querySelectorAll('.menu-item[data-kt-menu-trigger="click"]')
+      menuItems.forEach(item => {
+        const link = item.querySelector('.menu-link')
+        if (link && !link.hasAttribute('data-scroll-prevention')) {
+          link.setAttribute('data-scroll-prevention', 'true')
+          
+          link.addEventListener('click', () => {
+            const scrollPos = window.pageYOffset || document.documentElement.scrollTop
+            
+            setTimeout(() => {
+              const newScrollPos = window.pageYOffset || document.documentElement.scrollTop
+              if (Math.abs(newScrollPos - scrollPos) > 50) {
+                window.scrollTo({ top: scrollPos, behavior: 'auto' })
+              }
+            }, 300)
+          })
+        }
+      })
+    }, 3000) // Aguardar menu estar completamente inicializado
+    
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <div
