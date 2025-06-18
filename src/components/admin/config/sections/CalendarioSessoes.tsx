@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useConfig } from '../../../../context/ConfigContext'
 
 interface Sessao {
   id: string
@@ -18,12 +17,13 @@ interface CalendarioSessoesProps {
 }
 
 export function CalendarioSessoes({ config, onChange }: CalendarioSessoesProps) {
-  const { setConfiguration } = useConfig()
   const [sessoes, setSessoes] = useState<Sessao[]>([])
   const [currentDate, setCurrentDate] = useState(new Date())
   const [showModal, setShowModal] = useState(false)
+  const [showTemplateModal, setShowTemplateModal] = useState(false)
   const [editingSessao, setEditingSessao] = useState<Sessao | null>(null)
   const [selectedDate, setSelectedDate] = useState('')
+  const [quickAddType, setQuickAddType] = useState<'ordinaria' | 'extraordinaria' | null>(null)
   
   const [formData, setFormData] = useState({
     data: '',
@@ -33,8 +33,52 @@ export function CalendarioSessoes({ config, onChange }: CalendarioSessoesProps) 
     local: 'Plenário Principal'
   })
 
+  // Templates pré-definidos para facilitar a criação
+  const [templates] = useState([
+    {
+      id: 'ord-segunda',
+      nome: 'Sessão Ordinária - Segunda-feira',
+      tipo: 'ordinaria' as const,
+      horario: '14:00',
+      local: 'Plenário Principal',
+      descricao: 'Sessão ordinária semanal'
+    },
+    {
+      id: 'ord-terca',
+      nome: 'Sessão Ordinária - Terça-feira',
+      tipo: 'ordinaria' as const,
+      horario: '09:00',
+      local: 'Plenário Principal',
+      descricao: 'Sessão ordinária semanal'
+    },
+    {
+      id: 'ext-urgent',
+      nome: 'Sessão Extraordinária - Urgente',
+      tipo: 'extraordinaria' as const,
+      horario: '10:00',
+      local: 'Plenário Principal',
+      descricao: 'Sessão extraordinária para assuntos urgentes'
+    },
+    {
+      id: 'ext-orcamento',
+      nome: 'Sessão Extraordinária - Orçamento',
+      tipo: 'extraordinaria' as const,
+      horario: '14:00',
+      local: 'Plenário Principal',
+      descricao: 'Sessão extraordinária para discussão orçamentária'
+    }
+  ])
+
   useEffect(() => {
-    if (config?.sessoes) {
+    // Carregar sessões do localStorage ou do config
+    const savedSessions = localStorage.getItem('calendar-sessions')
+    if (savedSessions) {
+      try {
+        setSessoes(JSON.parse(savedSessions))
+      } catch (error) {
+        console.error('Erro ao carregar sessões do localStorage:', error)
+      }
+    } else if (config?.sessoes) {
       setSessoes(config.sessoes)
     }
   }, [config])
@@ -60,9 +104,59 @@ export function CalendarioSessoes({ config, onChange }: CalendarioSessoesProps) 
     const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
     const dateString = formatDate(clickedDate)
     setSelectedDate(dateString)
-    setFormData(prev => ({ ...prev, data: dateString }))
-    setEditingSessao(null)
-    setShowModal(true)
+    
+    // Verifica se já existe sessão nesta data
+    const existingSessions = getSessoesForDate(dateString)
+    
+    if (existingSessions.length > 0) {
+      // Se já tem sessões, abre o modal de templates/seleção rápida
+      setShowTemplateModal(true)
+    } else {
+      // Se não tem sessões, abre modal de criação normal
+      setFormData(prev => ({ ...prev, data: dateString }))
+      setEditingSessao(null)
+      setShowModal(true)
+    }
+  }
+
+  // Função para criação rápida com template
+  const handleQuickAdd = (templateId: string) => {
+    const template = templates.find(t => t.id === templateId)
+    if (template && selectedDate) {
+      setFormData({
+        data: selectedDate,
+        tipo: template.tipo,
+        horario: template.horario,
+        descricao: template.descricao,
+        local: template.local
+      })
+      setEditingSessao(null)
+      setShowTemplateModal(false)
+      setShowModal(true)
+    }
+  }
+
+  // Função para criação rápida por tipo
+  const handleQuickCreate = (tipo: 'ordinaria' | 'extraordinaria') => {
+    const defaultTemplate = templates.find(t => t.tipo === tipo)
+    if (defaultTemplate && selectedDate) {
+      const newSessao: Sessao = {
+        id: Date.now().toString(),
+        data: selectedDate,
+        tipo: defaultTemplate.tipo,
+        horario: defaultTemplate.horario,
+        descricao: defaultTemplate.descricao,
+        local: defaultTemplate.local
+      }
+
+          const updatedSessoes = [...sessoes, newSessao]
+    setSessoes(updatedSessoes)
+    
+    // Salvar no localStorage temporariamente
+    localStorage.setItem('calendar-sessions', JSON.stringify(updatedSessoes))
+    onChange()
+    setShowTemplateModal(false)
+    }
   }
 
   const handleSessaoClick = (sessao: Sessao) => {
@@ -77,8 +171,45 @@ export function CalendarioSessoes({ config, onChange }: CalendarioSessoesProps) 
     setShowModal(true)
   }
 
+  // Função para verificar conflitos de horário
+  const checkTimeConflict = (data: string, horario: string, excludeId?: string) => {
+    const sessoesNaData = sessoes.filter(s => 
+      s.data === data && 
+      s.id !== excludeId
+    )
+    
+    if (sessoesNaData.length === 0) return null
+
+    const [hora, minuto] = horario.split(':').map(Number)
+    const horarioMinutos = hora * 60 + minuto
+
+    for (const sessao of sessoesNaData) {
+      const [sessaoHora, sessaoMinuto] = sessao.horario.split(':').map(Number)
+      const sessaoMinutos = sessaoHora * 60 + sessaoMinuto
+      
+      // Considera conflito se estiver dentro de 2 horas
+      const diferenca = Math.abs(horarioMinutos - sessaoMinutos)
+      if (diferenca < 120) { // 2 horas = 120 minutos
+        return sessao
+      }
+    }
+    
+    return null
+  }
+
   const handleSave = () => {
     if (!formData.data || !formData.horario) return
+
+    // Verifica conflitos de horário
+    const conflito = checkTimeConflict(formData.data, formData.horario, editingSessao?.id)
+    
+    if (conflito && !window.confirm(
+      `⚠️ Atenção! Existe uma sessão ${conflito.tipo === 'ordinaria' ? 'ordinária' : 'extraordinária'} ` +
+      `agendada para às ${conflito.horario} no mesmo dia.\n\n` +
+      `Deseja continuar mesmo assim?`
+    )) {
+      return
+    }
 
     const newSessao: Sessao = {
       id: editingSessao?.id || Date.now().toString(),
@@ -97,7 +228,9 @@ export function CalendarioSessoes({ config, onChange }: CalendarioSessoesProps) 
     }
 
     setSessoes(updatedSessoes)
-    setConfiguration('sessoes', updatedSessoes)
+    
+    // Salvar no localStorage temporariamente
+    localStorage.setItem('calendar-sessions', JSON.stringify(updatedSessoes))
     onChange()
     setShowModal(false)
     resetForm()
@@ -107,7 +240,9 @@ export function CalendarioSessoes({ config, onChange }: CalendarioSessoesProps) 
     if (window.confirm('Tem certeza que deseja excluir esta sessão?')) {
       const updatedSessoes = sessoes.filter(s => s.id !== sessaoId)
       setSessoes(updatedSessoes)
-      setConfiguration('sessoes', updatedSessoes)
+      
+      // Salvar no localStorage temporariamente
+      localStorage.setItem('calendar-sessions', JSON.stringify(updatedSessoes))
       onChange()
       setShowModal(false)
     }
@@ -199,18 +334,157 @@ export function CalendarioSessoes({ config, onChange }: CalendarioSessoesProps) 
           </h3>
         </div>
         <div className="card-toolbar">
-          <button
-            className="btn btn-primary btn-sm"
-            onClick={() => {
-              setSelectedDate(formatDate(new Date()))
-              setFormData(prev => ({ ...prev, data: formatDate(new Date()) }))
-              setEditingSessao(null)
-              setShowModal(true)
-            }}
-          >
-            <i className="bi bi-plus fs-4 me-2"></i>
-            Nova Sessão
-          </button>
+          {/* Versão Desktop */}
+          <div className="d-none d-lg-flex gap-2">
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() => {
+                const today = formatDate(new Date())
+                setSelectedDate(today)
+                handleQuickCreate('ordinaria')
+              }}
+              title="Criar Sessão Ordinária Hoje"
+            >
+              <i className="bi bi-calendar-check me-1"></i>
+              Ordinária
+            </button>
+
+            <button
+              className="btn btn-warning btn-sm"
+              onClick={() => {
+                const today = formatDate(new Date())
+                setSelectedDate(today)
+                handleQuickCreate('extraordinaria')
+              }}
+              title="Criar Sessão Extraordinária Hoje"
+            >
+              <i className="bi bi-calendar-plus me-1"></i>
+              Extraordinária
+            </button>
+
+            <button
+              className="btn btn-light btn-sm"
+              onClick={() => {
+                setSelectedDate(formatDate(new Date()))
+                setFormData(prev => ({ ...prev, data: formatDate(new Date()) }))
+                setEditingSessao(null)
+                setShowModal(true)
+              }}
+              title="Criar Sessão Personalizada"
+            >
+              <i className="bi bi-plus me-1"></i>
+              Personalizada
+            </button>
+          </div>
+
+          {/* Versão Tablet */}
+          <div className="d-none d-md-flex d-lg-none gap-1">
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() => {
+                const today = formatDate(new Date())
+                setSelectedDate(today)
+                handleQuickCreate('ordinaria')
+              }}
+              title="Criar Sessão Ordinária"
+            >
+              <i className="bi bi-calendar-check me-1"></i>
+              <span className="d-none d-xl-inline">Ordinária</span>
+              <span className="d-xl-none">Ord</span>
+            </button>
+
+            <button
+              className="btn btn-warning btn-sm"
+              onClick={() => {
+                const today = formatDate(new Date())
+                setSelectedDate(today)
+                handleQuickCreate('extraordinaria')
+              }}
+              title="Criar Sessão Extraordinária"
+            >
+              <i className="bi bi-calendar-plus me-1"></i>
+              <span className="d-none d-xl-inline">Extraordinária</span>
+              <span className="d-xl-none">Ext</span>
+            </button>
+
+            <button
+              className="btn btn-light btn-sm"
+              onClick={() => {
+                setSelectedDate(formatDate(new Date()))
+                setFormData(prev => ({ ...prev, data: formatDate(new Date()) }))
+                setEditingSessao(null)
+                setShowModal(true)
+              }}
+              title="Criar Sessão Personalizada"
+            >
+              <i className="bi bi-plus"></i>
+            </button>
+          </div>
+
+          {/* Versão Mobile */}
+          <div className="d-flex d-md-none">
+            <div className="dropdown">
+              <button 
+                className="btn btn-primary btn-sm dropdown-toggle" 
+                type="button" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false"
+                title="Criar Nova Sessão"
+              >
+                <i className="bi bi-plus-circle me-1"></i>
+                <span className="d-none d-sm-inline">Nova</span>
+              </button>
+              <ul className="dropdown-menu">
+                <li>
+                  <a 
+                    className="dropdown-item" 
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      const today = formatDate(new Date())
+                      setSelectedDate(today)
+                      handleQuickCreate('ordinaria')
+                    }}
+                  >
+                    <i className="bi bi-calendar-check text-primary me-2"></i>
+                    Sessão Ordinária
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    className="dropdown-item" 
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      const today = formatDate(new Date())
+                      setSelectedDate(today)
+                      handleQuickCreate('extraordinaria')
+                    }}
+                  >
+                    <i className="bi bi-calendar-plus text-warning me-2"></i>
+                    Sessão Extraordinária
+                  </a>
+                </li>
+                <li><hr className="dropdown-divider" /></li>
+                <li>
+                  <a 
+                    className="dropdown-item" 
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setSelectedDate(formatDate(new Date()))
+                      setFormData(prev => ({ ...prev, data: formatDate(new Date()) }))
+                      setEditingSessao(null)
+                      setShowModal(true)
+                    }}
+                  >
+                    <i className="bi bi-gear text-secondary me-2"></i>
+                    Personalizada
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -364,10 +638,20 @@ export function CalendarioSessoes({ config, onChange }: CalendarioSessoesProps) 
                     <label className="required fw-semibold fs-6 mb-2">Horário</label>
                     <input
                       type="time"
-                      className="form-control form-control-solid"
+                      className={`form-control form-control-solid ${
+                        formData.data && formData.horario && checkTimeConflict(formData.data, formData.horario, editingSessao?.id) 
+                          ? 'border-warning' 
+                          : ''
+                      }`}
                       value={formData.horario}
                       onChange={(e) => setFormData(prev => ({ ...prev, horario: e.target.value }))}
                     />
+                    {formData.data && formData.horario && checkTimeConflict(formData.data, formData.horario, editingSessao?.id) && (
+                      <div className="form-text text-warning">
+                        <i className="bi bi-exclamation-triangle me-1"></i>
+                        ⚠️ Conflito de horário detectado com outra sessão
+                      </div>
+                    )}
                   </div>
 
                   <div className="col-12">
@@ -431,6 +715,177 @@ export function CalendarioSessoes({ config, onChange }: CalendarioSessoesProps) 
                 >
                   <i className="bi bi-check me-2"></i>
                   {editingSessao ? 'Atualizar' : 'Salvar'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Seleção Rápida/Templates */}
+      {showTemplateModal && (
+        <div className="modal fade show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h3 className="modal-title">
+                  <i className="bi bi-calendar-plus text-primary me-2"></i>
+                  Adicionar Sessão - {new Date(selectedDate).toLocaleDateString('pt-BR')}
+                </h3>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowTemplateModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                {/* Sessões já existentes nesta data */}
+                {getSessoesForDate(selectedDate).length > 0 && (
+                  <div className="mb-7">
+                    <h5 className="fw-bold text-gray-800 mb-4">
+                      <i className="bi bi-calendar-event me-2 text-info"></i>
+                      Sessões já agendadas para esta data:
+                    </h5>
+                    <div className="row g-3 mb-5">
+                      {getSessoesForDate(selectedDate).map(sessao => (
+                        <div key={sessao.id} className="col-md-6">
+                          <div className="card card-flush border border-gray-300">
+                            <div className="card-body p-4">
+                              <div className="d-flex align-items-center">
+                                <div className={`session-dot ${sessao.tipo} me-3`}></div>
+                                <div>
+                                  <h6 className="fw-bold text-gray-800 mb-1">
+                                    {sessao.tipo === 'ordinaria' ? 'Ordinária' : 'Extraordinária'}
+                                    <span className="text-muted fs-7 ms-2">{sessao.horario}</span>
+                                  </h6>
+                                  <p className="text-muted mb-0 fs-8">{sessao.local}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Criação rápida por tipo */}
+                <div className="mb-8">
+                  <h5 className="fw-bold text-gray-800 mb-4">
+                    <i className="bi bi-lightning me-2 text-warning"></i>
+                    Criação Rápida
+                  </h5>
+                  <div className="row g-4">
+                    <div className="col-md-6">
+                      <div 
+                        className="card card-flush hover-elevate-up cursor-pointer border-2 border-primary"
+                        onClick={() => handleQuickCreate('ordinaria')}
+                        style={{ transition: 'all 0.2s ease' }}
+                      >
+                        <div className="card-body text-center p-6">
+                          <div className="symbol symbol-60px symbol-circle mx-auto mb-4 bg-light-primary">
+                            <div className="symbol-label">
+                              <i className="bi bi-calendar-check text-primary fs-1"></i>
+                            </div>
+                          </div>
+                          <h4 className="fw-bold text-gray-800 mb-2">Sessão Ordinária</h4>
+                          <p className="text-muted fs-7 mb-3">
+                            Criar sessão ordinária com configurações padrão
+                          </p>
+                          <div className="d-flex justify-content-center gap-2">
+                            <span className="badge badge-light-primary fs-8">⏰ 14:00</span>
+                            <span className="badge badge-light-primary fs-8">📍 Plenário</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="col-md-6">
+                      <div 
+                        className="card card-flush hover-elevate-up cursor-pointer border-2 border-warning"
+                        onClick={() => handleQuickCreate('extraordinaria')}
+                        style={{ transition: 'all 0.2s ease' }}
+                      >
+                        <div className="card-body text-center p-6">
+                          <div className="symbol symbol-60px symbol-circle mx-auto mb-4 bg-light-warning">
+                            <div className="symbol-label">
+                              <i className="bi bi-calendar-plus text-warning fs-1"></i>
+                            </div>
+                          </div>
+                          <h4 className="fw-bold text-gray-800 mb-2">Sessão Extraordinária</h4>
+                          <p className="text-muted fs-7 mb-3">
+                            Criar sessão extraordinária com configurações padrão
+                          </p>
+                          <div className="d-flex justify-content-center gap-2">
+                            <span className="badge badge-light-warning fs-8">⏰ 10:00</span>
+                            <span className="badge badge-light-warning fs-8">📍 Plenário</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Templates disponíveis */}
+                <div className="mb-5">
+                  <h5 className="fw-bold text-gray-800 mb-4">
+                    <i className="bi bi-layout-text-window-reverse me-2 text-info"></i>
+                    Templates Disponíveis
+                  </h5>
+                  <div className="row g-3">
+                    {templates.map(template => (
+                      <div key={template.id} className="col-md-6">
+                        <div 
+                          className="card card-flush hover-elevate-up cursor-pointer border border-gray-300"
+                          onClick={() => handleQuickAdd(template.id)}
+                          style={{ transition: 'all 0.2s ease' }}
+                        >
+                          <div className="card-body p-4">
+                            <div className="d-flex align-items-start">
+                              <div className={`session-dot ${template.tipo} me-3 mt-1`}></div>
+                              <div className="flex-grow-1">
+                                <h6 className="fw-bold text-gray-800 mb-1">{template.nome}</h6>
+                                <div className="d-flex align-items-center gap-3 mb-2">
+                                  <span className="text-muted fs-8">
+                                    <i className="bi bi-clock me-1"></i>
+                                    {template.horario}
+                                  </span>
+                                  <span className="text-muted fs-8">
+                                    <i className="bi bi-geo-alt me-1"></i>
+                                    {template.local}
+                                  </span>
+                                </div>
+                                <p className="text-muted fs-8 mb-0">{template.descricao}</p>
+                              </div>
+                              <i className="bi bi-arrow-right text-primary"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowTemplateModal(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-light"
+                  onClick={() => {
+                    setFormData(prev => ({ ...prev, data: selectedDate }))
+                    setEditingSessao(null)
+                    setShowTemplateModal(false)
+                    setShowModal(true)
+                  }}
+                >
+                  <i className="bi bi-gear me-2"></i>
+                  Personalizar
                 </button>
               </div>
             </div>
@@ -536,6 +991,171 @@ export function CalendarioSessoes({ config, onChange }: CalendarioSessoesProps) 
         
         .cursor-pointer:hover {
           background-color: #f1f1f2 !important;
+        }
+
+        /* Melhorias de UX */
+        .hover-elevate-up:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        }
+
+        .calendar-day:hover .day-number {
+          color: #009ef7;
+          font-weight: 700;
+        }
+
+        .calendar-day.has-sessions:hover {
+          background-color: #f0f8ff;
+          border: 1px solid #009ef7;
+        }
+
+        .session-dot:hover {
+          transform: scale(1.2);
+          transition: transform 0.2s ease;
+        }
+
+        /* Animações do modal */
+        .modal.show {
+          animation: fadeInModal 0.3s ease-out;
+        }
+
+        @keyframes fadeInModal {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        /* Cards dos templates */
+        .template-card {
+          transition: all 0.3s ease;
+          border: 2px solid transparent;
+        }
+
+        .template-card:hover {
+          border-color: #009ef7;
+          transform: translateY(-3px);
+          box-shadow: 0 5px 15px rgba(0,158,247,0.15);
+        }
+
+        /* Indicadores visuais melhorados */
+        .calendar-day.today .day-number {
+          color: #009ef7;
+          font-weight: 700;
+          position: relative;
+        }
+
+        .calendar-day.today .day-number::after {
+          content: '';
+          position: absolute;
+          bottom: -4px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 4px;
+          height: 4px;
+          background: #009ef7;
+          border-radius: 50%;
+        }
+
+        /* Tooltips melhorados */
+        [title]:hover::after {
+          content: attr(title);
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #2a2a2a;
+          color: white;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 12px;
+          white-space: nowrap;
+          z-index: 1000;
+          margin-bottom: 5px;
+        }
+
+        /* Responsividade melhorada */
+        @media (max-width: 768px) {
+          .calendar-day {
+            min-height: 60px;
+            padding: 0.25rem;
+          }
+          
+          .week-day {
+            padding: 0.5rem;
+            font-size: 0.875rem;
+          }
+          
+          .day-number {
+            font-size: 0.875rem;
+          }
+          
+          .session-dot {
+            width: 8px;
+            height: 8px;
+          }
+
+          /* Melhorias nos botões do cabeçalho */
+          .card-toolbar .dropdown-toggle {
+            min-height: 44px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+          }
+
+          .card-toolbar .dropdown-menu {
+            min-width: 200px;
+          }
+
+          .card-toolbar .dropdown-item {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+          }
+
+          .card-toolbar .dropdown-item i {
+            width: 1.25rem;
+          }
+        }
+
+        @media (min-width: 768px) and (max-width: 991.98px) {
+          /* Tablet adjustments */
+          .card-toolbar .btn {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.7rem;
+          }
+        }
+
+        @media (min-width: 992px) {
+          /* Desktop enhancements */
+          .card-toolbar .btn {
+            min-width: 110px;
+            transition: all 0.3s ease;
+          }
+
+          .card-toolbar .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+          }
+        }
+
+        /* Dropdown mobile específico */
+        .dropdown-menu {
+          border-radius: 0.5rem;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+          border: none;
+        }
+
+        .dropdown-item:hover {
+          background-color: #f8f9fa;
+          color: #495057;
+        }
+
+        .dropdown-item:focus {
+          background-color: #e9ecef;
+          color: #495057;
         }
       `}</style>
     </div>

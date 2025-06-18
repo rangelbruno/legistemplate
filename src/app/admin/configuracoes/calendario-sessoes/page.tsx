@@ -4,29 +4,18 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import AdministradorLayout from '../../layout'
 import { PageTitle } from '../../../../_metronic/layout/core'
+import { CalendarioSessoes } from '../../../../components/admin/config/sections/CalendarioSessoes'
+import ListaSessoes from '../../../../components/admin/config/sections/ListaSessoes'
 
-export default function CalendarioSessoes() {
-  const [activeTab, setActiveTab] = useState('calendario')
+export default function CalendarioSessoesPage() {
+  const [activeView, setActiveView] = useState<'calendario' | 'agenda'>('calendario')
   const [isLoading, setIsLoading] = useState(false)
+  const [configurations, setConfigurations] = useState<any>({})
 
-  const sessoesAgendadas = [
-    {
-      id: 1,
-      tipo: 'Ordinária',
-      data: '2024-02-15',
-      hora: '14:00',
-      status: 'agendada',
-      pauta: 'Discussão do orçamento 2024'
-    },
-    {
-      id: 2,
-      tipo: 'Extraordinária',
-      data: '2024-02-20',
-      hora: '10:00',
-      status: 'agendada',
-      pauta: 'Votação do projeto de lei complementar'
-    }
-  ]
+  const handleConfigChange = () => {
+    // Callback para quando as configurações mudarem
+    console.log('Configurações de sessões atualizadas')
+  }
 
   const handleSave = async () => {
     setIsLoading(true)
@@ -56,106 +45,278 @@ export default function CalendarioSessoes() {
         {/* Header da página */}
         <div className="card mb-7">
           <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between">
-              <div className="d-flex align-items-center">
-                <Link to="/admin/configuracoes" className="btn btn-icon btn-sm btn-light me-3">
-                  <i className="bi bi-arrow-left fs-3"></i>
-                </Link>
-                <div className="symbol symbol-50px symbol-circle bg-light-dark me-4">
-                  <div className="symbol-label">
-                    <i className="bi bi-calendar-event text-dark fs-2"></i>
+            {/* Layout responsivo do cabeçalho */}
+            <div className="row g-4">
+              {/* Informações principais - sempre no topo */}
+              <div className="col-12">
+                <div className="d-flex align-items-center">
+                  <Link to="/admin/configuracoes" className="btn btn-icon btn-sm btn-light me-3">
+                    <i className="bi bi-arrow-left fs-3"></i>
+                  </Link>
+                  <div className="symbol symbol-50px symbol-circle bg-light-primary me-4 d-none d-md-flex">
+                    <div className="symbol-label">
+                      <i className="bi bi-calendar-event text-primary fs-2"></i>
+                    </div>
+                  </div>
+                  <div className="flex-grow-1">
+                    <h1 className="text-gray-800 fw-bold mb-1 fs-4 fs-md-2">
+                      Calendário de Sessões Legislativas
+                    </h1>
+                    <p className="text-muted mb-0 fs-7 fs-md-6 d-none d-sm-block">
+                      Gerencie sessões legislativas através do calendário visual ou lista detalhada
+                    </p>
                   </div>
                 </div>
-                <div>
-                  <h1 className="text-gray-800 fw-bold mb-1">
-                    Calendário de Sessões
-                  </h1>
-                  <p className="text-muted mb-0">
-                    Configure sessões ordinárias, extraordinárias e parâmetros do calendário legislativo
-                  </p>
-                </div>
               </div>
-              <div className="d-flex gap-2">
-                <button className="btn btn-light btn-sm">
-                  <i className="bi bi-calendar-plus me-2"></i>
-                  Nova Sessão
-                </button>
-                <button 
-                  className="btn btn-dark"
-                  onClick={handleSave}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                      Salvando...
-                    </>
-                  ) : (
-                    <>
-                      <i className="bi bi-check2 me-2"></i>
-                      Salvar
-                    </>
-                  )}
-                </button>
+
+              {/* Controles de navegação e ações */}
+              <div className="col-12">
+                <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center justify-content-between gap-3">
+                  
+                  {/* Navegação de visualizações - responsiva */}
+                  <div className="btn-group-responsive">
+                    <div className="btn-group d-none d-md-flex" role="group">
+                      <button
+                        type="button"
+                        className={`btn btn-sm ${activeView === 'calendario' ? 'btn-primary' : 'btn-light'}`}
+                        onClick={() => setActiveView('calendario')}
+                      >
+                        <i className="bi bi-calendar3 me-1"></i>
+                        Calendário
+                      </button>
+                      <button
+                        type="button"
+                        className={`btn btn-sm ${activeView === 'agenda' ? 'btn-primary' : 'btn-light'}`}
+                        onClick={() => setActiveView('agenda')}
+                      >
+                        <i className="bi bi-list-ul me-1"></i>
+                        Lista
+                      </button>
+
+                    </div>
+
+                    {/* Versão mobile - botões empilhados */}
+                    <div className="d-flex d-md-none flex-wrap gap-2">
+                      <button
+                        type="button"
+                        className={`btn btn-sm flex-fill ${activeView === 'calendario' ? 'btn-primary' : 'btn-light'}`}
+                        onClick={() => setActiveView('calendario')}
+                      >
+                        <i className="bi bi-calendar3 me-1"></i>
+                        <span className="d-none d-sm-inline">Calendário</span>
+                        <span className="d-sm-none">Cal</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={`btn btn-sm flex-fill ${activeView === 'agenda' ? 'btn-primary' : 'btn-light'}`}
+                        onClick={() => setActiveView('agenda')}
+                      >
+                        <i className="bi bi-list-ul me-1"></i>
+                        <span className="d-none d-sm-inline">Lista</span>
+                        <span className="d-sm-none">List</span>
+                      </button>
+
+                    </div>
+                  </div>
+
+                  {/* Separador - apenas em desktop */}
+                  <div className="separator separator-dashed h-30px d-none d-lg-block"></div>
+                  
+                  {/* Botão de salvar - responsivo */}
+                  <div className="save-button-container">
+                    <button 
+                      className="btn btn-success btn-sm w-100 w-lg-auto"
+                      onClick={handleSave}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                          <span className="d-none d-sm-inline">Salvando...</span>
+                          <span className="d-sm-none">...</span>
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-check2 me-2"></i>
+                          <span className="d-none d-sm-inline">Salvar Alterações</span>
+                          <span className="d-sm-none">Salvar</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Lista de sessões */}
-        <div className="card">
-          <div className="card-header">
-            <div className="card-title">
-              <h3 className="fw-bold text-gray-800">Próximas Sessões</h3>
-            </div>
-            <div className="card-toolbar">
-              <button className="btn btn-sm btn-primary">
-                <i className="bi bi-plus me-1"></i>
-                Agendar Sessão
-              </button>
-            </div>
-          </div>
-          <div className="card-body">
-            <div className="row g-6">
-              {sessoesAgendadas.map((sessao) => (
-                <div key={sessao.id} className="col-md-6">
-                  <div className="card card-flush h-100">
-                    <div className="card-body d-flex flex-column">
-                      <div className="d-flex align-items-center mb-4">
-                        <div className={`symbol symbol-50px symbol-circle me-3 bg-light-${sessao.tipo === 'Ordinária' ? 'primary' : 'warning'}`}>
-                          <div className="symbol-label">
-                            <i className={`bi bi-calendar-event text-${sessao.tipo === 'Ordinária' ? 'primary' : 'warning'} fs-2`}></i>
-                          </div>
-                        </div>
-                        <div className="flex-grow-1">
-                          <h4 className="text-gray-800 fw-bold mb-1">{sessao.tipo}</h4>
-                          <p className="text-muted mb-0">{new Date(sessao.data).toLocaleDateString('pt-BR')} às {sessao.hora}</p>
-                        </div>
-                      </div>
-                      
-                      <p className="text-gray-600 mb-4">{sessao.pauta}</p>
-                      
-                      <div className="d-flex justify-content-between align-items-center mt-auto">
-                        <span className={`badge badge-light-${sessao.status === 'agendada' ? 'primary' : 'success'} fs-7`}>
-                          {sessao.status === 'agendada' ? 'Agendada' : 'Realizada'}
-                        </span>
-                        <div className="d-flex gap-1">
-                          <button className="btn btn-icon btn-sm btn-light">
-                            <i className="bi bi-pencil fs-4"></i>
-                          </button>
-                          <button className="btn btn-icon btn-sm btn-light">
-                            <i className="bi bi-eye fs-4"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+        {/* Conteúdo principal */}
+        <div className="row g-7">
+          <div className="col-12">
+            {activeView === 'calendario' && (
+              <CalendarioSessoes 
+                config={configurations} 
+                onChange={handleConfigChange}
+              />
+            )}
+
+            {activeView === 'agenda' && (
+              <ListaSessoes 
+                onEdit={(sessao) => console.log('Editar sessão:', sessao)}
+                onDelete={(id) => console.log('Excluir sessão:', id)}
+                onView={(sessao) => console.log('Visualizar sessão:', sessao)}
+              />
+            )}
+
+
           </div>
         </div>
       </div>
+
+      {/* Estilos customizados para responsividade */}
+      <style>{`
+        /* Melhorias gerais de responsividade */
+        .btn-group-responsive {
+          width: 100%;
+        }
+
+        @media (max-width: 767.98px) {
+          /* Mobile: Botões de navegação ocupam toda a largura */
+          .btn-group-responsive .d-flex {
+            width: 100%;
+          }
+          
+          .btn-group-responsive .btn {
+            min-height: 44px; /* Altura mínima para touch targets */
+            font-size: 0.875rem;
+          }
+
+          /* Título menor em mobile */
+          .fs-4 {
+            font-size: 1.125rem !important;
+          }
+
+          /* Esconder descrição em telas muito pequenas */
+          .card-body p.text-muted {
+            font-size: 0.75rem;
+          }
+        }
+
+        @media (max-width: 575.98px) {
+          /* Extra small: Textos ainda mais compactos */
+          .btn-group-responsive .btn {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+          }
+
+          .save-button-container .btn {
+            font-size: 0.875rem;
+            padding: 0.625rem 1rem;
+          }
+
+          /* Ícone menor no cabeçalho em telas muito pequenas */
+          .symbol.symbol-50px {
+            width: 40px !important;
+            height: 40px !important;
+          }
+        }
+
+        @media (min-width: 768px) and (max-width: 991.98px) {
+          /* Tablet: Layout intermediário */
+          .btn-group .btn {
+            font-size: 0.875rem;
+            padding: 0.5rem 0.875rem;
+          }
+        }
+
+        @media (min-width: 992px) {
+          /* Desktop: Layout completo */
+          .save-button-container {
+            min-width: 200px;
+          }
+          
+          .btn-group .btn {
+            min-width: 120px;
+          }
+        }
+
+        /* Animações suaves para transições */
+        .btn-group-responsive .btn,
+        .save-button-container .btn {
+          transition: all 0.3s ease;
+        }
+
+        .btn-group-responsive .btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Estados dos botões ativos com melhor contraste */
+        .btn-primary {
+          box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+        }
+
+        .btn-success {
+          box-shadow: 0 2px 4px rgba(40,167,69,0.3);
+        }
+
+        /* Melhoria do alinhamento dos ícones */
+        .btn i {
+          vertical-align: middle;
+        }
+
+        /* Separador responsivo */
+        .separator.h-30px {
+          align-self: stretch;
+          height: auto !important;
+          min-height: 30px;
+        }
+
+        /* Layout flexível melhorado */
+        .d-flex.flex-column.flex-lg-row {
+          align-items: stretch;
+        }
+
+        @media (min-width: 992px) {
+          .d-flex.flex-column.flex-lg-row {
+            align-items: center;
+          }
+        }
+
+        /* Spinner responsivo */
+        .spinner-border-sm {
+          width: 0.875rem;
+          height: 0.875rem;
+        }
+
+        /* Cores e contrastes melhorados */
+        .btn-light {
+          background-color: #f8f9fa;
+          border-color: #e9ecef;
+          color: #495057;
+        }
+
+        .btn-light:hover {
+          background-color: #e9ecef;
+          border-color: #dee2e6;
+          color: #343a40;
+        }
+
+        .btn-light:focus {
+          box-shadow: 0 0 0 0.2rem rgba(248,249,250,0.5);
+        }
+
+        /* Melhor espaçamento em dispositivos touch */
+        @media (max-width: 767.98px) {
+          .gap-2 {
+            gap: 0.75rem !important;
+          }
+          
+          .gap-3 {
+            gap: 1rem !important;
+          }
+        }
+      `}</style>
     </AdministradorLayout>
   )
 } 
