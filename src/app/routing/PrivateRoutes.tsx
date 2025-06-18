@@ -29,6 +29,8 @@ import ProcessosPrazos from '../admin/configuracoes/processos-prazos/page'
 import Integracoes from '../admin/configuracoes/integracoes/page'
 import ConfiguracoesTecnicas from '../admin/configuracoes/configuracoes-tecnicas/page'
 
+
+
 const PrivateRoutes = () => {
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
   const WizardsPage = lazy(() => import('../modules/wizards/WizardsPage'))
@@ -76,6 +78,8 @@ const PrivateRoutes = () => {
         <Route path='admin/configuracoes/processos-prazos' element={<ProcessosPrazos />} />
         <Route path='admin/configuracoes/integracoes' element={<Integracoes />} />
         <Route path='admin/configuracoes/configuracoes-tecnicas' element={<ConfiguracoesTecnicas />} />
+        
+
         
         {/* Lazy Modules */}
         <Route
