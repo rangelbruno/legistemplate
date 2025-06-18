@@ -10,18 +10,26 @@ import {
   buscarMesaDiretora,
   buscarComissoes,
   salvarMesaDiretora,
+  salvarComissao,
+  excluirComissao,
   type ParlamentarInfo,
   type EstruturaParlamentar,
   type MesaDiretora,
   type Comissao
 } from '../../../../services/estrutura-parlamentar.service'
 import MesaDiretoraModal from './components/MesaDiretoraModal'
+import ComissaoModal from './components/ComissaoModal'
+import ComissaoViewModal from './components/ComissaoViewModal'
 
 export default function EstruturaParlamentar() {
   const [estrutura, setEstrutura] = useState<EstruturaParlamentar | null>(null)
   const [loading, setLoading] = useState(true)
   const [partidoSelecionado, setPartidoSelecionado] = useState<string>('TODOS')
   const [modalMesaDiretora, setModalMesaDiretora] = useState(false)
+  const [modalComissao, setModalComissao] = useState(false)
+  const [modalComissaoView, setModalComissaoView] = useState(false)
+  const [comissaoEditando, setComissaoEditando] = useState<Comissao | null>(null)
+  const [comissaoVisualizando, setComissaoVisualizando] = useState<Comissao | null>(null)
 
   // Carregar dados da estrutura parlamentar
   useEffect(() => {
@@ -111,6 +119,63 @@ export default function EstruturaParlamentar() {
     } catch (error) {
       console.error('Erro ao salvar Mesa Diretora:', error)
       throw error
+    }
+  }
+
+  // Função para abrir modal de nova comissão
+  const handleNovaComissao = () => {
+    setComissaoEditando(null)
+    setModalComissao(true)
+  }
+
+  // Função para abrir modal de editar comissão
+  const handleEditarComissao = (comissao: Comissao) => {
+    setComissaoEditando(comissao)
+    setModalComissao(true)
+  }
+
+  // Função para abrir modal de visualizar comissão
+  const handleVisualizarComissao = (comissao: Comissao) => {
+    setComissaoVisualizando(comissao)
+    setModalComissaoView(true)
+  }
+
+  // Função para editar comissão a partir do modal de visualização
+  const handleEditarComissaoFromView = (comissao: Comissao) => {
+    setModalComissaoView(false) // Fechar modal de visualização
+    setComissaoEditando(comissao)
+    setModalComissao(true) // Abrir modal de edição
+  }
+
+  // Função para salvar comissão
+  const handleSalvarComissao = async (dadosComissao: Omit<Comissao, 'id'>) => {
+    try {
+      const comissaoSalva = await salvarComissao(dadosComissao, comissaoEditando?.id)
+      
+      // Recarregar dados da estrutura parlamentar
+      await carregarEstruturaParlamentar()
+      
+      console.log('Comissão salva com sucesso:', comissaoSalva)
+    } catch (error) {
+      console.error('Erro ao salvar comissão:', error)
+      throw error
+    }
+  }
+
+  // Função para excluir comissão
+  const handleExcluirComissao = async (comissaoId: string) => {
+    if (window.confirm('Tem certeza que deseja excluir esta comissão?')) {
+      try {
+        await excluirComissao(comissaoId)
+        
+        // Recarregar dados da estrutura parlamentar
+        await carregarEstruturaParlamentar()
+        
+        console.log('Comissão excluída com sucesso')
+      } catch (error) {
+        console.error('Erro ao excluir comissão:', error)
+        alert('Erro ao excluir comissão. Tente novamente.')
+      }
     }
   }
 
@@ -535,7 +600,10 @@ export default function EstruturaParlamentar() {
                 </i>
                 Filtrar
               </button>
-              <button className="btn btn-sm btn-primary">
+              <button 
+                className="btn btn-sm btn-primary"
+                onClick={handleNovaComissao}
+              >
                 <i className="ki-duotone ki-plus fs-3"></i>
                 Nova Comissão
               </button>
@@ -664,7 +732,10 @@ export default function EstruturaParlamentar() {
                         </div>
 
                         <div className="d-flex justify-content-end">
-                          <button className="btn btn-sm btn-light-primary me-2">
+                          <button 
+                            className="btn btn-sm btn-light-primary me-2"
+                            onClick={() => handleVisualizarComissao(comissao)}
+                          >
                             <i className="ki-duotone ki-eye fs-4">
                               <span className="path1"></span>
                               <span className="path2"></span>
@@ -672,7 +743,10 @@ export default function EstruturaParlamentar() {
                             </i>
                             Visualizar
                           </button>
-                          <button className="btn btn-sm btn-light">
+                          <button 
+                            className="btn btn-sm btn-light"
+                            onClick={() => handleEditarComissao(comissao)}
+                          >
                             <i className="ki-duotone ki-pencil fs-4">
                               <span className="path1"></span>
                               <span className="path2"></span>
@@ -698,7 +772,10 @@ export default function EstruturaParlamentar() {
                 </div>
                 <h4 className="text-gray-900 fw-bold mb-2">Nenhuma comissão cadastrada</h4>
                 <p className="text-gray-600 mb-4">Crie comissões permanentes e temporárias para organizar o trabalho legislativo</p>
-                <button className="btn btn-primary">
+                <button 
+                  className="btn btn-primary"
+                  onClick={handleNovaComissao}
+                >
                   <i className="ki-duotone ki-plus fs-2"></i>
                   Criar Primeira Comissão
                 </button>
@@ -869,6 +946,23 @@ export default function EstruturaParlamentar() {
         onSave={handleSalvarMesaDiretora}
         mesaDiretoraAtual={estrutura?.mesaDiretora}
         vereadores={estrutura?.vereadores || []}
+      />
+
+      {/* Modal Comissão */}
+      <ComissaoModal
+        isOpen={modalComissao}
+        onClose={() => setModalComissao(false)}
+        onSave={handleSalvarComissao}
+        comissaoAtual={comissaoEditando}
+        vereadores={estrutura?.vereadores || []}
+      />
+
+      {/* Modal Visualizar Comissão */}
+      <ComissaoViewModal
+        isOpen={modalComissaoView}
+        onClose={() => setModalComissaoView(false)}
+        onEdit={handleEditarComissaoFromView}
+        comissao={comissaoVisualizando}
       />
     </AdministradorLayout>
   )

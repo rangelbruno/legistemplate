@@ -235,7 +235,7 @@ let MOCK_MESA_DIRETORA: MesaDiretora = {
 /**
  * Dados mock das Comissões
  */
-const MOCK_COMISSOES: Comissao[] = [
+let MOCK_COMISSOES: Comissao[] = [
   {
     id: 'comissao-educacao',
     nome: 'Comissão de Educação, Cultura e Esporte',
@@ -468,5 +468,59 @@ export const salvarMesaDiretora = async (dados: Omit<MesaDiretora, 'id'>): Promi
   } catch (error) {
     console.error('Erro no service salvarMesaDiretora:', error)
     throw new Error('Falha ao salvar Mesa Diretora')
+  }
+}
+
+/**
+ * Salvar Comissão (criar ou editar)
+ */
+export const salvarComissao = async (
+  comissao: Omit<Comissao, 'id'>, 
+  comissaoId?: string
+): Promise<Comissao> => {
+  try {
+    await simulateApiDelay(800)
+    
+    const novaComissao: Comissao = {
+      id: comissaoId || `comissao-${Date.now()}`,
+      ...comissao
+    }
+    
+    if (comissaoId) {
+      // Editar comissão existente
+      const index = MOCK_COMISSOES.findIndex(c => c.id === comissaoId)
+      if (index !== -1) {
+        MOCK_COMISSOES[index] = novaComissao
+      } else {
+        throw new Error('Comissão não encontrada')
+      }
+    } else {
+      // Criar nova comissão
+      MOCK_COMISSOES.push(novaComissao)
+    }
+    
+    return novaComissao
+  } catch (error) {
+    console.error('Erro no service salvarComissao:', error)
+    throw new Error('Falha ao salvar comissão')
+  }
+}
+
+/**
+ * Excluir Comissão
+ */
+export const excluirComissao = async (comissaoId: string): Promise<void> => {
+  try {
+    await simulateApiDelay(400)
+    
+    const index = MOCK_COMISSOES.findIndex(c => c.id === comissaoId)
+    if (index !== -1) {
+      MOCK_COMISSOES.splice(index, 1)
+    } else {
+      throw new Error('Comissão não encontrada')
+    }
+  } catch (error) {
+    console.error('Erro no service excluirComissao:', error)
+    throw new Error('Falha ao excluir comissão')
   }
 } 
