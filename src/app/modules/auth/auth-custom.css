@@ -1,0 +1,372 @@
+/* ===============================================
+   SISTEMA PARLAMENTAR - ESTILOS DE AUTENTICAÇÃO
+   =============================================== */
+
+/* Animações suaves */
+.login-form {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Melhorias nos campos de input */
+.login-form .form-control {
+  border: 2px solid #d1d5db;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  padding: 15px 20px;
+  font-size: 16px;
+  line-height: 1.5;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.login-form .form-control:hover {
+  border-color: #9ca3af;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12), inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.login-form .form-control:focus,
+.login-form .form-control.input-focused {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25), 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.login-form .form-control.is-valid {
+  border-color: #10b981;
+  background-image: none;
+  background: rgba(240, 253, 244, 0.95);
+  box-shadow: 0 0 0 0.1rem rgba(16, 185, 129, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-form .form-control.is-invalid {
+  border-color: #ef4444;
+  background-image: none;
+  background: rgba(254, 242, 242, 0.95);
+  box-shadow: 0 0 0 0.1rem rgba(239, 68, 68, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para inputs com ícones */
+.login-form .form-control.pe-5 {
+  padding-right: 3.5rem;
+}
+
+/* Container dos inputs com ícones melhorado */
+.login-form .input-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+  border-radius: 14px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(156, 163, 175, 0.3), rgba(209, 213, 219, 0.3));
+  transition: all 0.3s ease;
+}
+
+.login-form .input-group:hover {
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.4), rgba(156, 163, 175, 0.4));
+}
+
+.login-form .input-group:focus-within {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(147, 197, 253, 0.3));
+}
+
+.login-form .input-group .form-control {
+  border: 2px solid #9ca3af;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.login-form .input-group .form-control:hover {
+  border-color: #6b7280;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12), inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.login-form .input-group .form-control:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25), 0 4px 8px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Posicionamento dos ícones dentro dos inputs */
+.login-form .input-icon-group {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+/* Animação nos ícones de status */
+.login-form .bi-check-circle {
+  animation: checkmark 0.3s ease-in-out;
+}
+
+@keyframes checkmark {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+
+/* Botões de ação nos inputs */
+.login-form .btn-icon {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  transition: all 0.2s ease;
+  padding: 4px;
+  border-radius: 50%;
+}
+
+.login-form .btn-icon:hover {
+  color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.1);
+  transform: scale(1.1);
+}
+
+.login-form .btn-icon:active {
+  transform: scale(0.95);
+}
+
+/* Melhorias nos labels */
+.login-form .form-label {
+  color: #374151;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Botão principal */
+.login-form .btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-form .btn-primary:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+}
+
+.login-form .btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Efeito de ondas no botão */
+.login-form .btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.login-form .btn-primary:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Estilização das mensagens de erro */
+.login-form .fv-help-block {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Card de credenciais */
+.login-form .notice {
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-form .notice::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #10b981, #f59e0b);
+}
+
+/* Checkbox customizado */
+.login-form .form-check-input {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid #d1d5db;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.login-form .form-check-input:checked {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border-color: #3b82f6;
+}
+
+.login-form .form-check-label {
+  font-size: 14px;
+  color: #6b7280;
+  margin-left: 8px;
+}
+
+/* Botão de mostrar/ocultar senha */
+.login-form .btn-icon {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  transition: color 0.2s ease;
+}
+
+.login-form .btn-icon:hover {
+  color: #3b82f6;
+}
+
+/* Links */
+.login-form .link-primary {
+  color: #3b82f6;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.login-form .link-primary:hover {
+  color: #1d4ed8;
+  text-decoration: underline !important;
+}
+
+/* Header institucional */
+.login-form .symbol-label {
+  border-radius: 50%;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  transition: all 0.3s ease;
+}
+
+.login-form .symbol:hover .symbol-label {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+}
+
+/* Linha divisória */
+.login-form .border-gray-300 {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d1d5db, transparent);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .login-form {
+    padding: 20px;
+  }
+  
+  .login-form .form-control {
+    padding: 12px 16px;
+    font-size: 16px; /* Evita zoom em iOS */
+  }
+  
+  .login-form .btn-primary {
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+}
+
+/* Estilos para o lado visual */
+.auth-visual-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-visual-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpolygon points='30 0 60 30 30 60 0 30'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+  background-size: 60px 60px;
+  opacity: 0.1;
+}
+
+/* Cards glassmorphism */
+.backdrop-blur {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.auth-visual-section .card {
+  transition: all 0.3s ease;
+}
+
+.auth-visual-section .card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Animação dos elementos visuais */
+.auth-visual-section .symbol {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Badge de versão */
+.auth-visual-section .badge {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.auth-visual-section .badge:hover {
+  transform: scale(1.05);
+} 

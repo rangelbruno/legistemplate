@@ -1,4 +1,3 @@
-
 import {useState} from 'react'
 import * as Yup from 'yup'
 import clsx from 'clsx'
@@ -10,18 +9,22 @@ import {useAuth} from '../core/Auth'
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
-    .email('Wrong email format')
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Email is required'),
+    .email('Formato de email inválido')
+    .min(3, 'Mínimo de 3 caracteres')
+    .max(50, 'Máximo de 50 caracteres')
+    .required('Email é obrigatório')
+    .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      'Digite um email válido'
+    ),
   password: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Password is required'),
+    .min(6, 'Mínimo de 6 caracteres')
+    .max(50, 'Máximo de 50 caracteres')
+    .required('Senha é obrigatória'),
 })
 
 const initialValues = {
-  email: 'dev@parlamentar.gov.br',
+  email: 'admin@parlamentar.gov.br',
   password: '123456',
 }
 
@@ -33,6 +36,9 @@ const initialValues = {
 
 export function Login() {
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [emailFocused, setEmailFocused] = useState(false)
+  const [passwordFocused, setPasswordFocused] = useState(false)
   const {saveAuth, setCurrentUser} = useAuth()
 
   const formik = useFormik({
@@ -48,181 +54,295 @@ export function Login() {
       } catch (error) {
         console.error(error)
         saveAuth(undefined)
-        setStatus('The login details are incorrect')
+        setStatus('Email ou senha incorretos. Verifique suas credenciais.')
         setSubmitting(false)
         setLoading(false)
       }
     },
   })
 
+  // Função para limpar o campo email
+  const clearEmail = () => {
+    formik.setFieldValue('email', '')
+    formik.setFieldTouched('email', false)
+  }
+
+  // Função para detectar se o email é válido visualmente
+  const isEmailValid = formik.values.email && 
+    !formik.errors.email && 
+    formik.values.email.length > 0
+
+  // Função para detectar se a senha é válida visualmente  
+  const isPasswordValid = formik.values.password && 
+    !formik.errors.password && 
+    formik.values.password.length >= 6
+
   return (
-    <form
-      className='form w-100'
-      onSubmit={formik.handleSubmit}
-      noValidate
-      id='kt_login_signin_form'
-    >
-      {/* begin::Heading */}
-      <div className='text-center mb-11'>
-        <h1 className='text-gray-900 fw-bolder mb-3'>Sistema Parlamentar</h1>
-        <div className='text-gray-500 fw-semibold fs-6'>Acesse sua conta</div>
-      </div>
-      {/* begin::Heading */}
-
-      {/* begin::Login options */}
-      <div className='row g-3 mb-9'>
-        {/* begin::Col */}
-        <div className='col-md-6'>
-          {/* begin::Google link */}
-          <a
-            href='#'
-            className='btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100'
-          >
-            <img
-              alt='Logo'
-              src={toAbsoluteUrl('media/svg/brand-logos/google-icon.svg')}
-              className='h-15px me-3'
-            />
-            Sign in with Google
-          </a>
-          {/* end::Google link */}
-        </div>
-        {/* end::Col */}
-
-        {/* begin::Col */}
-        <div className='col-md-6'>
-          {/* begin::Google link */}
-          <a
-            href='#'
-            className='btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100'
-          >
-            <img
-              alt='Logo'
-              src={toAbsoluteUrl('media/svg/brand-logos/apple-black.svg')}
-              className='theme-light-show h-15px me-3'
-            />
-            <img
-              alt='Logo'
-              src={toAbsoluteUrl('media/svg/brand-logos/apple-black-dark.svg')}
-              className='theme-dark-show h-15px me-3'
-            />
-            Sign in with Apple
-          </a>
-          {/* end::Google link */}
-        </div>
-        {/* end::Col */}
-      </div>
-      {/* end::Login options */}
-
-      {/* begin::Separator */}
-      <div className='separator separator-content my-14'>
-        <span className='w-125px text-gray-500 fw-semibold fs-7'>Or with email</span>
-      </div>
-      {/* end::Separator */}
-
-      {formik.status ? (
-        <div className='mb-lg-15 alert alert-danger'>
-          <div className='alert-text font-weight-bold'>{formik.status}</div>
-        </div>
-      ) : (
-        <div className='mb-10 bg-light-info p-8 rounded'>
-          <div className='text-info'>
-            <strong>👨‍💻 Desenvolvedor:</strong> dev@parlamentar.gov.br<br/>
-            <strong>👤 Admin:</strong> admin@parlamentar.gov.br<br/>
-            <strong>🔑 Senha:</strong> 123456
+    <div className="login-form">
+      {/* Header institucional */}
+      <div className="text-center mb-10">
+        <div className="symbol symbol-75px mx-auto mb-5">
+          <div className="symbol-label bg-light-primary">
+            <i className="bi bi-building-fill text-primary fs-1"></i>
           </div>
         </div>
-      )}
-
-      {/* begin::Form group */}
-      <div className='fv-row mb-8'>
-        <label className='form-label fs-6 fw-bolder text-gray-900'>Email</label>
-        <input
-          placeholder='Email'
-          {...formik.getFieldProps('email')}
-          className={clsx(
-            'form-control bg-transparent',
-            {'is-invalid': formik.touched.email && formik.errors.email},
-            {
-              'is-valid': formik.touched.email && !formik.errors.email,
-            }
-          )}
-          type='email'
-          name='email'
-          autoComplete='off'
-        />
-        {formik.touched.email && formik.errors.email && (
-          <div className='fv-plugins-message-container'>
-            <span role='alert'>{formik.errors.email}</span>
-          </div>
-        )}
+        
+        <h1 className="text-gray-900 fw-bolder mb-3 fs-2qx">
+          Sistema Parlamentar
+        </h1>
+        
+        <div className="text-gray-600 fw-semibold fs-4 mb-2">
+          Acesso ao Sistema de Gestão Legislativa
+        </div>
+        
+        <div className="text-gray-500 fw-normal fs-6">
+          Digite suas credenciais para acessar o sistema
+        </div>
       </div>
-      {/* end::Form group */}
 
-      {/* begin::Form group */}
-      <div className='fv-row mb-3'>
-        <label className='form-label fw-bolder text-gray-900 fs-6 mb-0'>Password</label>
-        <input
-          type='password'
-          autoComplete='off'
-          {...formik.getFieldProps('password')}
-          className={clsx(
-            'form-control bg-transparent',
-            {
-              'is-invalid': formik.touched.password && formik.errors.password,
-            },
-            {
-              'is-valid': formik.touched.password && !formik.errors.password,
-            }
-          )}
-        />
-        {formik.touched.password && formik.errors.password && (
-          <div className='fv-plugins-message-container'>
-            <div className='fv-help-block'>
-              <span role='alert'>{formik.errors.password}</span>
+      {/* Linha divisória com ícone */}
+      <div className="d-flex align-items-center mb-8">
+        <div className="border-bottom border-gray-300 flex-grow-1"></div>
+        <div className="mx-4">
+          <div className="symbol symbol-40px">
+            <div className="symbol-label bg-light-success">
+              <i className="bi bi-shield-check text-success fs-4"></i>
+            </div>
+          </div>
+        </div>
+        <div className="border-bottom border-gray-300 flex-grow-1"></div>
+      </div>
+
+      <form
+        className="form w-100"
+        onSubmit={formik.handleSubmit}
+        noValidate
+        id="kt_login_signin_form"
+      >
+        {/* Mensagem de erro */}
+        {formik.status && (
+          <div className="alert alert-danger d-flex align-items-center mb-8">
+            <i className="bi bi-exclamation-triangle-fill fs-2hx text-danger me-4"></i>
+            <div className="d-flex flex-column">
+              <h5 className="mb-1">Erro de Autenticação</h5>
+              <span>{formik.status}</span>
             </div>
           </div>
         )}
-      </div>
-      {/* end::Form group */}
 
-      {/* begin::Wrapper */}
-      <div className='d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8'>
-        <div />
+        {/* Credenciais disponíveis */}
+        {!formik.status && (
+          <div className="notice bg-light-primary rounded border-primary border border-dashed p-6 mb-8">
+            <div className="d-flex flex-stack">
+              <div className="d-flex align-items-center">
+                <div className="symbol symbol-35px me-4">
+                  <div className="symbol-label bg-primary">
+                    <i className="bi bi-person-check text-white fs-5"></i>
+                  </div>
+                </div>
+                <div className="d-flex flex-column">
+                  <h5 className="text-gray-800 mb-1">Credencial Disponível</h5>
+                  <div className="fw-semibold">
+                    <span className="text-gray-700">👤 Administrador:</span> 
+                    <span className="text-primary ms-1">admin@parlamentar.gov.br</span>
+                    <br/>
+                    <span className="text-gray-700">🔑 Senha:</span> 
+                    <span className="text-success ms-1">123456</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
-        {/* begin::Link */}
-        <Link to='/auth/forgot-password' className='link-primary'>
-          Forgot Password ?
-        </Link>
-        {/* end::Link */}
-      </div>
-      {/* end::Wrapper */}
-
-      {/* begin::Action */}
-      <div className='d-grid mb-10'>
-        <button
-          type='submit'
-          id='kt_sign_in_submit'
-          className='btn btn-primary'
-          disabled={formik.isSubmitting || !formik.isValid}
-        >
-          {!loading && <span className='indicator-label'>Continue</span>}
-          {loading && (
-            <span className='indicator-progress' style={{display: 'block'}}>
-              Please wait...
-              <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
-            </span>
+        {/* Campo Email Melhorado */}
+        <div className="fv-row mb-6">
+          <label className="form-label fs-6 fw-bold text-gray-900 mb-2">
+            <i className="bi bi-envelope me-2 text-primary"></i>
+            Email Institucional
+            {isEmailValid && <i className="bi bi-check-circle text-success ms-2"></i>}
+          </label>
+          <div className="position-relative">
+            <input
+              placeholder="exemplo@parlamentar.gov.br"
+              {...formik.getFieldProps('email')}
+              className={clsx(
+                'form-control form-control-lg bg-transparent px-3 pe-5',
+                {'is-invalid': formik.touched.email && formik.errors.email},
+                {'is-valid': formik.touched.email && !formik.errors.email && formik.values.email},
+                {'input-focused': emailFocused}
+              )}
+              type="email"
+              name="email"
+              autoComplete="username email"
+              onFocus={() => setEmailFocused(true)}
+              onBlur={() => setEmailFocused(false)}
+            />
+            
+            {/* Botão de limpar email */}
+            {formik.values.email && (
+              <button
+                type="button"
+                className="btn btn-sm btn-icon position-absolute translate-middle-y top-50 end-0 me-3"
+                onClick={clearEmail}
+                title="Limpar email"
+              >
+                <i className="bi bi-x-circle text-muted"></i>
+              </button>
+            )}
+            
+            {/* Ícone de status do email */}
+            {isEmailValid && (
+              <div className="position-absolute translate-middle-y top-50 end-0 me-12">
+                <i className="bi bi-check-circle text-success"></i>
+              </div>
+            )}
+          </div>
+          
+          {/* Feedback do email */}
+          {formik.touched.email && formik.errors.email && (
+            <div className="fv-plugins-message-container mt-2">
+              <div className="fv-help-block">
+                <span role="alert" className="text-danger fw-semibold">
+                  <i className="bi bi-exclamation-circle me-1"></i>
+                  {formik.errors.email}
+                </span>
+              </div>
+            </div>
           )}
-        </button>
-      </div>
-      {/* end::Action */}
+          
+          {/* Sugestão de domínio */}
+          {formik.values.email && 
+           !formik.values.email.includes('@parlamentar.gov.br') && 
+           formik.values.email.includes('@') && (
+            <div className="form-text text-info">
+              <i className="bi bi-info-circle me-1"></i>
+              Sugestão: Use um email do domínio @parlamentar.gov.br
+            </div>
+          )}
+        </div>
 
-      <div className='text-gray-500 text-center fw-semibold fs-6'>
-        Not a Member yet?{' '}
-        <Link to='/auth/registration' className='link-primary'>
-          Sign up
-        </Link>
-      </div>
-    </form>
+        {/* Campo Senha Melhorado */}
+        <div className="fv-row mb-6">
+          <label className="form-label fs-6 fw-bold text-gray-900 mb-2">
+            <i className="bi bi-lock me-2 text-primary"></i>
+            Senha de Acesso
+            {isPasswordValid && <i className="bi bi-check-circle text-success ms-2"></i>}
+          </label>
+          <div className="position-relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Digite sua senha segura"
+              autoComplete="current-password"
+              {...formik.getFieldProps('password')}
+              className={clsx(
+                'form-control form-control-lg bg-transparent px-3 pe-5',
+                {'is-invalid': formik.touched.password && formik.errors.password},
+                {'is-valid': formik.touched.password && !formik.errors.password && formik.values.password},
+                {'input-focused': passwordFocused}
+              )}
+              onFocus={() => setPasswordFocused(true)}
+              onBlur={() => setPasswordFocused(false)}
+            />
+            
+            {/* Botão de mostrar/ocultar senha */}
+            <button
+              type="button"
+              className="btn btn-sm btn-icon position-absolute translate-middle-y top-50 end-0 me-3"
+              onClick={() => setShowPassword(!showPassword)}
+              title={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+            >
+              <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'} text-muted`}></i>
+            </button>
+            
+            {/* Indicador de status da senha */}
+            {isPasswordValid && (
+              <div className="position-absolute translate-middle-y top-50 end-0 me-12">
+                <i className="bi bi-check-circle text-success"></i>
+              </div>
+            )}
+          </div>
+          
+          {/* Feedback da senha */}
+          {formik.touched.password && formik.errors.password && (
+            <div className="fv-plugins-message-container mt-2">
+              <div className="fv-help-block">
+                <span role="alert" className="text-danger fw-semibold">
+                  <i className="bi bi-exclamation-circle me-1"></i>
+                  {formik.errors.password}
+                </span>
+              </div>
+            </div>
+          )}
+          
+
+        </div>
+
+        {/* Opções auxiliares */}
+        <div className="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
+          <div className="form-check">
+            <input 
+              className="form-check-input" 
+              type="checkbox" 
+              id="remember_me"
+            />
+            <label className="form-check-label text-gray-700" htmlFor="remember_me">
+              Lembrar-me neste dispositivo
+            </label>
+          </div>
+
+          <Link 
+            to="/auth/forgot-password" 
+            className="link-primary text-decoration-none"
+          >
+            <i className="bi bi-question-circle me-1"></i>
+            Esqueci minha senha
+          </Link>
+        </div>
+
+        {/* Botão de Login */}
+        <div className="d-grid mb-8">
+          <button
+            type="submit"
+            id="kt_sign_in_submit"
+            className="btn btn-lg btn-primary fw-bold"
+            disabled={formik.isSubmitting || !formik.isValid}
+          >
+            {!loading && (
+              <span className="indicator-label">
+                <i className="bi bi-box-arrow-in-right me-2"></i>
+                Acessar Sistema
+              </span>
+            )}
+            {loading && (
+              <span className="indicator-progress" style={{display: 'block'}}>
+                <span className="spinner-border spinner-border-sm align-middle me-2"></span>
+                Verificando credenciais...
+              </span>
+            )}
+          </button>
+        </div>
+
+        {/* Footer informativo */}
+        <div className="text-center">
+          <div className="text-gray-500 fw-semibold fs-7 mb-3">
+            <i className="bi bi-shield-lock me-1"></i>
+            Acesso restrito a usuários autorizados
+          </div>
+          
+          <div className="d-flex justify-content-center align-items-center gap-3 text-gray-400 fs-8">
+            <span>
+              <i className="bi bi-telephone me-1"></i>
+              Suporte: (11) 1234-5678
+            </span>
+            <span>•</span>
+            <span>
+              <i className="bi bi-envelope me-1"></i>
+              suporte@parlamentar.gov.br
+            </span>
+          </div>
+        </div>
+      </form>
+    </div>
   )
 }
