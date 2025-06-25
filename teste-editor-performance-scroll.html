@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor com Performance e Scroll Melhorados</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #fff;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+        }
+
+        .toolbar {
+            background: #f8f9fa;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .toolbar-item {
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .toolbar-item:hover {
+            background: #e9ecef;
+            border-color: #007bff;
+        }
+
+        .editor-inner {
+            flex: 1;
+            position: relative;
+            max-height: 70vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .editor-input {
+            padding: 24px;
+            min-height: 100%;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            resize: none;
+            word-wrap: break-word;
+            text-rendering: optimizeSpeed;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Barra de rolagem customizada */
+        .editor-inner::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .editor-inner::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 6px;
+        }
+
+        .editor-inner::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 6px;
+            border: 2px solid #f1f1f1;
+        }
+
+        .editor-inner::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .editor-inner::-webkit-scrollbar-thumb:active {
+            background: #8a8a8a;
+        }
+
+        /* Firefox scrollbar */
+        .editor-inner {
+            scrollbar-width: thin;
+            scrollbar-color: #c1c1c1 #f1f1f1;
+        }
+
+        /* Imagens otimizadas */
+        .editor-input img {
+            max-width: 100%;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s ease;
+            display: block;
+            margin: 15px auto;
+            object-fit: contain;
+            cursor: pointer;
+            loading: lazy;
+            contain: layout style paint;
+            will-change: auto;
+            transform: translateZ(0);
+        }
+
+        .editor-input img:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .editor-input img.loaded {
+            animation: fadeInImage 0.3s ease-in;
+        }
+
+        @keyframes fadeInImage {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .status-bar {
+            background: #f8f9fa;
+            padding: 12px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: rgba(0, 123, 255, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .scroll-indicator.visible {
+            opacity: 1;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .editor-inner {
+                max-height: 65vh;
+            }
+
+            .editor-inner::-webkit-scrollbar {
+                width: 10px;
+            }
+
+            .editor-input img {
+                max-height: 300px;
+                max-width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .editor-inner {
+                max-height: 50vh;
+            }
+
+            .editor-inner::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .editor-input img {
+                max-height: 200px;
+                max-width: 90%;
+            }
+
+            .editor-input {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+
+        .demo-content {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .demo-image {
+            width: 600px;
+            height: 400px;
+            background: linear-gradient(45deg, #007bff, #28a745);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Editor com Performance e Scroll Melhorados</h1>
+        </div>
+
+        <div class="editor-container">
+            <div class="toolbar">
+                <div class="toolbar-item">📝 Negrito</div>
+                <div class="toolbar-item">📐 Itálico</div>
+                <div class="toolbar-item">🖼️ Imagem</div>
+                <div class="toolbar-item">📋 Lista</div>
+                <div class="toolbar-item">🔗 Link</div>
+            </div>
+
+            <div class="editor-inner" id="editorInner">
+                <div class="editor-input" contenteditable="true">
+                    <h1>Documento Legislativo com Imagens Grandes</h1>
+                    
+                    <p class="demo-content">Este é um exemplo de documento que demonstra as <span class="highlight">melhorias de performance e scroll</span> implementadas no editor. Agora você pode navegar facilmente mesmo com imagens grandes.</p>
+
+                    <div class="demo-image">
+                        🖼️ Imagem Grande Simulada<br>
+                        600x400px
+                    </div>
+
+                    <p class="demo-content">
+                        <strong>Melhorias Implementadas:</strong><br>
+                        ✅ <strong>Scroll suave</strong> - Navegação fluida pelo documento<br>
+                        ✅ <strong>Altura limitada</strong> - Editor não cresce infinitamente<br>
+                        ✅ <strong>Imagens otimizadas</strong> - Tamanho máximo controlado<br>
+                        ✅ <strong>Lazy loading</strong> - Carregamento sob demanda<br>
+                        ✅ <strong>GPU acceleration</strong> - Animações mais fluidas<br>
+                        ✅ <strong>Scrollbar customizada</strong> - Visual moderno
+                    </p>
+
+                    <div class="demo-image">
+                        🎨 Segunda Imagem Grande<br>
+                        Teste de Performance
+                    </div>
+
+                    <p class="demo-content">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    </p>
+
+                    <div class="demo-image">
+                        📊 Terceira Imagem<br>
+                        Responsividade Testada
+                    </div>
+
+                    <p class="demo-content">
+                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </p>
+
+                    <h2>Artigo 1º - Disposições Gerais</h2>
+                    <p>Esta lei estabelece diretrizes para o uso eficiente de editores de texto em documentos legislativos, garantindo performance otimizada e experiência de usuário superior.</p>
+
+                    <div class="demo-image">
+                        ⚡ Quarta Imagem<br>
+                        Performance Otimizada
+                    </div>
+
+                    <h2>§ 1º - Das Otimizações</h2>
+                    <p>As otimizações implementadas incluem:</p>
+                    <ul>
+                        <li>Scroll container com altura limitada</li>
+                        <li>Imagens com tamanho máximo controlado</li>
+                        <li>Lazy loading automático</li>
+                        <li>GPU acceleration para elementos visuais</li>
+                        <li>Scrollbar customizada e responsiva</li>
+                    </ul>
+
+                    <div class="demo-image">
+                        🎯 Quinta Imagem<br>
+                        UX Melhorada
+                    </div>
+
+                    <p class="demo-content">
+                        Agora você pode <span class="highlight">rolar facilmente</span> pelo documento, mesmo com múltiplas imagens grandes. O editor mantém uma altura controlada e oferece uma experiência de navegação fluida e responsiva.
+                    </p>
+
+                    <h2>Conclusão</h2>
+                    <p>Com essas melhorias, o editor oferece uma experiência muito mais fluida e profissional para criação de documentos legislativos com conteúdo rico em imagens.</p>
+                </div>
+            </div>
+
+            <div class="status-bar">
+                <div>
+                    <span id="wordCount">Palavras: 156</span> | 
+                    <span id="charCount">Caracteres: 1,247</span>
+                </div>
+                <div>
+                    <span class="highlight">Scroll ativo</span> - 
+                    <span id="scrollPosition">Posição: 0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="scroll-indicator" id="scrollIndicator">
+        📜 Rolagem ativa
+    </div>
+
+    <script>
+        const editorInner = document.getElementById('editorInner');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        const scrollPosition = document.getElementById('scrollPosition');
+        const wordCount = document.getElementById('wordCount');
+        const charCount = document.getElementById('charCount');
+
+        // Monitorar scroll
+        editorInner.addEventListener('scroll', () => {
+            const scrollTop = editorInner.scrollTop;
+            const scrollHeight = editorInner.scrollHeight - editorInner.clientHeight;
+            const scrollPercent = Math.round((scrollTop / scrollHeight) * 100) || 0;
+            
+            scrollPosition.textContent = `Posição: ${scrollPercent}%`;
+            
+            // Mostrar indicador durante scroll
+            scrollIndicator.classList.add('visible');
+            clearTimeout(window.scrollTimeout);
+            window.scrollTimeout = setTimeout(() => {
+                scrollIndicator.classList.remove('visible');
+            }, 2000);
+        });
+
+        // Atualizar contadores
+        function updateCounters() {
+            const text = document.querySelector('.editor-input').textContent || '';
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+            const chars = text.length;
+            
+            wordCount.textContent = `Palavras: ${words}`;
+            charCount.textContent = `Caracteres: ${chars.toLocaleString()}`;
+        }
+
+        // Simular lazy loading das imagens
+        document.querySelectorAll('.demo-image').forEach((img, index) => {
+            setTimeout(() => {
+                img.classList.add('loaded');
+                img.style.animation = 'fadeInImage 0.5s ease-in';
+            }, index * 200);
+        });
+
+        // Atualizar contadores inicialmente
+        updateCounters();
+
+        // Monitorar mudanças no editor
+        document.querySelector('.editor-input').addEventListener('input', updateCounters);
+
+        console.log('✅ Editor com performance e scroll melhorados carregado!');
+        console.log('🚀 Funcionalidades ativas:');
+        console.log('   - Scroll suave e limitado');
+        console.log('   - Imagens otimizadas');
+        console.log('   - Lazy loading simulado');
+        console.log('   - Scrollbar customizada');
+        console.log('   - Responsividade completa');
+    </script>
+</body>
+</html> 

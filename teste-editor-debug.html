@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste do Editor - Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .debug-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        .test-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .test-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .test-link:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Debug do Editor de Documentos</h1>
+        
+        <div class="debug-info">
+            <strong>Servidor:</strong> http://localhost:5174<br>
+            <strong>Horário:</strong> <span id="timestamp"></span><br>
+            <strong>Status:</strong> <span id="server-status">Verificando...</span>
+        </div>
+
+        <div class="test-links">
+            <a href="http://localhost:5174/metronic8/react/demo3/" class="test-link">🏠 Home</a>
+            <a href="http://localhost:5174/metronic8/react/demo3/admin" class="test-link">👤 Admin</a>
+            <a href="http://localhost:5174/metronic8/react/demo3/admin/configuracoes" class="test-link">⚙️ Configurações</a>
+            <a href="http://localhost:5174/metronic8/react/demo3/admin/configuracoes/documentos-templates" class="test-link">📄 Templates</a>
+            <a href="http://localhost:5174/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor" class="test-link">✏️ Editor</a>
+        </div>
+
+        <div id="test-results">
+            <h3>🧪 Testes de Conectividade</h3>
+            <div id="connectivity-tests"></div>
+        </div>
+
+        <div id="console-logs">
+            <h3>📋 Console Logs</h3>
+            <div id="log-container" style="background: #f8f9fa; padding: 15px; border-radius: 5px; max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 12px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Atualizar timestamp
+        document.getElementById('timestamp').textContent = new Date().toLocaleString('pt-BR');
+
+        // Capturar logs do console
+        const logContainer = document.getElementById('log-container');
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+
+        function addLogEntry(type, message) {
+            const entry = document.createElement('div');
+            entry.style.marginBottom = '5px';
+            entry.style.padding = '5px';
+            entry.style.borderLeft = `3px solid ${type === 'error' ? '#dc3545' : type === 'warn' ? '#ffc107' : '#28a745'}`;
+            entry.style.backgroundColor = type === 'error' ? '#f8d7da' : type === 'warn' ? '#fff3cd' : '#d4edda';
+            entry.innerHTML = `<strong>[${new Date().toLocaleTimeString()}] ${type.toUpperCase()}:</strong> ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addLogEntry('log', args.join(' '));
+        };
+
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addLogEntry('error', args.join(' '));
+        };
+
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addLogEntry('warn', args.join(' '));
+        };
+
+        // Testes de conectividade
+        async function testConnectivity() {
+            const testsContainer = document.getElementById('connectivity-tests');
+            const tests = [
+                { name: 'Servidor Principal', url: 'http://localhost:5174/metronic8/react/demo3/' },
+                { name: 'Área Admin', url: 'http://localhost:5174/metronic8/react/demo3/admin' },
+                { name: 'Editor de Templates', url: 'http://localhost:5174/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor' }
+            ];
+
+            for (const test of tests) {
+                try {
+                    const response = await fetch(test.url, { method: 'HEAD' });
+                    const status = response.ok ? 'success' : 'error';
+                    const statusText = response.ok ? `✅ OK (${response.status})` : `❌ Erro (${response.status})`;
+                    
+                    testsContainer.innerHTML += `
+                        <div class="status ${status}">
+                            <strong>${test.name}:</strong> ${statusText}
+                        </div>
+                    `;
+                } catch (error) {
+                    testsContainer.innerHTML += `
+                        <div class="status error">
+                            <strong>${test.name}:</strong> ❌ Erro de conexão - ${error.message}
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Executar testes
+        testConnectivity();
+
+        // Verificar status do servidor
+        fetch('http://localhost:5174/metronic8/react/demo3/')
+            .then(response => {
+                document.getElementById('server-status').textContent = response.ok ? '✅ Online' : '❌ Offline';
+                document.getElementById('server-status').style.color = response.ok ? 'green' : 'red';
+            })
+            .catch(() => {
+                document.getElementById('server-status').textContent = '❌ Offline';
+                document.getElementById('server-status').style.color = 'red';
+            });
+
+        console.log('🚀 Debug iniciado');
+        console.log('📍 Testando conectividade com o servidor...');
+    </script>
+</body>
+</html> 

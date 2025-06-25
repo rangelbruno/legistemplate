@@ -1,0 +1,419 @@
+/* ==========================================================================
+   AUTO PAGINATION STYLES - Sistema de Paginação Automática A4
+   ========================================================================== */
+
+/* Quebra de página */
+.page-break {
+  display: block;
+  page-break-before: always;
+  break-before: page;
+  position: relative;
+  height: 20px;
+  margin: 20px 0;
+  border: none;
+  background: transparent;
+  pointer-events: none;
+}
+
+.page-break::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    #e2e8f0 10%,
+    #cbd5e0 50%,
+    #e2e8f0 90%,
+    transparent 100%
+  );
+  transform: translateY(-50%);
+}
+
+.page-break::after {
+  content: 'Página ' attr(data-page-id);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Indicador de overflow de página */
+.page-overflow-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: linear-gradient(135deg, #fef3c7, #fbbf24);
+  color: #92400e;
+  padding: 6px 12px;
+  border-radius: 0 0 0 12px;
+  font-size: 11px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
+  z-index: 10;
+  animation: pulseWarning 2s infinite;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.page-overflow-indicator::before {
+  content: '⚠️';
+  font-size: 12px;
+}
+
+@keyframes pulseWarning {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+/* Contador de linhas por página */
+.page-line-counter {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #64748b;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+  backdrop-filter: blur(4px);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Indicador de página atual */
+.current-page-indicator {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #3b82f6;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Área de conteúdo com paginação */
+.auto-paginated-content {
+  position: relative;
+  width: 794px; /* A4 width */
+  min-height: 1123px; /* A4 height */
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin: 0 auto 40px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+/* Margens ABNT visuais */
+.abnt-margins {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.abnt-margin-guide {
+  position: absolute;
+  border: 1px dashed rgba(59, 130, 246, 0.3);
+  pointer-events: none;
+}
+
+.abnt-margin-guide.top {
+  top: 113px; /* 3cm */
+  left: 0;
+  right: 0;
+  height: 0;
+}
+
+.abnt-margin-guide.bottom {
+  bottom: 76px; /* 2cm */
+  left: 0;
+  right: 0;
+  height: 0;
+}
+
+.abnt-margin-guide.left {
+  left: 113px; /* 3cm */
+  top: 0;
+  bottom: 0;
+  width: 0;
+}
+
+.abnt-margin-guide.right {
+  right: 76px; /* 2cm */
+  top: 0;
+  bottom: 0;
+  width: 0;
+}
+
+/* Área de escrita dentro das margens */
+.content-area {
+  margin: 113px 76px 76px 113px; /* Margens ABNT */
+  min-height: 934px; /* Altura útil */
+  position: relative;
+  font-family: 'Times New Roman', serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  color: #1a202c;
+}
+
+/* Indicador de altura máxima atingida */
+.height-limit-reached {
+  position: relative;
+}
+
+.height-limit-reached::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    #ef4444,
+    #f97316,
+    #eab308,
+    #f97316,
+    #ef4444
+  );
+  animation: heightWarning 1.5s ease-in-out infinite;
+}
+
+@keyframes heightWarning {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Transições suaves para mudanças de página */
+.page-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-transition.changing {
+  transform: translateY(-10px);
+  opacity: 0.8;
+}
+
+/* Botão flutuante para adicionar página */
+.add-page-floating-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 56px;
+  height: 56px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  z-index: 1000;
+  transition: all 0.2s ease;
+}
+
+.add-page-floating-btn:hover {
+  background: #2563eb;
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+}
+
+.add-page-floating-btn:active {
+  transform: scale(0.95);
+}
+
+/* Tooltip para o botão */
+.add-page-floating-btn::before {
+  content: 'Nova Página (Ctrl+Enter)';
+  position: absolute;
+  bottom: 70px;
+  right: 0;
+  background: #1f2937;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.2s ease;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.add-page-floating-btn:hover::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Indicador de progresso de página */
+.page-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #f1f5f9;
+  z-index: 1001;
+}
+
+.page-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.page-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-20px);
+  }
+  100% {
+    transform: translateX(20px);
+  }
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .auto-paginated-content {
+    width: 90%;
+    max-width: 794px;
+    transform: scale(0.9);
+    transform-origin: top center;
+  }
+  
+  .add-page-floating-btn {
+    bottom: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .auto-paginated-content {
+    transform: scale(0.8);
+  }
+  
+  .page-break::after {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+  
+  .add-page-floating-btn::before {
+    display: none;
+  }
+}
+
+/* Modo de impressão */
+@media print {
+  .page-break {
+    height: 0;
+    margin: 0;
+    page-break-before: always;
+  }
+  
+  .page-break::before,
+  .page-break::after {
+    display: none;
+  }
+  
+  .page-overflow-indicator,
+  .page-line-counter,
+  .current-page-indicator,
+  .add-page-floating-btn,
+  .page-progress,
+  .abnt-margins {
+    display: none !important;
+  }
+  
+  .auto-paginated-content {
+    box-shadow: none;
+    margin: 0;
+    page-break-after: always;
+  }
+  
+  .auto-paginated-content:last-child {
+    page-break-after: auto;
+  }
+}
+
+/* Acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition,
+  .add-page-floating-btn,
+  .page-progress-bar {
+    transition: none;
+  }
+  
+  .pulseWarning,
+  .heightWarning,
+  .shimmer {
+    animation: none;
+  }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+  .page-break::before {
+    background: #000000;
+  }
+  
+  .page-break::after {
+    background: #ffffff;
+    color: #000000;
+    border-color: #000000;
+  }
+  
+  .abnt-margin-guide {
+    border-color: #000000;
+  }
+} 

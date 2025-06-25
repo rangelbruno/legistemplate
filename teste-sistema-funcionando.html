@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏛️ Sistema de Documentos - URLs Corretas</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #009ef7, #0077b6);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .header p {
+            margin: 15px 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        .content {
+            padding: 40px;
+        }
+        .url-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 4px solid #009ef7;
+        }
+        .url-section h3 {
+            margin: 0 0 20px;
+            color: #181c32;
+            font-size: 1.4rem;
+        }
+        .url-item {
+            background: white;
+            border: 2px solid #e4e6ea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        .url-item:hover {
+            border-color: #009ef7;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,158,247,0.15);
+        }
+        .url-item h4 {
+            margin: 0 0 10px;
+            color: #009ef7;
+            font-size: 1.1rem;
+        }
+        .url-item .url {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            color: #5e6278;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .url-item p {
+            margin: 10px 0 0;
+            color: #5e6278;
+            font-size: 14px;
+        }
+        .btn {
+            display: inline-block;
+            background: #009ef7;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background: #0077b6;
+            transform: translateY(-1px);
+        }
+        .info-box {
+            background: linear-gradient(135deg, #e8f4fd, #f0f9ff);
+            border: 1px solid #009ef7;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .info-box h3 {
+            color: #009ef7;
+            margin: 0 0 15px;
+            font-size: 1.3rem;
+        }
+        .server-status {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+        .server-online {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .server-offline {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Sistema de Documentos Legislativos</h1>
+            <p>URLs Corretas para Acesso ao Sistema</p>
+            <div class="status">✅ Sistema Atualizado</div>
+        </div>
+
+        <div class="content">
+            <div id="server-status" class="server-status server-offline">
+                🔄 Verificando servidor...
+            </div>
+
+            <div class="info-box">
+                <h3>📍 Configuração do Servidor</h3>
+                <p><strong>Porta:</strong> 5175</p>
+                <p><strong>Base URL:</strong> /metronic8/react/demo3/</p>
+                <p><strong>Status:</strong> <span id="status-text">Verificando...</span></p>
+            </div>
+
+            <div class="url-section">
+                <h3>🎯 Acesso Direto às Páginas</h3>
+                
+                <div class="url-item">
+                    <h4>📋 Página Principal de Templates</h4>
+                    <div class="url">http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates</div>
+                    <p>Visualize todos os templates disponíveis com a nova interface moderna</p>
+                    <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates" class="btn" target="_blank">
+                        Abrir Página de Templates
+                    </a>
+                </div>
+
+                <div class="url-item">
+                    <h4>📄 Documento em Branco</h4>
+                    <div class="url">http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=blank</div>
+                    <p>Crie um documento completamente novo com o editor avançado</p>
+                    <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=blank" class="btn" target="_blank">
+                        Criar Documento em Branco
+                    </a>
+                </div>
+
+                <div class="url-item">
+                    <h4>⚖️ Projeto de Lei</h4>
+                    <div class="url">http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=projeto-lei</div>
+                    <p>Template completo para projetos de lei municipal com estrutura oficial</p>
+                    <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=projeto-lei" class="btn" target="_blank">
+                        Criar Projeto de Lei
+                    </a>
+                </div>
+
+                <div class="url-item">
+                    <h4>📋 Requerimento</h4>
+                    <div class="url">http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=requerimento</div>
+                    <p>Template padronizado para requerimentos diversos</p>
+                    <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=requerimento" class="btn" target="_blank">
+                        Criar Requerimento
+                    </a>
+                </div>
+
+                <div class="url-item">
+                    <h4>📧 Ofício</h4>
+                    <div class="url">http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=oficio</div>
+                    <p>Template para correspondências oficiais e comunicações</p>
+                    <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=oficio" class="btn" target="_blank">
+                        Criar Ofício
+                    </a>
+                </div>
+
+                <div class="url-item">
+                    <h4>📜 Decreto Legislativo</h4>
+                    <div class="url">http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=decreto</div>
+                    <p>Template oficial para decretos legislativos</p>
+                    <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=decreto" class="btn" target="_blank">
+                        Criar Decreto
+                    </a>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>🚀 Como Usar o Sistema</h3>
+                <p><strong>1.</strong> Clique em qualquer botão acima para abrir o editor</p>
+                <p><strong>2.</strong> O template será carregado automaticamente</p>
+                <p><strong>3.</strong> Edite o título clicando sobre ele</p>
+                <p><strong>4.</strong> Use a toolbar para formatação e inserção de imagens</p>
+                <p><strong>5.</strong> O sistema salva automaticamente a cada 5 segundos</p>
+                <p><strong>6.</strong> Exporte o documento quando finalizar</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Verificar se o servidor está rodando
+        const serverUrl = 'http://localhost:5175/metronic8/react/demo3/';
+        const statusElement = document.getElementById('server-status');
+        const statusText = document.getElementById('status-text');
+
+        fetch(serverUrl)
+            .then(response => {
+                if (response.ok) {
+                    statusElement.className = 'server-status server-online';
+                    statusElement.innerHTML = '✅ Servidor online na porta 5175';
+                    statusText.textContent = 'Online e funcionando';
+                    
+                    // Adicionar indicadores visuais aos botões
+                    document.querySelectorAll('.btn').forEach(btn => {
+                        btn.style.background = '#28a745';
+                        btn.innerHTML += ' ✅';
+                    });
+                } else {
+                    throw new Error('Servidor não respondeu corretamente');
+                }
+            })
+            .catch(error => {
+                statusElement.className = 'server-status server-offline';
+                statusElement.innerHTML = '❌ Servidor offline - Execute: npm run dev';
+                statusText.textContent = 'Offline';
+                
+                // Desabilitar botões
+                document.querySelectorAll('.btn').forEach(btn => {
+                    btn.style.background = '#6c757d';
+                    btn.style.pointerEvents = 'none';
+                    btn.innerHTML += ' ⚠️';
+                });
+                
+                console.error('Erro ao verificar servidor:', error);
+            });
+
+        // Adicionar eventos de clique para copiar URLs
+        document.querySelectorAll('.url').forEach(urlElement => {
+            urlElement.style.cursor = 'pointer';
+            urlElement.title = 'Clique para copiar a URL';
+            
+            urlElement.addEventListener('click', () => {
+                navigator.clipboard.writeText(urlElement.textContent).then(() => {
+                    const originalText = urlElement.textContent;
+                    urlElement.textContent = '✅ URL copiada!';
+                    urlElement.style.background = '#d4edda';
+                    
+                    setTimeout(() => {
+                        urlElement.textContent = originalText;
+                        urlElement.style.background = '#f8f9fa';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

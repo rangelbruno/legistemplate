@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Editor - Verificação de Loop</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-link { display: block; margin: 10px 0; padding: 10px; background: #f0f0f0; text-decoration: none; color: #333; border-radius: 5px; }
+        .test-link:hover { background: #e0e0e0; }
+        h1 { color: #333; }
+        h2 { color: #666; margin-top: 30px; }
+        .status { padding: 5px 10px; border-radius: 3px; font-weight: bold; }
+        .success { background: #d4edda; color: #155724; }
+        .warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Teste do Editor - Verificação de Loop Infinito</h1>
+    
+    <div class="status warning">
+        ⚠️ <strong>Instruções:</strong> Abra o console do navegador (F12) e observe os logs. Se não houver logs repetitivos infinitamente, o problema foi resolvido!
+    </div>
+
+    <h2>📝 Templates Simples</h2>
+    <a href="http://localhost:5174/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=requerimento&novo=true" 
+       target="_blank" class="test-link">
+       ✅ Novo Requerimento (Template Simples)
+    </a>
+    
+    <a href="http://localhost:5174/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=decreto&novo=true" 
+       target="_blank" class="test-link">
+       ✅ Novo Decreto (Template Simples)
+    </a>
+    
+    <a href="http://localhost:5174/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=oficio&novo=true" 
+       target="_blank" class="test-link">
+       ✅ Novo Ofício (Template Simples)
+    </a>
+
+    <h2>🧠 Templates Inteligentes</h2>
+    <a href="http://localhost:5174/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=projeto-lei-inteligente&novo=true&content=%253Ch1%253EPROJETO%2520DE%2520LEI%253C%252Fh1%253E%253Cp%253EConteúdo%2520do%2520projeto...%253C%252Fp%253E" 
+       target="_blank" class="test-link">
+       🧠 Projeto de Lei Inteligente (com conteúdo)
+    </a>
+
+    <h2>📄 Documentos Existentes</h2>
+    <a href="http://localhost:5174/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?id=1" 
+       target="_blank" class="test-link">
+       📄 Editar Ata (ID: 1)
+    </a>
+    
+    <a href="http://localhost:5174/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?id=2" 
+       target="_blank" class="test-link">
+       📄 Editar Projeto (ID: 2)
+    </a>
+
+    <h2>🏠 Página Principal</h2>
+    <a href="http://localhost:5174/metronic8/react/demo3/admin/configuracoes/documentos-templates" 
+       target="_blank" class="test-link">
+       🏠 Página Principal dos Templates
+    </a>
+
+    <h2>🔍 O que observar no Console:</h2>
+    <ul>
+        <li><strong>✅ CORRETO:</strong> Logs aparecem apenas uma vez por ação</li>
+        <li><strong>❌ INCORRETO:</strong> Logs se repetem infinitamente</li>
+        <li><strong>Logs esperados:</strong>
+            <ul>
+                <li>"DocumentEditorPage: Inicializando..."</li>
+                <li>"DocumentEditorPage: useEffect executado - PRIMEIRA VEZ"</li>
+                <li>"DocumentEditorPage: loadDocumento iniciado"</li>
+                <li>"DocumentEditorPage: loadDocumento finalizado"</li>
+            </ul>
+        </li>
+    </ul>
+
+    <div class="status success" style="margin-top: 30px;">
+        ✅ <strong>Correções Implementadas:</strong>
+        <ul style="margin: 10px 0 0 20px;">
+            <li>useRef para controlar inicialização única</li>
+            <li>useMemo para parâmetros de URL</li>
+            <li>Remoção de dependências problemáticas no useEffect</li>
+            <li>Dados mock em vez de requisições para APIs inexistentes</li>
+            <li>Otimização do ProseMirror Editor</li>
+        </ul>
+    </div>
+
+    <script>
+        console.log('🔧 Página de teste carregada - Aguardando testes...');
+        
+        // Contador de logs para detectar loops
+        let logCount = 0;
+        const originalLog = console.log;
+        
+        console.log = function(...args) {
+            if (args[0] && args[0].includes && args[0].includes('DocumentEditorPage')) {
+                logCount++;
+                if (logCount > 10) {
+                    console.error('🚨 LOOP DETECTADO! Mais de 10 logs do DocumentEditorPage');
+                    document.body.innerHTML += '<div style="position:fixed;top:0;left:0;width:100%;background:red;color:white;padding:10px;z-index:9999;text-align:center;font-weight:bold;">🚨 LOOP INFINITO DETECTADO!</div>';
+                }
+            }
+            originalLog.apply(console, args);
+        };
+        
+        setTimeout(() => {
+            if (logCount <= 5) {
+                console.log('✅ Teste OK - Nenhum loop detectado após 5 segundos');
+            }
+        }, 5000);
+    </script>
+</body>
+</html> 

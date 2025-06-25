@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor com Imagens Avançadas - Estilo Word</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #fff;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 80vh;
+        }
+
+        .toolbar {
+            background: #f8f9fa;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-item {
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .toolbar-item:hover {
+            background: #e9ecef;
+            border-color: #007bff;
+        }
+
+        .editor-content {
+            flex: 1;
+            padding: 30px;
+            font-size: 16px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        /* Imagens avançadas */
+        .advanced-image {
+            position: relative;
+            display: inline-block;
+            user-select: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .advanced-image:hover {
+            outline: 2px dashed rgba(0, 123, 255, 0.3);
+            outline-offset: 2px;
+        }
+
+        .advanced-image.selected {
+            outline: 2px solid #007bff;
+            outline-offset: 2px;
+        }
+
+        .advanced-image img {
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s ease;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .advanced-image.selected img {
+            box-shadow: 0 0 0 3px #007bff, 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Alinhamentos */
+        .image-left {
+            float: left;
+            margin: 0 20px 20px 0;
+            clear: left;
+        }
+
+        .image-right {
+            float: right;
+            margin: 0 0 20px 20px;
+            clear: right;
+        }
+
+        .image-center {
+            display: block;
+            margin: 20px auto;
+        }
+
+        .image-inline {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 8px;
+        }
+
+        /* Handles de redimensionamento */
+        .resize-handle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #007bff;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: se-resize;
+            z-index: 1000;
+            transition: all 0.2s ease;
+            bottom: -5px;
+            right: -5px;
+        }
+
+        .resize-handle:hover {
+            background: #0056b3;
+            transform: scale(1.2);
+        }
+
+        /* Toolbar de imagem */
+        .image-toolbar {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            display: flex;
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: white;
+            z-index: 1001;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .image-toolbar-button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 3px;
+            transition: background 0.2s ease;
+            font-size: 14px;
+        }
+
+        .image-toolbar-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .demo-text {
+            margin: 20px 0;
+            text-align: justify;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .feature-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+
+        .status-bar {
+            background: #f8f9fa;
+            padding: 12px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Estados de interação */
+        .dragging {
+            cursor: grabbing;
+            opacity: 0.8;
+            z-index: 1000;
+        }
+
+        .resizing {
+            cursor: se-resize;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .image-left,
+            .image-right {
+                float: none;
+                display: block;
+                margin: 20px auto;
+            }
+
+            .image-toolbar {
+                top: -35px;
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+
+            .resize-handle {
+                width: 16px;
+                height: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .image-toolbar {
+                position: fixed;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .resize-handle {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🖼️ Editor com Imagens Avançadas - Estilo Word</h1>
+        </div>
+
+        <div class="editor-container">
+            <div class="toolbar">
+                <div class="toolbar-item">📝 Negrito</div>
+                <div class="toolbar-item">📐 Itálico</div>
+                <div class="toolbar-item" onclick="addImage('left')">🖼️ Imagem Esquerda</div>
+                <div class="toolbar-item" onclick="addImage('right')">🖼️ Imagem Direita</div>
+                <div class="toolbar-item" onclick="addImage('center')">🖼️ Imagem Centro</div>
+                <div class="toolbar-item" onclick="addImage('inline')">🖼️ Imagem Inline</div>
+            </div>
+
+            <div class="editor-content" id="editorContent">
+                <h1>🚀 Funcionalidades Avançadas de Imagem</h1>
+                
+                <p class="demo-text">
+                    Este é um exemplo de documento que demonstra as <span class="highlight">funcionalidades avançadas de imagem</span> 
+                    implementadas no editor. Agora você pode posicionar imagens de forma flexível, como no Microsoft Word.
+                </p>
+
+                <div class="feature-list">
+                    <h3>✨ Funcionalidades Implementadas:</h3>
+                    <ul>
+                        <li>🎯 <strong>Alinhamento flexível</strong> - Esquerda, direita, centro e inline</li>
+                        <li>🔄 <strong>Quebra de texto</strong> - Texto flui ao redor da imagem</li>
+                        <li>📏 <strong>Redimensionamento</strong> - Arraste os handles para ajustar</li>
+                        <li>🎨 <strong>Posicionamento livre</strong> - Mova imagens para qualquer posição</li>
+                        <li>⚡ <strong>Feedback visual</strong> - Contornos e sombras ao selecionar</li>
+                        <li>📱 <strong>Responsividade</strong> - Funciona em todos os dispositivos</li>
+                    </ul>
+                </div>
+
+                <h2>Teste as Funcionalidades</h2>
+                <p class="demo-text">
+                    Use os botões da toolbar acima para adicionar imagens com diferentes alinhamentos. 
+                    Clique nas imagens para selecioná-las e arrastar os handles para redimensionar.
+                </p>
+            </div>
+
+            <div class="status-bar">
+                <div>
+                    <span>Imagens: <span id="imageCount">0</span></span> | 
+                    <span>Modo: <span class="highlight">Avançado</span></span>
+                </div>
+                <div>
+                    <span>🖼️ Clique nas imagens para editá-las</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedImage = null;
+        let isDragging = false;
+        let isResizing = false;
+        let startX, startY, startWidth, startHeight;
+
+        // Inicializar funcionalidades
+        document.addEventListener('DOMContentLoaded', function() {
+            updateImageCount();
+        });
+
+        function initializeImages() {
+            const images = document.querySelectorAll('.advanced-image');
+            images.forEach(img => {
+                img.addEventListener('click', selectImage);
+                
+                const resizeHandle = img.querySelector('.resize-handle');
+                if (resizeHandle) {
+                    resizeHandle.addEventListener('mousedown', startResize);
+                }
+
+                // Tornar imagens arrastáveis (exceto centralizadas)
+                if (!img.classList.contains('image-center')) {
+                    img.addEventListener('mousedown', startDrag);
+                }
+            });
+        }
+
+        function selectImage(e) {
+            e.stopPropagation();
+            
+            // Remover seleção anterior
+            if (selectedImage) {
+                selectedImage.classList.remove('selected');
+            }
+            
+            // Selecionar nova imagem
+            selectedImage = this;
+            this.classList.add('selected');
+        }
+
+        function startDrag(e) {
+            if (e.target.classList.contains('resize-handle') || 
+                e.target.classList.contains('image-toolbar-button')) return;
+            
+            isDragging = true;
+            this.classList.add('dragging');
+            
+            startX = e.clientX;
+            startY = e.clientY;
+            
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+        }
+
+        function drag(e) {
+            if (!isDragging || !selectedImage) return;
+            
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            
+            selectedImage.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+        }
+
+        function stopDrag() {
+            if (selectedImage) {
+                selectedImage.classList.remove('dragging');
+            }
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        function startResize(e) {
+            e.stopPropagation();
+            isResizing = true;
+            
+            const img = this.parentElement;
+            img.classList.add('resizing');
+            
+            startX = e.clientX;
+            startY = e.clientY;
+            
+            const imgElement = img.querySelector('img');
+            startWidth = imgElement.offsetWidth;
+            startHeight = imgElement.offsetHeight;
+            
+            document.addEventListener('mousemove', resize);
+            document.addEventListener('mouseup', stopResize);
+        }
+
+        function resize(e) {
+            if (!isResizing) return;
+            
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            
+            const newWidth = Math.max(50, startWidth + deltaX);
+            const newHeight = Math.max(50, startHeight + deltaY);
+            
+            const img = document.querySelector('.resizing img');
+            if (img) {
+                img.style.width = newWidth + 'px';
+                img.style.height = newHeight + 'px';
+            }
+        }
+
+        function stopResize() {
+            const resizingImg = document.querySelector('.resizing');
+            if (resizingImg) {
+                resizingImg.classList.remove('resizing');
+            }
+            isResizing = false;
+            document.removeEventListener('mousemove', resize);
+            document.removeEventListener('mouseup', stopResize);
+        }
+
+        function addImage(alignment) {
+            const alignmentClasses = {
+                'left': 'image-left',
+                'right': 'image-right',
+                'center': 'image-center',
+                'inline': 'image-inline'
+            };
+
+            const sizes = {
+                'left': 'width: 200px; height: 133px;',
+                'right': 'width: 200px; height: 133px;',
+                'center': 'width: 400px; height: 200px;',
+                'inline': 'width: 24px; height: 24px;'
+            };
+
+            const colors = {
+                'left': '#007bff',
+                'right': '#28a745',
+                'center': '#6f42c1',
+                'inline': '#ffc107'
+            };
+
+            const svgData = `data:image/svg+xml;base64,${btoa(`
+                <svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="300" height="200" fill="${colors[alignment]}"/>
+                    <text x="150" y="100" font-family="Arial" font-size="16" fill="white" text-anchor="middle" dy=".3em">Imagem ${alignment}</text>
+                </svg>
+            `)}`;
+
+            const imageHtml = `
+                <div class="advanced-image ${alignmentClasses[alignment]}" data-alignment="${alignment}">
+                    <img src="${svgData}" alt="Nova imagem ${alignment}" style="${sizes[alignment]}">
+                    ${alignment !== 'inline' ? '<div class="resize-handle"></div>' : ''}
+                    <div class="image-toolbar">
+                        <button class="image-toolbar-button" title="Alinhamento">↔️</button>
+                        <button class="image-toolbar-button" title="Quebra de texto">📝</button>
+                        <button class="image-toolbar-button" title="Redimensionar">📏</button>
+                        <button class="image-toolbar-button" onclick="removeImage(this)">✕</button>
+                    </div>
+                </div>
+            `;
+
+            const content = document.getElementById('editorContent');
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = imageHtml;
+            const newImage = tempDiv.firstElementChild;
+            
+            if (alignment === 'inline') {
+                // Adicionar inline no final do último parágrafo
+                const lastP = content.querySelector('p:last-of-type');
+                if (lastP) {
+                    lastP.appendChild(document.createTextNode(' '));
+                    lastP.appendChild(newImage);
+                    lastP.appendChild(document.createTextNode(' (imagem inline adicionada)'));
+                }
+            } else {
+                // Adicionar como elemento de bloco
+                content.appendChild(newImage);
+                
+                // Adicionar texto de exemplo para demonstrar wrap
+                if (alignment === 'left' || alignment === 'right') {
+                    const demoP = document.createElement('p');
+                    demoP.className = 'demo-text';
+                    demoP.textContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.';
+                    content.appendChild(demoP);
+                }
+            }
+
+            // Reinicializar eventos
+            initializeImages();
+            updateImageCount();
+        }
+
+        function removeImage(button) {
+            const image = button.closest('.advanced-image');
+            if (image) {
+                image.remove();
+                updateImageCount();
+            }
+        }
+
+        function updateImageCount() {
+            const count = document.querySelectorAll('.advanced-image').length;
+            document.getElementById('imageCount').textContent = count;
+        }
+
+        // Desselecionar ao clicar fora
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.advanced-image') && selectedImage) {
+                selectedImage.classList.remove('selected');
+                selectedImage = null;
+            }
+        });
+
+        console.log('✅ Editor com imagens avançadas carregado!');
+        console.log('🚀 Funcionalidades ativas:');
+        console.log('   - Redimensionamento por arrastar');
+        console.log('   - Posicionamento flexível');
+        console.log('   - Alinhamentos: esquerda, direita, centro, inline');
+        console.log('   - Quebra de texto ao redor');
+        console.log('   - Toolbar contextual');
+        console.log('   - Responsividade completa');
+    </script>
+</body>
+</html> 

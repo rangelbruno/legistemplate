@@ -1,0 +1,512 @@
+/* Estilos para o editor React Quill */
+.react-quill-editor .ql-toolbar {
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  background: #f8f9fa;
+}
+
+.react-quill-editor .ql-container {
+  border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  min-height: 400px;
+  font-family: 'Times New Roman', serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.react-quill-editor .ql-editor {
+  padding: 20px;
+  font-family: 'Times New Roman', serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  text-align: justify;
+}
+
+.react-quill-editor .ql-editor h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 1em 0 0.5em 0;
+  text-align: center;
+}
+
+.react-quill-editor .ql-editor h2 {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin: 1em 0 0.5em 0;
+}
+
+.react-quill-editor .ql-editor h3 {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 0.8em 0 0.4em 0;
+}
+
+.react-quill-editor .ql-editor p {
+  margin: 0.5em 0;
+  text-align: justify;
+}
+
+.react-quill-editor .ql-editor ol, 
+.react-quill-editor .ql-editor ul {
+  padding-left: 2em;
+}
+
+.react-quill-editor .ql-editor blockquote {
+  border-left: 4px solid #ccc;
+  margin: 1em 0;
+  padding-left: 1em;
+  font-style: italic;
+}
+
+.react-quill-editor .ql-editor strong {
+  font-weight: bold;
+}
+
+.react-quill-editor .ql-editor em {
+  font-style: italic;
+}
+
+.react-quill-editor .ql-editor u {
+  text-decoration: underline;
+}
+
+/* Estilos para os botões legislativos separados */
+.legislative-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.legislative-buttons .btn {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.legislative-buttons .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.legislative-buttons .btn-outline-secondary:hover {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+
+.legislative-buttons .btn-outline-primary:hover {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+/* Loading state */
+.react-quill-editor .loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .react-quill-editor .ql-toolbar {
+    padding: 8px 4px;
+  }
+  
+  .react-quill-editor .ql-editor {
+    padding: 15px;
+    font-size: 11pt;
+  }
+  
+  .legislative-buttons {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .legislative-buttons .btn {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+}
+
+/* Estilos para o editor React Quill */
+.react-quill-editor-container {
+  font-family: 'Times New Roman', serif;
+}
+
+.react-quill-editor-container .ql-editor {
+  font-family: 'Times New Roman', serif;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: justify;
+  padding: 20px;
+  min-height: 400px;
+}
+
+/* Estilos para imagens no editor */
+.react-quill-editor-container .ql-editor img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.react-quill-editor-container .ql-editor img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilos para botões de ação */
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.editor-actions .btn-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.editor-actions .btn-group small {
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+/* Estilos para elementos legislativos */
+.react-quill-editor-container .ql-editor p strong {
+  font-weight: bold;
+}
+
+.react-quill-editor-container .ql-editor h1 {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 20px 0;
+  text-transform: uppercase;
+}
+
+.react-quill-editor-container .ql-editor h2 {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+.react-quill-editor-container .ql-editor h3 {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+/* Estilos para listas legislativas */
+.react-quill-editor-container .ql-editor ol,
+.react-quill-editor-container .ql-editor ul {
+  padding-left: 30px;
+  margin: 10px 0;
+}
+
+.react-quill-editor-container .ql-editor li {
+  margin: 5px 0;
+  text-align: justify;
+}
+
+/* Estilos para o modal de imagem */
+.modal-content {
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  border-bottom: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+}
+
+.modal-body img {
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .editor-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .editor-actions .btn-group {
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  .react-quill-editor-container .ql-editor {
+    padding: 15px;
+    font-size: 13px;
+  }
+  
+  .react-quill-editor-container .ql-editor img {
+    margin: 8px auto;
+  }
+}
+
+/* Estilos para a toolbar do Quill */
+.react-quill-editor-container .ql-toolbar {
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  background-color: #f8f9fa;
+}
+
+.react-quill-editor-container .ql-container {
+  border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  background-color: white;
+}
+
+/* Estilos para foco */
+.react-quill-editor-container .ql-editor:focus {
+  outline: none;
+}
+
+.react-quill-editor-container .ql-container.ql-snow {
+  border: 1px solid #ccc;
+}
+
+.react-quill-editor-container .ql-toolbar.ql-snow {
+  border: 1px solid #ccc;
+  border-bottom: none;
+}
+
+/* Animações */
+.editor-actions {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para indicadores de carregamento */
+.image-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  background-color: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.image-loading .spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Estilos para menu de redimensionamento de imagens */
+.image-resize-menu {
+  position: fixed !important;
+  background: white !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  padding: 8px !important;
+  z-index: 9999 !important;
+  display: flex !important;
+  gap: 5px !important;
+  animation: fadeInUp 0.2s ease-out;
+}
+
+.image-resize-menu button {
+  margin: 0 2px !important;
+  font-size: 11px !important;
+  padding: 4px 8px !important;
+  border: 1px solid #dee2e6 !important;
+  background: white !important;
+  color: #6c757d !important;
+  border-radius: 3px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.image-resize-menu button:hover {
+  background: #f8f9fa !important;
+  border-color: #007bff !important;
+  color: #007bff !important;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para imagens selecionadas */
+.react-quill-editor-container .ql-editor img.selected {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Estilos para diferentes tamanhos de imagem */
+.react-quill-editor-container .ql-editor img.size-small {
+  width: 25% !important;
+  max-width: 200px;
+}
+
+.react-quill-editor-container .ql-editor img.size-medium {
+  width: 50% !important;
+  max-width: 400px;
+}
+
+.react-quill-editor-container .ql-editor img.size-large {
+  width: 75% !important;
+  max-width: 600px;
+}
+
+.react-quill-editor-container .ql-editor img.size-original {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+/* Estilos para botões de imagem */
+.editor-actions .btn-outline-info {
+  border-color: #17a2b8;
+  color: #17a2b8;
+}
+
+.editor-actions .btn-outline-info:hover {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+  color: white;
+}
+
+.editor-actions .btn-outline-info i {
+  font-size: 14px;
+}
+
+/* Melhorias no modal de imagem */
+.modal-content {
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+}
+
+.modal-header .btn-close {
+  filter: invert(1);
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-footer {
+  border-top: 1px solid #e9ecef;
+  background-color: #f8f9fa;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Estilos para pré-visualização de imagem */
+.modal-body .border {
+  background-color: #f8f9fa;
+  border: 2px dashed #dee2e6 !important;
+  transition: all 0.3s ease;
+}
+
+.modal-body .border:hover {
+  border-color: #007bff !important;
+  background-color: #e7f3ff;
+}
+
+.modal-body img {
+  transition: transform 0.3s ease;
+}
+
+.modal-body img:hover {
+  transform: scale(1.05);
+}
+
+/* Estilos para input de URL */
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Tooltip personalizado para botões */
+.editor-actions button[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 5px;
+}
+
+.editor-actions button {
+  position: relative;
+}
+
+/* Animações suaves */
+.editor-actions button {
+  transition: all 0.2s ease;
+}
+
+.editor-actions button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Indicador de upload */
+.upload-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+} 

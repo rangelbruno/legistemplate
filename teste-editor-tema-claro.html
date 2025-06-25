@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Editor de Documentos Legislativos (Tema Claro)</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 8px 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .demo-editor {
+            height: 600px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .info-panel {
+            background: #f8f9fa;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .info-panel h3 {
+            margin: 0 0 12px;
+            color: #007bff;
+            font-size: 18px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+        }
+        
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            background: #007bff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .links {
+            display: flex;
+            gap: 16px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .link:hover {
+            background: #0056b3;
+        }
+        
+        .link-secondary {
+            background: #6c757d;
+        }
+        
+        .link-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: #28a745;
+            color: white;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .demo-editor {
+                height: 500px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .links {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Editor de Documentos Legislativos</h1>
+            <p>Versão 2.0 - Tema Claro com Ícones Lucide React</p>
+        </div>
+        
+        <div class="content">
+            <div class="status">
+                <div class="status-dot"></div>
+                Sistema Funcionando - Tema Claro Ativo
+            </div>
+            
+            <div class="demo-editor">
+                <!-- Aqui seria renderizado o componente LexicalEditor -->
+                <div style="height: 100%; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border: 2px dashed #007bff; border-radius: 8px; color: #6c757d;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📝</div>
+                        <h3 style="margin: 0 0 8px; color: #007bff;">Editor Carregado</h3>
+                        <p style="margin: 0; font-size: 14px;">Acesse o sistema para ver o editor em funcionamento</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-panel">
+                <h3>✨ Melhorias Implementadas</h3>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">🎨</div>
+                        <span>Tema claro limpo e moderno</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔧</div>
+                        <span>Ícones Lucide React (gratuitos)</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📱</div>
+                        <span>Interface responsiva</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">⚡</div>
+                        <span>Performance otimizada</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🏛️</div>
+                        <span>Elementos legislativos específicos</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🖼️</div>
+                        <span>Inserção de imagens avançada</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💾</div>
+                        <span>Auto-save inteligente</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <span>Contador de palavras</span>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 24px;">🚀 Acesso Rápido</h3>
+                <div class="links">
+                    <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates" class="link">
+                        📋 Lista de Templates
+                    </a>
+                    <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor" class="link">
+                        ✏️ Novo Documento
+                    </a>
+                    <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=projeto-lei" class="link">
+                        🏛️ Projeto de Lei
+                    </a>
+                    <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=requerimento" class="link">
+                        📄 Requerimento
+                    </a>
+                    <a href="http://localhost:5175/metronic8/react/demo3/admin/dashboard" class="link link-secondary">
+                        🏠 Dashboard Admin
+                    </a>
+                </div>
+                
+                <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e5e5; font-size: 14px; color: #6c757d;">
+                    <p><strong>Tecnologias:</strong> Vite + React + TypeScript + Lexical Editor + Lucide React</p>
+                    <p><strong>Servidor:</strong> localhost:5175/metronic8/react/demo3/</p>
+                    <p><strong>Status:</strong> ✅ Funcionando sem tema escuro</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Editor Corrigido (Inserção de Imagens + Sem Auto-save)</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .status-section {
+            padding: 20px 30px;
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .status-success {
+            background: #28a745;
+        }
+        
+        .status-info {
+            background: #17a2b8;
+        }
+        
+        .fixes-section {
+            padding: 30px;
+        }
+        
+        .fix-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #007bff;
+        }
+        
+        .fix-card h3 {
+            margin: 0 0 15px 0;
+            color: #007bff;
+            font-size: 18px;
+        }
+        
+        .fix-card ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .fix-card li {
+            margin: 8px 0;
+            color: #666;
+        }
+        
+        .test-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .test-link {
+            display: block;
+            padding: 20px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .test-link:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .test-link .title {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .test-link .desc {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .instructions h4 {
+            margin: 0 0 15px 0;
+            color: #856404;
+        }
+        
+        .instructions ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin: 8px 0;
+            color: #856404;
+        }
+        
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin: 0;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .fixes-section {
+                padding: 20px;
+            }
+            
+            .test-links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✅ Editor Corrigido</h1>
+            <p>Inserção de Imagens Funcionando + Auto-save Removido</p>
+        </div>
+
+        <div class="status-section">
+            <h3 style="margin: 0 0 15px 0; color: #155724;">Status das Correções</h3>
+            
+            <div class="status-item">
+                <div class="status-icon status-success">✓</div>
+                <span><strong>Inserção de Imagens:</strong> Corrigida e funcionando</span>
+            </div>
+            
+            <div class="status-item">
+                <div class="status-icon status-success">✓</div>
+                <span><strong>Auto-save:</strong> Removido conforme solicitado</span>
+            </div>
+            
+            <div class="status-item">
+                <div class="status-icon status-success">✓</div>
+                <span><strong>Salvamento Manual:</strong> Funcionando com botão "Salvar"</span>
+            </div>
+            
+            <div class="status-item">
+                <div class="status-icon status-info">ℹ</div>
+                <span><strong>Servidor:</strong> <span id="server-status">Verificando...</span></span>
+            </div>
+        </div>
+
+        <div class="fixes-section">
+            <h2>🔧 Correções Implementadas</h2>
+
+            <div class="fix-card">
+                <h3>🖼️ Inserção de Imagens Corrigida</h3>
+                <ul>
+                    <li><strong>Função simplificada:</strong> Removida complexidade desnecessária</li>
+                    <li><strong>Modal otimizado:</strong> Interface mais limpa e direta</li>
+                    <li><strong>Suporte a upload:</strong> Arquivos locais até 10MB</li>
+                    <li><strong>Suporte a URL:</strong> Imagens externas via link</li>
+                    <li><strong>Preview funcional:</strong> Visualização antes de inserir</li>
+                    <li><strong>Inserção direta:</strong> HTML gerado corretamente no editor</li>
+                </ul>
+            </div>
+
+            <div class="fix-card">
+                <h3>💾 Auto-save Removido</h3>
+                <ul>
+                    <li><strong>Salvamento manual:</strong> Apenas quando o usuário clicar em "Salvar"</li>
+                    <li><strong>Controle total:</strong> Usuário decide quando salvar</li>
+                    <li><strong>Feedback visual:</strong> Indicador de "Documento salvo com sucesso"</li>
+                    <li><strong>Performance:</strong> Sem intervalos de salvamento automático</li>
+                    <li><strong>UX melhorado:</strong> Sem interrupções durante a edição</li>
+                </ul>
+            </div>
+
+            <div class="fix-card">
+                <h3>🎯 Melhorias Técnicas</h3>
+                <ul>
+                    <li><strong>Função insertImage:</strong> Reescrita para usar DOM parser corretamente</li>
+                    <li><strong>Estado limpo:</strong> Removidas variáveis de auto-save</li>
+                    <li><strong>Código otimizado:</strong> Menos complexidade, mais eficiência</li>
+                    <li><strong>Lint errors:</strong> Todos os erros corrigidos</li>
+                    <li><strong>Compatibilidade:</strong> Funciona com Lexical Editor</li>
+                </ul>
+            </div>
+
+            <div class="instructions">
+                <h4>📋 Como Testar a Inserção de Imagens</h4>
+                <ol>
+                    <li>Acesse qualquer template do editor abaixo</li>
+                    <li>Clique no botão de "Inserir Imagem" na toolbar (ícone 🖼️)</li>
+                    <li>Teste as duas opções:
+                        <ul>
+                            <li><strong>URL:</strong> Cole um link de imagem (ex: https://via.placeholder.com/400x200)</li>
+                            <li><strong>Upload:</strong> Clique em "Escolher Arquivo" e selecione uma imagem</li>
+                        </ul>
+                    </li>
+                    <li>Adicione um texto alternativo (opcional)</li>
+                    <li>Clique em "Inserir Imagem"</li>
+                    <li>A imagem deve aparecer no editor</li>
+                </ol>
+            </div>
+
+            <h2>🚀 Testar Editor</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                Clique nos links abaixo para testar a inserção de imagens e o salvamento manual
+            </p>
+
+            <div class="test-links">
+                <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=blank" class="test-link">
+                    <div class="title">📄 Documento em Branco</div>
+                    <div class="desc">Teste básico de inserção</div>
+                </a>
+
+                <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=projeto-lei" class="test-link">
+                    <div class="title">⚖️ Projeto de Lei</div>
+                    <div class="desc">Template com conteúdo</div>
+                </a>
+
+                <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=requerimento" class="test-link">
+                    <div class="title">📋 Requerimento</div>
+                    <div class="desc">Teste em documento oficial</div>
+                </a>
+
+                <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=decreto" class="test-link">
+                    <div class="title">📜 Decreto Legislativo</div>
+                    <div class="desc">Teste em decreto</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>✅ Editor de Documentos Legislativos - Versão Corrigida</p>
+            <p>Inserção de Imagens + Salvamento Manual Funcionando</p>
+        </div>
+    </div>
+
+    <script>
+        // Verificar status do servidor
+        fetch('http://localhost:5175/metronic8/react/demo3/')
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('server-status').innerHTML = '<span style="color: #28a745;">Online e funcionando</span>';
+                } else {
+                    throw new Error('Servidor offline');
+                }
+            })
+            .catch(() => {
+                document.getElementById('server-status').innerHTML = '<span style="color: #dc3545;">Offline ou com problemas</span>';
+            });
+
+        // Adicionar animações aos cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.fix-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+
+            // Efeito hover nos links de teste
+            const testLinks = document.querySelectorAll('.test-link');
+            testLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.02)';
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

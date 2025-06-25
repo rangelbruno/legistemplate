@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Correções Finais do Editor</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .status-section {
+            padding: 20px 30px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .status-fixed {
+            background: #28a745;
+        }
+        
+        .status-warning {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .fixes-section {
+            padding: 30px;
+        }
+        
+        .fix-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .fix-card.error {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .fix-card.warning {
+            border-left: 4px solid #ffc107;
+        }
+        
+        .fix-card.success {
+            border-left: 4px solid #28a745;
+        }
+        
+        .fix-card h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+        
+        .fix-card.error h3 {
+            color: #dc3545;
+        }
+        
+        .fix-card.warning h3 {
+            color: #856404;
+        }
+        
+        .fix-card.success h3 {
+            color: #155724;
+        }
+        
+        .fix-card ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .fix-card li {
+            margin: 8px 0;
+            color: #666;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+        
+        .error-log {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .test-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .test-link {
+            display: block;
+            padding: 20px;
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .test-link:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+        
+        .test-link .title {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .test-link .desc {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        
+        .alert-info {
+            color: #0c5460;
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+        }
+        
+        .alert-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+        }
+        
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+        }
+        
+        .footer p {
+            margin: 0;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .fixes-section {
+                padding: 20px;
+            }
+            
+            .test-links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Correções de Bugs do Editor</h1>
+            <p>Resolvendo Erros de Console e Inserção de Imagens</p>
+        </div>
+
+        <div class="status-section">
+            <h3 style="margin: 0 0 15px 0; color: #856404;">Status das Correções</h3>
+            
+            <div class="status-item">
+                <div class="status-icon status-fixed">✓</div>
+                <span><strong>Erro SVG no dropdown:</strong> Corrigido - removido ícone do &lt;option&gt;</span>
+            </div>
+            
+            <div class="status-item">
+                <div class="status-icon status-fixed">✓</div>
+                <span><strong>Erro rootNode.splice:</strong> Corrigido - filtro de nós válidos</span>
+            </div>
+            
+            <div class="status-item">
+                <div class="status-icon status-warning">⚠</div>
+                <span><strong>Inserção de imagens:</strong> Temporariamente como texto (funcional)</span>
+            </div>
+            
+            <div class="status-item">
+                <div class="status-icon status-fixed">✓</div>
+                <span><strong>Console limpo:</strong> Sem mais erros críticos</span>
+            </div>
+        </div>
+
+        <div class="fixes-section">
+            <h2>🐛 Bugs Corrigidos</h2>
+
+            <div class="fix-card error">
+                <h3>❌ Erro: SVG no Dropdown</h3>
+                <div class="code-block error-log">
+Warning: validateDOMNesting(...): &lt;svg&gt; cannot appear as a child of &lt;option&gt;
+                </div>
+                <p><strong>Causa:</strong> Ícone Lucide React dentro de elemento &lt;option&gt;</p>
+                <p><strong>Solução:</strong> Removido ícone do dropdown, mantendo apenas texto</p>
+                <ul>
+                    <li>✅ Dropdown funcionando sem warnings</li>
+                    <li>✅ Seleção de tipos de bloco operacional</li>
+                    <li>✅ Interface limpa e funcional</li>
+                </ul>
+            </div>
+
+            <div class="fix-card error">
+                <h3>❌ Erro: rootNode.splice</h3>
+                <div class="code-block error-log">
+Error: rootNode.splice: Only element or decorator nodes can be inserted to the root node
+                </div>
+                <p><strong>Causa:</strong> Tentativa de inserir nós inválidos no root do Lexical</p>
+                <p><strong>Solução:</strong> Filtro de nós válidos e fallback robusto</p>
+                <ul>
+                    <li>✅ Validação de tipos de nós antes da inserção</li>
+                    <li>✅ Fallback para nós inválidos</li>
+                    <li>✅ Try-catch para capturar erros</li>
+                    <li>✅ InitialContentPlugin estabilizado</li>
+                </ul>
+            </div>
+
+            <div class="fix-card warning">
+                <h3>⚠️ Inserção de Imagens (Solução Temporária)</h3>
+                <p><strong>Problema:</strong> Lexical não suporta nós de imagem nativamente</p>
+                <p><strong>Solução Atual:</strong> Inserção como texto com informações da imagem</p>
+                <ul>
+                    <li>📷 Emoji indicando imagem</li>
+                    <li>📝 Texto alternativo preservado</li>
+                    <li>🔗 URL da imagem salva</li>
+                    <li>✅ Funcional e sem erros</li>
+                </ul>
+                <div class="code-block">
+📷 Imagem: Descrição da imagem
+🔗 URL: https://exemplo.com/imagem.jpg
+                </div>
+            </div>
+
+            <div class="fix-card success">
+                <h3>✅ Melhorias Implementadas</h3>
+                <ul>
+                    <li><strong>Console limpo:</strong> Sem erros críticos</li>
+                    <li><strong>Editor estável:</strong> Não trava mais</li>
+                    <li><strong>Inserção funcional:</strong> Imagens como texto estruturado</li>
+                    <li><strong>Fallbacks robustos:</strong> Tratamento de erros</li>
+                    <li><strong>Performance:</strong> Sem loops infinitos</li>
+                </ul>
+            </div>
+
+            <div class="alert alert-info">
+                <h4><strong>💡 Próxima Etapa Recomendada</strong></h4>
+                <p>Para inserção real de imagens HTML, será necessário:</p>
+                <ul>
+                    <li>Criar um nó customizado de imagem para Lexical</li>
+                    <li>Implementar DecoratorNode para renderizar &lt;img&gt;</li>
+                    <li>Registrar o nó customizado na configuração</li>
+                    <li>Implementar serialização/deserialização</li>
+                </ul>
+            </div>
+
+            <div class="alert alert-warning">
+                <h4><strong>⚠️ Solução Atual vs. Ideal</strong></h4>
+                <p><strong>Atual:</strong> Imagens inseridas como texto estruturado (funcional, sem erros)</p>
+                <p><strong>Ideal:</strong> Imagens renderizadas como HTML real (requer desenvolvimento adicional)</p>
+                <p>A solução atual permite que o editor funcione sem erros enquanto uma solução mais robusta é desenvolvida.</p>
+            </div>
+
+            <h2>🧪 Testar Correções</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                Clique nos links abaixo para testar o editor corrigido
+            </p>
+
+            <div class="test-links">
+                <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=blank" class="test-link">
+                    <div class="title">📄 Documento em Branco</div>
+                    <div class="desc">Teste console limpo</div>
+                </a>
+
+                <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=projeto-lei" class="test-link">
+                    <div class="title">⚖️ Projeto de Lei</div>
+                    <div class="desc">Teste com conteúdo inicial</div>
+                </a>
+
+                <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=requerimento" class="test-link">
+                    <div class="title">📋 Teste Inserção Imagem</div>
+                    <div class="desc">Clique no ícone 🖼️</div>
+                </a>
+
+                <a href="http://localhost:5175/metronic8/react/demo3/admin/configuracoes/documentos-templates/editor?template=decreto" class="test-link">
+                    <div class="title">📜 Teste Dropdown</div>
+                    <div class="desc">Sem warnings de SVG</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🔧 Editor de Documentos Legislativos - Bugs Corrigidos</p>
+            <p>Console Limpo + Inserção Funcional</p>
+        </div>
+    </div>
+
+    <script>
+        // Verificar status do servidor
+        fetch('http://localhost:5175/metronic8/react/demo3/')
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ Servidor online - Testes disponíveis');
+                } else {
+                    console.warn('⚠️ Servidor com problemas');
+                }
+            })
+            .catch(() => {
+                console.error('❌ Servidor offline');
+            });
+
+        // Adicionar animações aos cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.fix-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+
+            // Efeito hover nos links de teste
+            const testLinks = document.querySelectorAll('.test-link');
+            testLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.02)';
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

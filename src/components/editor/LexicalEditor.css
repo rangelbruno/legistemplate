@@ -1,0 +1,1435 @@
+/* ================================
+   Lexical Editor Moderno
+   Design responsivo e otimizado
+   =============================== */
+
+/* Variáveis do tema claro */
+:root {
+  --editor-bg: #ffffff;
+  --editor-text: #1a1a1a;
+  --editor-border: #e5e5e5;
+  --editor-toolbar-bg: #f8f9fa;
+  --editor-toolbar-border: #dee2e6;
+  --editor-button-hover: #e9ecef;
+  --editor-button-active: #007bff;
+  --editor-button-active-bg: #e3f2fd;
+  --editor-placeholder: #6c757d;
+  --editor-shadow: rgba(0, 0, 0, 0.1);
+  --editor-focus-ring: #007bff40;
+  --editor-dropdown-bg: #ffffff;
+  --editor-dropdown-shadow: rgba(0, 0, 0, 0.15);
+}
+
+.lexical-editor {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  background: var(--editor-bg);
+  border: 1px solid var(--editor-border);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  box-shadow: 0 2px 8px var(--editor-shadow);
+}
+
+.editor-container {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+/* ================================
+   TOOLBAR EXPANDIDA
+   =============================== */
+.toolbar {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--editor-toolbar-bg);
+  border-bottom: 1px solid var(--editor-toolbar-border);
+  min-height: 60px;
+  gap: 8px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolbar-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--editor-text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-height: 36px;
+}
+
+.toolbar-item:hover {
+  background: var(--editor-button-hover);
+  border-color: var(--editor-border);
+}
+
+.toolbar-item:active,
+.toolbar-item.active {
+  background: var(--editor-button-active-bg);
+  border-color: var(--editor-button-active);
+  color: var(--editor-button-active);
+}
+
+.toolbar-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toolbar-item.dropdown {
+  min-width: 140px;
+  justify-content: space-between;
+  background: var(--editor-dropdown-bg);
+  border: 1px solid var(--editor-border);
+}
+
+.toolbar-item.dropdown:hover {
+  border-color: var(--editor-button-active);
+}
+
+.legislative-dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--editor-dropdown-bg);
+  border: 1px solid var(--editor-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px var(--editor-dropdown-shadow);
+  z-index: 1000;
+  min-width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--editor-text);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: var(--editor-button-hover);
+}
+
+.dropdown-item:active {
+  background: var(--editor-button-active-bg);
+  color: var(--editor-button-active);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--editor-toolbar-border);
+  margin: 0 8px;
+}
+
+/* Estilos específicos para grupos de ícones */
+.toolbar-group.advanced-tools {
+  background: rgba(0, 123, 255, 0.05);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.toolbar-group.view-tools {
+  background: rgba(40, 167, 69, 0.05);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+/* Ícones Phosphor - estilo diferenciado */
+.toolbar-item[title*="Imprimir"],
+.toolbar-item[title*="Buscar"],
+.toolbar-item[title*="Exportar"],
+.toolbar-item[title*="Visualizar"],
+.toolbar-item[title*="Compartilhar"],
+.toolbar-item[title*="Alinhar"],
+.toolbar-item[title*="Centralizar"],
+.toolbar-item[title*="Justificar"],
+.toolbar-item[title*="Copiar"],
+.toolbar-item[title*="Recortar"],
+.toolbar-item[title*="Colar"],
+.toolbar-item[title*="Inserir"],
+.toolbar-item[title*="Salvar"] {
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(0,0,0,0.02));
+  border: 1px solid rgba(0, 123, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.toolbar-item[title*="Imprimir"]:hover,
+.toolbar-item[title*="Buscar"]:hover,
+.toolbar-item[title*="Exportar"]:hover,
+.toolbar-item[title*="Visualizar"]:hover,
+.toolbar-item[title*="Compartilhar"]:hover,
+.toolbar-item[title*="Alinhar"]:hover,
+.toolbar-item[title*="Centralizar"]:hover,
+.toolbar-item[title*="Justificar"]:hover,
+.toolbar-item[title*="Copiar"]:hover,
+.toolbar-item[title*="Recortar"]:hover,
+.toolbar-item[title*="Colar"]:hover,
+.toolbar-item[title*="Inserir"]:hover,
+.toolbar-item[title*="Salvar"]:hover {
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 123, 255, 0.05));
+  border-color: rgba(0, 123, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+/* Grupos de ferramentas com cores diferentes */
+.toolbar-group:nth-child(16) { /* Alinhamento */
+  background: rgba(108, 117, 125, 0.05);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.toolbar-group:nth-child(18) { /* Edição */
+  background: rgba(40, 167, 69, 0.05);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.toolbar-group:nth-child(20) { /* Elementos Especiais */
+  background: rgba(255, 193, 7, 0.05);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.toolbar-group:nth-child(22) { /* Visualização */
+  background: rgba(220, 53, 69, 0.05);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+/* Animação para dropdown de elementos legislativos */
+.dropdown-menu {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+.dropdown-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+/* Ícones especiais para elementos legislativos no dropdown */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  color: var(--editor-text);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(0, 123, 255, 0.1);
+  color: var(--editor-button-active);
+  transform: translateX(4px);
+}
+
+/* ================================
+   EDITOR ÁREA
+   =============================== */
+.editor-inner {
+  position: relative;
+  height: calc(100% - 60px); /* Subtract toolbar height */
+  min-height: 500px;
+  max-height: 70vh; /* Limitar altura máxima */
+  overflow-y: auto; /* Adicionar scroll vertical */
+  overflow-x: hidden; /* Evitar scroll horizontal */
+}
+
+.editor-input {
+  flex: 1;
+  padding: 24px;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--editor-text);
+  background: var(--editor-bg);
+  overflow-y: visible; /* Permitir que o container pai controle o scroll */
+  min-height: 400px;
+  max-width: 100%; /* Evitar overflow horizontal */
+  word-wrap: break-word; /* Quebrar palavras longas */
+}
+
+.editor-input:focus {
+  box-shadow: inset 0 0 0 2px var(--editor-focus-ring);
+}
+
+/* ================================
+   PLACEHOLDER
+   =============================== */
+.editor-placeholder {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  color: var(--editor-placeholder);
+  font-size: 16px;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ================================
+   ELEMENTOS DE TEXTO
+   =============================== */
+.editor-paragraph {
+  margin: 0 0 16px 0;
+  line-height: 1.6;
+}
+
+.editor-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.editor-heading-h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 24px 0 16px 0;
+  color: var(--editor-text);
+}
+
+.editor-heading-h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 20px 0 12px 0;
+  color: var(--editor-text);
+}
+
+.editor-heading-h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 16px 0 12px 0;
+  color: var(--editor-text);
+}
+
+.editor-heading-h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 14px 0 10px 0;
+  color: var(--editor-text);
+}
+
+.editor-heading-h5 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 12px 0 8px 0;
+  color: var(--editor-text);
+}
+
+.editor-heading-h6 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 10px 0 8px 0;
+  color: var(--editor-text);
+}
+
+.editor-quote {
+  border-left: 4px solid var(--editor-button-active);
+  padding: 16px 20px;
+  margin: 16px 0;
+  background: #f8f9fa;
+  font-style: italic;
+  color: #495057;
+  border-radius: 0 6px 6px 0;
+}
+
+.editor-code {
+  background: var(--editor-bg);
+  border: 1px solid var(--editor-border);
+  border-radius: 6px;
+  padding: 16px;
+  margin: 12px 0;
+  font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+/* ================================
+   FORMATAÇÃO DE TEXTO
+   =============================== */
+.editor-text-bold {
+  font-weight: bold;
+}
+
+.editor-text-italic {
+  font-style: italic;
+}
+
+.editor-text-underline {
+  text-decoration: underline;
+}
+
+.editor-text-strikethrough {
+  text-decoration: line-through;
+}
+
+.editor-text-code {
+  background-color: #f1f3f4;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+}
+
+/* ================================
+   LISTAS
+   =============================== */
+.editor-list-ol,
+.editor-list-ul {
+  margin: 12px 0;
+  padding-left: 0;
+}
+
+.editor-listitem {
+  margin: 6px 0 6px 24px;
+  line-height: 1.6;
+}
+
+.editor-nested-listitem {
+  margin-left: 20px;
+}
+
+/* ================================
+   LINKS
+   =============================== */
+.editor-link {
+  color: var(--editor-button-active);
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.editor-link:hover {
+  text-decoration: none;
+}
+
+/* ================================
+   MODAL DE IMAGEM
+   =============================== */
+.image-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 20px;
+}
+
+.image-modal-advanced {
+  background: var(--editor-bg);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.image-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--editor-border);
+  background: var(--editor-toolbar-bg);
+}
+
+.image-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--editor-text);
+}
+
+.image-modal-close {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  color: var(--editor-text);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.image-modal-close:hover {
+  background: var(--editor-button-hover);
+}
+
+.image-modal-content {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.row {
+  display: flex;
+  gap: 24px;
+  margin: 0 -12px;
+}
+
+.col-md-6 {
+  flex: 1;
+  padding: 0 12px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: var(--editor-text);
+  font-size: 14px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--editor-border);
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--editor-text);
+  background: var(--editor-bg);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--editor-button-active);
+  box-shadow: 0 0 0 3px var(--editor-focus-ring);
+}
+
+.col-6 {
+  flex: 0 0 50%;
+  padding: 0 8px;
+}
+
+.upload-area {
+  border: 2px dashed var(--editor-border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  transition: border-color 0.2s ease;
+}
+
+.upload-area:hover {
+  border-color: var(--editor-button-active);
+}
+
+.btn {
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.btn-light {
+  background: var(--editor-toolbar-bg);
+  border-color: var(--editor-border);
+  color: var(--editor-text);
+}
+
+.btn-light:hover {
+  background: var(--editor-button-hover);
+  border-color: var(--editor-button-active);
+}
+
+.btn-primary {
+  background: var(--editor-button-active);
+  border-color: var(--editor-button-active);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+  border-color: #0056b3;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+  border-color: #5a6268;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.spinner-border {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 0.125em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border 0.75s linear infinite;
+}
+
+.spinner-border-sm {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-width: 0.125em;
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.me-2 {
+  margin-right: 8px;
+}
+
+.ml-1 {
+  margin-left: 4px;
+}
+
+.mt-3 {
+  margin-top: 16px;
+}
+
+.text-muted {
+  color: var(--editor-placeholder) !important;
+}
+
+/* Preview da imagem */
+.image-preview-container {
+  border: 1px solid var(--editor-border);
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+}
+
+.image-preview-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.image-preview-wrapper.align-left {
+  justify-content: flex-start;
+}
+
+.image-preview-wrapper.align-center {
+  justify-content: center;
+}
+
+.image-preview-wrapper.align-right {
+  justify-content: flex-end;
+}
+
+.image-preview {
+  border-radius: 6px;
+  box-shadow: 0 2px 8px var(--editor-shadow);
+}
+
+.image-preview-placeholder {
+  text-align: center;
+  color: var(--editor-placeholder);
+}
+
+.image-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--editor-border);
+  background: var(--editor-toolbar-bg);
+}
+
+/* ================================
+   IMAGENS NO EDITOR
+   =============================== */
+.editor-input img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 12px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.editor-input img:hover {
+  transform: scale(1.02);
+}
+
+/* ================================
+   ELEMENTOS LEGISLATIVOS
+   =============================== */
+.editor-input {
+  /* Estilos para elementos legislativos inseridos */
+}
+
+.editor-input p:has-text("Art.") {
+  font-weight: 600;
+  margin-top: 20px;
+  color: var(--editor-button-active);
+}
+
+.editor-input p:has-text("§") {
+  margin-left: 20px;
+  font-weight: 500;
+}
+
+.editor-input p:has-text("I -"),
+.editor-input p:has-text("II -"),
+.editor-input p:has-text("III -") {
+  margin-left: 40px;
+}
+
+.editor-input p:has-text("a)"),
+.editor-input p:has-text("b)"),
+.editor-input p:has-text("c)") {
+  margin-left: 60px;
+}
+
+/* ================================
+   RESPONSIVIDADE
+   =============================== */
+@media (max-width: 768px) {
+  .toolbar {
+    padding: 8px 12px;
+    gap: 4px;
+  }
+  
+  .toolbar-item {
+    padding: 6px 8px;
+    font-size: 13px;
+    min-height: 32px;
+  }
+  
+  .toolbar-divider {
+    height: 20px;
+    margin: 0 4px;
+  }
+  
+  .editor-input {
+    padding: 16px;
+    font-size: 15px;
+  }
+  
+  .editor-placeholder {
+    top: 16px;
+    left: 16px;
+    font-size: 15px;
+  }
+  
+  .row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .image-modal-advanced {
+    margin: 10px;
+    max-width: calc(100vw - 20px);
+  }
+  
+  .image-modal-content {
+    padding: 16px;
+  }
+
+  /* Ajustes para imagens em tablet */
+  .editor-input img {
+    max-height: 300px !important; /* Reduzir altura em tablet */
+    max-width: 95% !important;
+  }
+
+  /* Editor com altura adaptável em tablet */
+  .editor-inner {
+    max-height: 65vh !important; /* Menor em tablet */
+  }
+
+  /* Scrollbar mais fina em tablet */
+  .editor-inner::-webkit-scrollbar {
+    width: 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .toolbar {
+    flex-wrap: wrap;
+    padding: 6px 8px;
+  }
+  
+  .toolbar-group {
+    gap: 2px;
+  }
+  
+  .toolbar-item {
+    padding: 4px 6px;
+    font-size: 12px;
+    min-height: 28px;
+  }
+  
+  .toolbar-item.dropdown {
+    min-width: 120px;
+  }
+  
+  .editor-input {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .editor-placeholder {
+    top: 12px;
+    left: 12px;
+    font-size: 14px;
+  }
+
+  /* Ajustes para imagens em mobile */
+  .editor-input img {
+    max-height: 200px !important; /* Altura ainda menor em mobile */
+    max-width: 90% !important;
+  }
+
+  /* Editor com altura adaptável em mobile */
+  .editor-inner {
+    max-height: 50vh !important; /* Bem menor em mobile */
+  }
+
+  /* Scrollbar muito fina em mobile */
+  .editor-inner::-webkit-scrollbar {
+    width: 6px !important;
+  }
+
+  /* Melhor touch experience */
+  .editor-input {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ================================
+   PERFORMANCE E ANIMAÇÕES
+   =============================== */
+.toolbar-item,
+.btn,
+.form-control {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.toolbar-item:focus-visible,
+.btn:focus-visible,
+.form-control:focus-visible {
+  outline: 2px solid var(--editor-button-active);
+  outline-offset: 2px;
+}
+
+/* ================================
+   ESTILOS PARA IMAGENS
+   =============================== */
+.editor-image {
+  display: inline;
+  margin: 0;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  vertical-align: baseline;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.editor-image:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Container para nós de imagem do Lexical */
+span[data-lexical-decorator] {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Garantir que imagens no editor sejam responsivas e performáticas */
+.editor-input img {
+  max-width: 100%;
+  max-height: 400px; /* Limitar altura máxima das imagens */
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  display: inline;
+  margin: 0;
+  vertical-align: baseline;
+  object-fit: contain; /* Manter proporção */
+  cursor: pointer; /* Indicar que é clicável */
+  loading: lazy; /* Lazy loading nativo */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editor-input img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Regra de hover movida para cima para evitar duplicação */
+
+/* Imagens muito grandes - reduzir ainda mais */
+.editor-input img[width="auto"] {
+  max-width: 90%;
+  max-height: 300px;
+}
+
+/* Animação removida para evitar piscar */
+.editor-input img.loaded {
+  /* Animação removida */
+}
+
+/* ================================
+   BARRA DE ROLAGEM CUSTOMIZADA
+   =============================== */
+
+/* Estilizar scrollbar do editor */
+.editor-inner::-webkit-scrollbar {
+  width: 12px;
+}
+
+.editor-inner::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+.editor-inner::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 6px;
+  border: 2px solid #f1f1f1;
+}
+
+.editor-inner::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.editor-inner::-webkit-scrollbar-thumb:active {
+  background: #8a8a8a;
+}
+
+/* Firefox scrollbar */
+.editor-inner {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* ================================
+   OTIMIZAÇÕES DE PERFORMANCE
+   =============================== */
+
+/* Usar GPU acceleration para elementos que mudam */
+.editor-input img,
+.toolbar-item,
+.dropdown-menu {
+  will-change: auto;
+  transform: translateZ(0); /* Force GPU layer */
+}
+
+/* Otimizar renderização de texto */
+.editor-input {
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Container com scroll suave */
+.editor-inner {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+}
+
+/* Evitar reflow em imagens */
+.editor-input img {
+  contain: layout style paint;
+}
+
+/* ================================
+   IMAGENS AVANÇADAS - WORD-LIKE
+   =============================== */
+
+/* Garantir que todos os containers de imagem sejam transparentes */
+.lexical-editor span[data-lexical-decorator],
+.lexical-editor .editor-image,
+.lexical-editor .advanced-image-container,
+.lexical-editor [class*="image"],
+.editor-wrapper .lexical-editor span[data-lexical-decorator],
+.editor-wrapper .lexical-editor .editor-image,
+.editor-wrapper .lexical-editor .advanced-image-container,
+.editor-wrapper .lexical-editor [class*="image"],
+.editor-enhanced .lexical-editor span[data-lexical-decorator],
+.editor-enhanced .lexical-editor .editor-image,
+.editor-enhanced .lexical-editor .advanced-image-container,
+.editor-enhanced .lexical-editor [class*="image"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Container de imagem avançada */
+.advanced-image-container {
+  position: relative;
+  display: inline;
+  user-select: none;
+  background: transparent !important;
+  background-color: transparent !important;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+
+.advanced-image-container:hover {
+  outline: 2px dashed rgba(0, 123, 255, 0.3);
+  outline-offset: 2px;
+}
+
+.advanced-image-container.selected {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Imagens flutuantes à esquerda */
+.advanced-image-container.float-left {
+  float: left;
+  margin: 0 15px 15px 0;
+  clear: left;
+}
+
+/* Imagens flutuantes à direita */
+.advanced-image-container.float-right {
+  float: right;
+  margin: 0 0 15px 15px;
+  clear: right;
+}
+
+/* Imagens inline */
+.advanced-image-container.inline {
+  display: inline;
+  vertical-align: baseline;
+  margin: 0;
+}
+
+/* Imagens centralizadas */
+.advanced-image-container.center {
+  display: block;
+  margin: 5px auto;
+}
+
+/* Handles de redimensionamento aprimorados */
+.resize-handle {
+  position: absolute;
+  background: #007bff;
+  border: 2px solid white;
+  border-radius: 50%;
+  z-index: 1000;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.resize-handle:hover {
+  background: #0056b3;
+  transform: scale(1.15);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.resize-handle:active {
+  background: #004085;
+  transform: scale(0.95);
+}
+
+/* Handles dos cantos - círculos */
+.resize-handle.se,
+.resize-handle.sw,
+.resize-handle.ne,
+.resize-handle.nw {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.resize-handle.se {
+  bottom: -6px;
+  right: -6px;
+  cursor: se-resize;
+}
+
+.resize-handle.sw {
+  bottom: -6px;
+  left: -6px;
+  cursor: sw-resize;
+}
+
+.resize-handle.ne {
+  top: -6px;
+  right: -6px;
+  cursor: ne-resize;
+}
+
+.resize-handle.nw {
+  top: -6px;
+  left: -6px;
+  cursor: nw-resize;
+}
+
+/* Handles das bordas - retangulares */
+.resize-handle.n,
+.resize-handle.s {
+  width: 12px;
+  height: 8px;
+  border-radius: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.resize-handle.n {
+  top: -6px;
+  cursor: n-resize;
+}
+
+.resize-handle.s {
+  bottom: -6px;
+  cursor: s-resize;
+}
+
+.resize-handle.e,
+.resize-handle.w {
+  width: 8px;
+  height: 12px;
+  border-radius: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.resize-handle.e {
+  right: -6px;
+  cursor: e-resize;
+}
+
+.resize-handle.w {
+  left: -6px;
+  cursor: w-resize;
+}
+
+/* Regras duplicadas removidas - já definidas acima */
+
+/* Toolbar de imagem */
+.image-toolbar {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: white;
+  z-index: 1001;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.image-toolbar-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 3px;
+  transition: background 0.2s ease;
+  font-size: 14px;
+}
+
+.image-toolbar-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.image-toolbar-button:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Estados de drag */
+.advanced-image-container.dragging {
+  cursor: grabbing;
+  opacity: 0.8;
+  z-index: 1000;
+}
+
+.advanced-image-container.resizing {
+  cursor: se-resize;
+}
+
+/* Feedback visual durante operações */
+.advanced-image-container.dragging::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px dashed #007bff;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* Remover animações que causam flickering */
+.advanced-image-container {
+  /* Transições removidas para evitar piscar */
+}
+
+.advanced-image-container img {
+  /* Transições removidas para evitar piscar */
+}
+
+/* Wrap text - texto ao redor da imagem */
+.advanced-image-container.wrap-text {
+  shape-outside: margin-box;
+  shape-margin: 10px;
+}
+
+/* Z-index layers */
+.advanced-image-container.behind-text {
+  z-index: -1;
+}
+
+.advanced-image-container.in-front-text {
+  z-index: 10;
+}
+
+/* Responsividade para imagens avançadas */
+@media (max-width: 768px) {
+  .advanced-image-container.float-left,
+  .advanced-image-container.float-right {
+    float: none;
+    display: block;
+    margin: 15px auto;
+  }
+
+  .image-toolbar {
+    top: -35px;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .resize-handle {
+    width: 16px;
+    height: 16px;
+  }
+
+  .resize-handle.se {
+    bottom: -8px;
+    right: -8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .advanced-image-container {
+    max-width: 100%;
+  }
+
+  .image-toolbar {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .resize-handle {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ================================
+   CORREÇÃO FINAL FUNDO BRANCO
+   =============================== */
+
+/* Regra super agressiva para FORÇAR transparência total */
+span.editor-image[data-lexical-decorator="true"],
+span.editor-image[data-lexical-decorator="true"] *,
+span.editor-image[data-lexical-decorator="true"]::before,
+span.editor-image[data-lexical-decorator="true"]::after,
+span.editor-image[data-lexical-decorator="true"] *::before,
+span.editor-image[data-lexical-decorator="true"] *::after,
+div.advanced-image-container,
+div.advanced-image-container *,
+div.advanced-image-container::before,
+div.advanced-image-container::after,
+div.advanced-image-container *::before,
+div.advanced-image-container *::after {
+  background: none !important;
+  background-color: rgba(0, 0, 0, 0) !important;
+  background-image: none !important;
+  background-attachment: initial !important;
+  background-origin: initial !important;
+  background-clip: initial !important;
+  background-size: initial !important;
+  background-repeat: no-repeat !important;
+  background-position: initial !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: inherit !important;
+}
+
+/* Regra para o elemento IMG específico */
+span.editor-image[data-lexical-decorator="true"] img,
+div.advanced-image-container img,
+.lexical-editor img {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Regra de emergência para QUALQUER elemento dentro dos containers de imagem */
+*[data-lexical-decorator] *, 
+.editor-image *, 
+.advanced-image-container * {
+  background: rgba(0,0,0,0) !important;
+  background-color: rgba(0,0,0,0) !important;
+  background-image: none !important;
+}
+
+/* Correção de espaçamento para containers de imagem */
+span[data-lexical-decorator],
+.editor-image,
+.advanced-image-container {
+  /* white-space removido para permitir quebra de linha natural */
+}
+
+/* Regra final para garantir que NENHUM container de imagem tenha fundo */
+div[data-lexical-decorator],
+span[data-lexical-decorator],
+.lexical-editor div[data-lexical-decorator],
+.lexical-editor span[data-lexical-decorator],
+.editor-wrapper div[data-lexical-decorator],
+.editor-wrapper span[data-lexical-decorator],
+.editor-enhanced div[data-lexical-decorator],
+.editor-enhanced span[data-lexical-decorator],
+*[data-lexical-decorator],
+*[data-lexical-decorator]::before,
+*[data-lexical-decorator]::after,
+*[data-lexical-decorator] *,
+*[data-lexical-decorator] *::before,
+*[data-lexical-decorator] *::after {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* Regra adicional para qualquer elemento que contenha imagem */
+*[class*="image-container"],
+*[class*="imageContainer"],
+*[class*="image-wrapper"],
+*[class*="imageWrapper"],
+.editor-image,
+.editor-image::before,
+.editor-image::after,
+.editor-image *,
+.editor-image *::before,
+.editor-image *::after,
+.advanced-image-container,
+.advanced-image-container::before,
+.advanced-image-container::after,
+.advanced-image-container *,
+.advanced-image-container *::before,
+.advanced-image-container *::after {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+} 

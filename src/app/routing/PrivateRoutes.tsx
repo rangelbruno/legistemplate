@@ -24,6 +24,7 @@ import SistemaBasico from '../admin/configuracoes/sistema-basico/page'
 import UsuariosPermissoes from '../admin/configuracoes/usuarios-permissoes/page'
 import CalendarioSessoes from '../admin/configuracoes/calendario-sessoes/page'
 import DocumentosTemplates from '../admin/configuracoes/documentos-templates/page'
+import DocumentosTemplatesEditor from '../admin/configuracoes/documentos-templates/editor/page'
 import EstruturaParlamentar from '../admin/configuracoes/estrutura-parlamentar/page'
 import ProcessosPrazos from '../admin/configuracoes/processos-prazos/page'
 import Integracoes from '../admin/configuracoes/integracoes/page'
@@ -51,6 +52,10 @@ const PrivateRoutes = () => {
 
   return (
     <Routes>
+      {/* Rota especial para o editor - SEM MasterLayout (tela cheia) */}
+      <Route path='admin/configuracoes/documentos-templates/editor' element={<DocumentosTemplatesEditor />} />
+      
+      {/* Todas as outras rotas COM MasterLayout */}
       <Route element={<MasterLayout />}>
         {/* Redirect baseado no role após login */}
         <Route path='auth/*' element={<Navigate to={getRoleBasedRedirect()} />} />

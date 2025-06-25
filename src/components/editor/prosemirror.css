@@ -1,0 +1,521 @@
+/* === ProseMirror Editor Styles === */
+
+.prosemirror-wrapper {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.prosemirror-editor {
+  outline: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  -webkit-font-variant-ligatures: none;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0;
+}
+
+.prosemirror-content {
+  background: white;
+  color: #333;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.prosemirror-editor.readonly {
+  background-color: #f8f9fa;
+  cursor: default;
+}
+
+/* Toolbar Styles */
+.prosemirror-toolbar {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 1px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.prosemirror-toolbar .btn-group {
+  box-shadow: none;
+}
+
+.prosemirror-toolbar .btn {
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.prosemirror-toolbar .btn:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+  border-color: rgba(0, 123, 255, 0.2);
+}
+
+.prosemirror-toolbar .btn.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+/* Document Structure */
+.prosemirror-editor h1,
+.prosemirror-editor h2,
+.prosemirror-editor h3,
+.prosemirror-editor h4,
+.prosemirror-editor h5,
+.prosemirror-editor h6 {
+  font-weight: bold;
+  margin: 1.5em 0 0.5em 0;
+  color: #2c3e50;
+}
+
+.prosemirror-editor h1 {
+  font-size: 2em;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.3em;
+}
+
+.prosemirror-editor h2 {
+  font-size: 1.6em;
+  border-bottom: 1px solid #bdc3c7;
+  padding-bottom: 0.2em;
+}
+
+.prosemirror-editor h3 {
+  font-size: 1.4em;
+}
+
+.prosemirror-editor h4 {
+  font-size: 1.2em;
+}
+
+.prosemirror-editor h5 {
+  font-size: 1.1em;
+}
+
+.prosemirror-editor h6 {
+  font-size: 1em;
+  color: #7f8c8d;
+}
+
+.prosemirror-editor p {
+  margin: 1em 0;
+  text-align: justify;
+}
+
+.prosemirror-editor p:first-child {
+  margin-top: 0;
+}
+
+.prosemirror-editor p:last-child {
+  margin-bottom: 0;
+}
+
+/* Legislative Elements */
+.document-header {
+  text-align: center;
+  margin-bottom: 2em;
+  padding: 1.5em;
+  border-bottom: 3px solid #3498db;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.header-logo img {
+  max-height: 80px;
+  margin-bottom: 1em;
+}
+
+.header-info {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.document-footer {
+  text-align: center;
+  margin-top: 2em;
+  padding: 1.5em;
+  border-top: 2px solid #bdc3c7;
+  background: #f8f9fa;
+  font-size: 0.9em;
+  color: #7f8c8d;
+}
+
+.article-section {
+  margin: 2em 0;
+  padding: 1em;
+  border-left: 4px solid #3498db;
+  background: rgba(52, 152, 219, 0.05);
+}
+
+.article-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 0.5em;
+}
+
+.caput {
+  text-indent: 2em;
+  margin: 1em 0;
+  text-align: justify;
+}
+
+.inciso {
+  margin: 0.5em 0;
+  padding-left: 2em;
+  display: flex;
+  align-items: flex-start;
+}
+
+.inciso-number {
+  font-weight: bold;
+  min-width: 2em;
+  color: #3498db;
+}
+
+.inciso-text {
+  flex: 1;
+  text-align: justify;
+}
+
+.alinea {
+  margin: 0.3em 0;
+  padding-left: 3em;
+  display: flex;
+  align-items: flex-start;
+}
+
+.alinea-letter {
+  font-weight: bold;
+  min-width: 1.5em;
+  color: #e74c3c;
+}
+
+.alinea-text {
+  flex: 1;
+  text-align: justify;
+}
+
+.considerando {
+  margin: 1em 0;
+  text-indent: 2em;
+  font-style: italic;
+  color: #34495e;
+}
+
+.ementa {
+  font-weight: bold;
+  text-align: center;
+  margin: 2em 0;
+  padding: 1em;
+  background: rgba(52, 152, 219, 0.1);
+  border: 1px solid #3498db;
+  border-radius: 4px;
+}
+
+.signature-block {
+  margin: 3em 0 1em 0;
+  text-align: center;
+  page-break-inside: avoid;
+}
+
+.signature-line {
+  border-bottom: 1px solid #333;
+  width: 300px;
+  margin: 2em auto 0.5em auto;
+}
+
+.signature-name {
+  font-weight: bold;
+  margin: 0.5em 0;
+}
+
+.signature-title {
+  font-style: italic;
+  color: #7f8c8d;
+}
+
+/* Lists */
+.prosemirror-editor ul,
+.prosemirror-editor ol {
+  padding-left: 2em;
+  margin: 1em 0;
+}
+
+.prosemirror-editor li {
+  margin: 0.5em 0;
+  text-align: justify;
+}
+
+.prosemirror-editor ul > li {
+  list-style-type: disc;
+}
+
+.prosemirror-editor ol > li {
+  list-style-type: decimal;
+}
+
+/* Blockquotes */
+.prosemirror-editor blockquote {
+  border-left: 4px solid #3498db;
+  margin: 1.5em 0;
+  padding: 1em 1.5em;
+  background: rgba(52, 152, 219, 0.05);
+  font-style: italic;
+  color: #2c3e50;
+}
+
+.prosemirror-editor blockquote p {
+  margin: 0.5em 0;
+}
+
+/* Code */
+.prosemirror-editor code {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+}
+
+.prosemirror-editor pre {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.prosemirror-editor pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* Tables */
+.voting-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  background: white;
+}
+
+.voting-table th,
+.voting-table td {
+  border: 1px solid #dee2e6;
+  padding: 0.75em;
+  text-align: left;
+}
+
+.voting-table th {
+  background: #f8f9fa;
+  font-weight: bold;
+  color: #495057;
+}
+
+.voting-table tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+/* Marks */
+.prosemirror-editor strong {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.prosemirror-editor em {
+  font-style: italic;
+}
+
+.prosemirror-editor u {
+  text-decoration: underline;
+}
+
+.prosemirror-editor a {
+  color: #3498db;
+  text-decoration: none;
+  border-bottom: 1px dotted #3498db;
+}
+
+.prosemirror-editor a:hover {
+  color: #2980b9;
+  border-bottom-style: solid;
+}
+
+.article-number {
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.legal-reference {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 3px;
+  padding: 0.1em 0.3em;
+  color: #856404;
+}
+
+/* Selection */
+.prosemirror-editor::selection {
+  background: rgba(52, 152, 219, 0.3);
+}
+
+.prosemirror-editor ::-moz-selection {
+  background: rgba(52, 152, 219, 0.3);
+}
+
+/* Focus */
+.prosemirror-editor:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Placeholder */
+.prosemirror-editor .placeholder {
+  color: #adb5bd;
+  pointer-events: none;
+  height: 0;
+  display: inline-block;
+}
+
+.prosemirror-editor .placeholder::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+}
+
+/* Gap Cursor */
+.ProseMirror-gapcursor {
+  display: none;
+  pointer-events: none;
+  position: absolute;
+}
+
+.ProseMirror-gapcursor:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -2px;
+  width: 20px;
+  border-top: 1px solid #3498db;
+  animation: ProseMirror-cursor-blink 1.1s steps(2, start) infinite;
+}
+
+@keyframes ProseMirror-cursor-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.ProseMirror-focused .ProseMirror-gapcursor {
+  display: block;
+}
+
+/* Drop Cursor */
+.ProseMirror-dropcursor {
+  position: absolute;
+  pointer-events: none;
+  border-left: 2px solid #3498db;
+  border-right: 2px solid #3498db;
+  margin-left: -2px;
+  margin-right: -2px;
+}
+
+/* Menu Bar */
+.ProseMirror-menubar {
+  border-bottom: 1px solid #dee2e6;
+  background: #f8f9fa;
+  padding: 0.5em;
+}
+
+.ProseMirror-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+}
+
+.ProseMirror-menuitem {
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 0.25em 0.5em;
+  cursor: pointer;
+  background: none;
+  font-size: 0.9em;
+}
+
+.ProseMirror-menuitem:hover {
+  background: rgba(52, 152, 219, 0.1);
+  border-color: rgba(52, 152, 219, 0.2);
+}
+
+.ProseMirror-menuitem.ProseMirror-menu-active {
+  background: #3498db;
+  color: white;
+  border-color: #2980b9;
+}
+
+.ProseMirror-menuitem.ProseMirror-menu-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Print Styles */
+@media print {
+  .prosemirror-toolbar {
+    display: none !important;
+  }
+  
+  .prosemirror-wrapper {
+    box-shadow: none !important;
+    border: none !important;
+  }
+  
+  .prosemirror-content {
+    padding: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  
+  .document-header,
+  .document-footer {
+    background: none !important;
+  }
+  
+  .article-section {
+    background: none !important;
+    border-left-color: #000 !important;
+  }
+  
+  .prosemirror-editor a {
+    color: #000 !important;
+    text-decoration: underline !important;
+    border-bottom: none !important;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .prosemirror-toolbar {
+    padding: 0.25em;
+  }
+  
+  .prosemirror-toolbar .btn-group {
+    margin-bottom: 0.25em;
+  }
+  
+  .prosemirror-content {
+    padding: 15px;
+    font-size: 13px;
+  }
+  
+  .document-header,
+  .document-footer {
+    padding: 1em;
+  }
+  
+  .signature-line {
+    width: 200px;
+  }
+}
+
+ 

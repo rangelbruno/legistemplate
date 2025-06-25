@@ -1,0 +1,179 @@
+/* ==========================================================================
+   EDITOR PAGE STYLES
+   ========================================================================== */
+
+.editor-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  z-index: 1000;
+}
+
+.editor-page.fullscreen {
+  z-index: 9999;
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.document-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.document-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editor-main {
+  flex: 1;
+  padding: 1.5rem;
+  overflow: auto;
+}
+
+.editor-container {
+  max-width: 21cm;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-height: calc(100vh - 6rem);
+}
+
+.document-editor {
+  min-height: calc(100vh - 8rem);
+}
+
+/* Estilo para a página do editor Word */
+.editor-page-word {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.editor-page-word .document-editor {
+  width: 100%;
+  height: 100%;
+}
+
+/* Estilo para a página do template builder */
+.editor-page-template {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.editor-page-template .template-builder-editor {
+  width: 100%;
+  height: 100%;
+}
+
+/* Layout específico para tela cheia do editor */
+.editor-fullscreen-layout {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #f8fafc;
+  z-index: 9999;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.template-builder-fullscreen {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Remover qualquer padding/margin do body quando em tela cheia */
+body:has(.editor-fullscreen-layout) {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .editor-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .header-left,
+  .header-right {
+    justify-content: center;
+  }
+
+  .editor-main {
+    padding: 1rem;
+  }
+
+  .document-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
+
+@media print {
+  .editor-header {
+    display: none !important;
+  }
+
+  .editor-page {
+    position: static;
+    background: white;
+  }
+
+  .editor-main {
+    padding: 0;
+  }
+
+  .editor-container {
+    box-shadow: none;
+    border-radius: 0;
+    max-width: none;
+  }
+} 

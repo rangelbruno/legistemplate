@@ -1,0 +1,2097 @@
+/* ================================
+   Word-Like Editor com ABNT
+   Design profissional e funcional
+   =============================== */
+
+/* Variáveis do tema ABNT */
+:root {
+  --abnt-bg: #ffffff;
+  --abnt-text: #000000;
+  --abnt-border: #d0d0d0;
+  --abnt-ruler-bg: #f0f0f0;
+  --abnt-ruler-text: #666666;
+  --abnt-page-shadow: rgba(0, 0, 0, 0.2);
+  --abnt-toolbar-bg: #f8f9fa;
+  --abnt-toolbar-border: #dee2e6;
+  --abnt-button-hover: #e9ecef;
+  --abnt-button-active: #007bff;
+  --abnt-button-active-bg: #e3f2fd;
+  --abnt-zoom-bg: #ffffff;
+  
+  /* Medidas ABNT em pixels (baseado em 96 DPI) */
+  --abnt-margin-top: 3cm;
+  --abnt-margin-right: 2cm;
+  --abnt-margin-bottom: 2cm;
+  --abnt-margin-left: 3cm;
+  --abnt-line-height: 1.5; /* Espaço 1,5 conforme ABNT */
+  --abnt-paragraph-indent: 1.25cm;
+  
+  /* Conversão aproximada cm para px (96 DPI) */
+  --cm-to-px: 37.795275591px; /* 1cm = ~37.8px em 96 DPI */
+}
+
+/* Container principal do editor */
+.word-like-editor {
+  width: 100%;
+  height: 100%;
+  min-height: 800px;
+  display: flex;
+  flex-direction: column;
+  background: #e0e0e0; /* Fundo cinza como no Word */
+  font-family: 'Times New Roman', Times, serif; /* Fonte padrão ABNT */
+  overflow: hidden;
+}
+
+/* ================================
+   TOOLBAR ABNT AVANÇADA
+   =============================== */
+.abnt-toolbar {
+  background: var(--abnt-toolbar-bg);
+  border-bottom: 1px solid var(--abnt-toolbar-border);
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolbar-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--abnt-text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-height: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.toolbar-item:hover {
+  background: var(--abnt-button-hover);
+  border-color: var(--abnt-border);
+}
+
+.toolbar-item:active,
+.toolbar-item.active {
+  background: var(--abnt-button-active-bg);
+  border-color: var(--abnt-button-active);
+  color: var(--abnt-button-active);
+}
+
+.toolbar-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toolbar-item.dropdown {
+  min-width: 160px;
+  justify-content: space-between;
+  background: var(--abnt-zoom-bg);
+  border: 1px solid var(--abnt-border);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--abnt-toolbar-border);
+  margin: 0 4px;
+}
+
+/* Indicador de zoom */
+.zoom-indicator {
+  min-width: 50px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--abnt-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Dropdown de elementos legislativos */
+.legislative-dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--abnt-zoom-bg);
+  border: 1px solid var(--abnt-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  min-width: 280px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: var(--abnt-text);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.dropdown-item:hover {
+  background: var(--abnt-button-hover);
+}
+
+/* ================================
+   RÉGUAS
+   =============================== */
+.editor-with-rulers {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  grid-template-rows: 30px 1fr;
+  flex: 1;
+  overflow: auto;
+  background: #e0e0e0;
+}
+
+.ruler-corner {
+  background: var(--abnt-ruler-bg);
+  border-right: 1px solid var(--abnt-border);
+  border-bottom: 1px solid var(--abnt-border);
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.horizontal-ruler {
+  background: var(--abnt-ruler-bg);
+  border-bottom: 1px solid var(--abnt-border);
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.vertical-ruler {
+  background: var(--abnt-ruler-bg);
+  border-right: 1px solid var(--abnt-border);
+  grid-column: 1;
+  grid-row: 2;
+  position: relative;
+  overflow: hidden;
+}
+
+.ruler-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: top left;
+}
+
+.ruler-mark {
+  position: absolute;
+  background: var(--abnt-ruler-text);
+}
+
+/* Régua horizontal */
+.horizontal-ruler .ruler-mark {
+  width: 1px;
+  height: 100%;
+}
+
+.horizontal-ruler .ruler-mark.major {
+  height: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.horizontal-ruler .ruler-mark.minor {
+  height: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.horizontal-ruler .ruler-mark.micro {
+  height: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Régua vertical */
+.vertical-ruler .ruler-mark {
+  height: 1px;
+  width: 100%;
+}
+
+.vertical-ruler .ruler-mark.major {
+  width: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.vertical-ruler .ruler-mark.minor {
+  width: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.vertical-ruler .ruler-mark.micro {
+  width: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Números das réguas */
+.ruler-number {
+  position: absolute;
+  font-size: 9px;
+  color: var(--abnt-ruler-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  pointer-events: none;
+}
+
+.horizontal-ruler .ruler-number {
+  top: 2px;
+  left: 2px;
+}
+
+.vertical-ruler .ruler-number {
+  left: 2px;
+  top: 2px;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* ================================
+   PÁGINAS A4
+   =============================== */
+.pages-container {
+  grid-column: 2;
+  grid-row: 2;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  overflow-y: auto;
+  background: #e0e0e0;
+}
+
+.page-container {
+  transform-origin: top center;
+  transition: transform 0.2s ease;
+}
+
+.page-shadow {
+  /* Sombra da página como no Word */
+  filter: drop-shadow(0 4px 8px var(--abnt-page-shadow));
+  margin-bottom: 20px;
+}
+
+.page-content {
+  /* Dimensões A4: 21cm x 29.7cm */
+  width: 21cm;
+  height: 29.7cm;
+  background: var(--abnt-bg);
+  border: 1px solid var(--abnt-border);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header {
+  height: calc(var(--abnt-margin-top) / 2);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: var(--abnt-margin-right);
+  font-size: 10px;
+  color: #888;
+}
+
+.page-info {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.page-body {
+  flex: 1;
+  padding: calc(var(--abnt-margin-top) / 2) var(--abnt-margin-right) calc(var(--abnt-margin-bottom) / 2) var(--abnt-margin-left);
+  position: relative;
+}
+
+.page-footer {
+  height: calc(var(--abnt-margin-bottom) / 2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  color: var(--abnt-text);
+}
+
+.page-number {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+/* ================================
+   EDITOR DE CONTEÚDO ABNT
+   =============================== */
+.editor-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.editor-input.abnt-content {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt; /* Padrão ABNT */
+  line-height: var(--abnt-line-height);
+  color: var(--abnt-text);
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  resize: none;
+  text-align: justify; /* Alinhamento justificado padrão ABNT */
+}
+
+.editor-placeholder.abnt-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #999;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+  line-height: var(--abnt-line-height);
+  pointer-events: none;
+}
+
+/* ================================
+   ESTILOS ABNT PARA ELEMENTOS
+   =============================== */
+
+/* Parágrafos ABNT */
+.abnt-paragraph {
+  margin: 0 0 0 0;
+  padding: 0;
+  text-indent: var(--abnt-paragraph-indent);
+  text-align: justify;
+  line-height: var(--abnt-line-height);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+}
+
+.abnt-paragraph:first-child {
+  text-indent: 0; /* Primeiro parágrafo sem recuo */
+}
+
+/* Títulos ABNT */
+.abnt-title {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 14pt;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0 0 calc(var(--abnt-line-height) * 1em) 0;
+  line-height: var(--abnt-line-height);
+}
+
+.abnt-heading {
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
+  margin: calc(var(--abnt-line-height) * 1em) 0 calc(var(--abnt-line-height) * 0.5em) 0;
+  line-height: var(--abnt-line-height);
+  text-align: left;
+}
+
+.abnt-h1 {
+  font-size: 14pt;
+  text-transform: uppercase;
+}
+
+.abnt-h2 {
+  font-size: 12pt;
+  text-transform: uppercase;
+}
+
+.abnt-h3 {
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+/* Artigos legislativos */
+.abnt-article {
+  margin: calc(var(--abnt-line-height) * 1em) 0;
+  text-align: justify;
+  line-height: var(--abnt-line-height);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+  text-indent: 0;
+}
+
+/* Incisos e alíneas */
+.abnt-inciso {
+  margin: calc(var(--abnt-line-height) * 0.5em) 0;
+  padding-left: 2cm;
+  text-align: justify;
+  line-height: var(--abnt-line-height);
+  text-indent: -1cm;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+}
+
+.abnt-alinea {
+  margin: calc(var(--abnt-line-height) * 0.5em) 0;
+  padding-left: 3cm;
+  text-align: justify;
+  line-height: var(--abnt-line-height);
+  text-indent: -1cm;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+}
+
+/* Ementa */
+.abnt-ementa {
+  margin: calc(var(--abnt-line-height) * 1em) 0;
+  text-align: center;
+  line-height: var(--abnt-line-height);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+/* Seções */
+.abnt-section {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  margin: calc(var(--abnt-line-height) * 2em) 0 calc(var(--abnt-line-height) * 1em) 0;
+  line-height: var(--abnt-line-height);
+}
+
+/* Justificativa */
+.abnt-justify {
+  text-align: justify;
+  text-indent: var(--abnt-paragraph-indent);
+  line-height: var(--abnt-line-height);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+  margin: 0 0 calc(var(--abnt-line-height) * 1em) 0;
+}
+
+/* Citações longas ABNT */
+.abnt-citation {
+  margin: calc(var(--abnt-line-height) * 1em) 0;
+  padding-left: 4cm;
+  padding-right: 0;
+  font-size: 10pt;
+  line-height: 1.0; /* Citações com espaçamento simples */
+  text-align: justify;
+  font-family: 'Times New Roman', Times, serif;
+  border: none;
+  background: none;
+}
+
+/* Listas ABNT */
+.abnt-list-ordered,
+.abnt-list-unordered {
+  margin: calc(var(--abnt-line-height) * 1em) 0;
+  padding-left: 2cm;
+}
+
+.abnt-list-item {
+  margin: calc(var(--abnt-line-height) * 0.5em) 0;
+  line-height: var(--abnt-line-height);
+  text-align: justify;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+}
+
+/* Assinatura */
+.abnt-signature {
+  margin-top: calc(var(--abnt-line-height) * 3em);
+  text-align: center;
+}
+
+.signature-location {
+  text-align: right;
+  margin-bottom: calc(var(--abnt-line-height) * 2em);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+}
+
+.signature-line {
+  text-align: center;
+  margin: calc(var(--abnt-line-height) * 1em) 0;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+}
+
+.signature-name,
+.signature-title {
+  text-align: center;
+  margin: calc(var(--abnt-line-height) * 0.5em) 0;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+}
+
+/* Links ABNT */
+.abnt-link {
+  color: var(--abnt-text);
+  text-decoration: underline;
+}
+
+.abnt-link:hover {
+  color: var(--abnt-button-active);
+}
+
+/* Imagens ABNT */
+.abnt-image {
+  display: block;
+  margin: calc(var(--abnt-line-height) * 1em) auto;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Código ABNT */
+.abnt-code {
+  font-family: 'Courier New', monospace;
+  font-size: 10pt;
+  background: #f5f5f5;
+  padding: calc(var(--abnt-line-height) * 0.5em);
+  margin: calc(var(--abnt-line-height) * 1em) 0;
+  border: 1px solid #ddd;
+  line-height: 1.2;
+}
+
+/* ================================
+   RESPONSIVIDADE
+   =============================== */
+@media (max-width: 1200px) {
+  .pages-container {
+    padding: 20px;
+  }
+  
+  .page-content {
+    transform: scale(0.8);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 768px) {
+  .abnt-toolbar {
+    padding: 4px 8px;
+    gap: 4px;
+  }
+  
+  .toolbar-item {
+    padding: 6px 8px;
+    font-size: 12px;
+    min-height: 28px;
+  }
+  
+  .toolbar-item span {
+    display: none; /* Esconder texto em telas pequenas */
+  }
+  
+  .pages-container {
+    padding: 10px;
+  }
+  
+  .page-content {
+    transform: scale(0.6);
+    transform-origin: top center;
+  }
+  
+  .editor-with-rulers {
+    grid-template-columns: 20px 1fr;
+    grid-template-rows: 20px 1fr;
+  }
+  
+  .ruler-number {
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-content {
+    transform: scale(0.4);
+    transform-origin: top center;
+  }
+  
+  .toolbar-row {
+    gap: 4px;
+  }
+  
+  .toolbar-group {
+    gap: 2px;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   =============================== */
+@media print {
+  .word-like-editor {
+    background: white;
+  }
+  
+  .abnt-toolbar,
+  .horizontal-ruler,
+  .vertical-ruler,
+  .ruler-corner,
+  .page-info {
+    display: none !important;
+  }
+  
+  .editor-with-rulers {
+    display: block;
+  }
+  
+  .pages-container {
+    padding: 0;
+    background: white;
+    gap: 0;
+  }
+  
+  .page-container {
+    transform: none !important;
+    page-break-after: always;
+  }
+  
+  .page-container:last-child {
+    page-break-after: auto;
+  }
+  
+  .page-shadow {
+    filter: none;
+    margin-bottom: 0;
+  }
+  
+  .page-content {
+    width: 100%;
+    height: 100vh;
+    border: none;
+    box-shadow: none;
+  }
+  
+  .page-footer {
+    display: flex !important;
+  }
+}
+
+/* ================================
+   SCROLLBARS CUSTOMIZADAS
+   =============================== */
+.pages-container::-webkit-scrollbar {
+  width: 12px;
+}
+
+.pages-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+.pages-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 6px;
+}
+
+.pages-container::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Firefox scrollbar */
+.pages-container {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* ===== WORD-LIKE EDITOR AVANÇADO COM CONTROLE PRECISO DE PÁGINAS A4 ===== */
+
+/* Variáveis CSS para normas ABNT e dimensões A4 */
+:root {
+  /* Dimensões exatas A4 em pixels (96 DPI) */
+  --a4-width: 794px;  /* 21cm */
+  --a4-height: 1123px; /* 29.7cm */
+  
+  /* Margens ABNT em pixels */
+  --abnt-margin-top: 113px;    /* 3cm */
+  --abnt-margin-right: 76px;   /* 2cm */
+  --abnt-margin-bottom: 76px;  /* 2cm */
+  --abnt-margin-left: 113px;   /* 3cm */
+  
+  /* Área útil de conteúdo */
+  --content-width: 605px;  /* 794 - 113 - 76 = 605px */
+  --content-height: 934px; /* 1123 - 113 - 76 = 934px */
+  
+  /* Cores do tema */
+  --page-bg: #ffffff;
+  --editor-bg: #f5f5f5;
+  --page-shadow: rgba(0, 0, 0, 0.15);
+  --ruler-bg: #e8e8e8;
+  --ruler-mark: #666666;
+  --margin-guide: rgba(65, 105, 225, 0.3);
+  --overflow-warning: #ff6b6b;
+  
+  /* Tipografia ABNT */
+  --abnt-font-family: 'Times New Roman', Times, serif;
+  --abnt-font-size: 12pt;
+  --abnt-line-height: 1.5;
+  --abnt-text-indent: 1.25cm;
+}
+
+/* Word-like Editor Clean - Interface moderna e performática */
+.word-like-editor-advanced {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f9fbfd;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Toolbar Clean e Compacta */
+.abnt-toolbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e1e5e9;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  min-height: 60px;
+}
+
+.toolbar-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.toolbar-secondary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Título do documento */
+.document-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a202c;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.document-title:hover,
+.document-title:focus {
+  background: #f7fafc;
+}
+
+/* Botões da toolbar simplificados */
+.toolbar-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a5568;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.toolbar-item:hover {
+  background: #edf2f7;
+  color: #2d3748;
+}
+
+.toolbar-item.active {
+  background: #e3f2fd;
+  color: #1976d2;
+  border-color: #bbdefb;
+}
+
+.toolbar-item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: #e2e8f0;
+  margin: 0 8px;
+}
+
+/* Container principal limpo */
+.editor-main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Painel de páginas simplificado */
+.pages-thumbnail-panel {
+  width: 180px;
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  padding: 16px 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.thumbnail-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.page-thumbnail {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-thumbnail:hover {
+  border-color: #cbd5e0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.page-thumbnail.active {
+  border-color: #3182ce;
+  box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
+}
+
+.page-thumbnail-content {
+  aspect-ratio: 21/29.7;
+  background: #ffffff;
+  padding: 4px;
+  font-size: 5px;
+  line-height: 1.1;
+  color: #718096;
+  overflow: hidden;
+  position: relative;
+}
+
+.page-thumbnail-number {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-size: 7px;
+  font-weight: 600;
+}
+
+.page-thumbnail-preview {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 15;
+  -webkit-box-orient: vertical;
+}
+
+/* Área de edição clean */
+.editor-with-rulers-advanced {
+  flex: 1;
+  overflow: auto;
+  background: #f9fbfd;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* Container das páginas centralizado */
+.pages-container-advanced {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 210mm; /* Largura máxima A4 */
+  width: 100%;
+}
+
+/* Página A4 simplificada */
+.page-a4-container {
+  margin-bottom: 20px;
+  position: relative;
+  transition: all 0.2s ease;
+  width: 100%;
+  max-width: 794px; /* Largura A4 em pixels */
+}
+
+.page-a4-shadow {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.page-a4-container:hover .page-a4-shadow {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.page-a4-content {
+  background: #ffffff;
+  position: relative;
+  min-height: 1123px; /* Altura A4 em pixels */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cabeçalho da página minimalista */
+.page-header {
+  background: transparent;
+  padding: 20px 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 40px;
+}
+
+.page-info {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 11px;
+  color: #a0aec0;
+}
+
+.page-indicator {
+  font-weight: 600;
+  color: #718096;
+}
+
+.page-lines {
+  background: #edf2f7;
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+/* Área de conteúdo principal */
+.page-content-area {
+  flex: 1;
+  padding: 24px;
+  position: relative;
+  background: #ffffff;
+}
+
+.page-editor-textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 900px;
+  font-family: 'Times New Roman', Georgia, serif !important;
+  font-size: 12pt !important;
+  line-height: 1.6 !important;
+  color: #2d3748;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 0;
+  margin: 0;
+  text-align: justify;
+}
+
+.page-editor-textarea:focus {
+  outline: none;
+}
+
+.page-editor-textarea::placeholder {
+  color: #a0aec0;
+  font-style: italic;
+}
+
+/* Rodapé da página */
+.page-footer {
+  background: transparent;
+  padding: 0 24px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40px;
+}
+
+.page-number {
+  font-size: 11px;
+  color: #a0aec0;
+  font-weight: 500;
+}
+
+/* Indicadores visuais sutis */
+.overflow-indicator {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+}
+
+.overflow-warning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fed7d7;
+  color: #c53030;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(197, 48, 48, 0.15);
+}
+
+/* Botão de nova página */
+.add-page-hint {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.page-a4-container:hover .add-page-hint {
+  opacity: 1;
+}
+
+.add-page-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #3182ce;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(49, 130, 206, 0.3);
+}
+
+.add-page-button:hover {
+  background: #2c5aa0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(49, 130, 206, 0.4);
+}
+
+.add-page-shortcut {
+  font-size: 10px;
+  color: #718096;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Delimitador de página elegante */
+.page-break-delimiter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0;
+  position: relative;
+}
+
+.page-break-line {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #cbd5e0, transparent);
+  position: relative;
+}
+
+.page-break-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  padding: 6px 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #4a5568;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.page-break-text {
+  color: #4a5568;
+}
+
+.page-break-info {
+  color: #a0aec0;
+  font-weight: 400;
+  font-size: 10px;
+}
+
+.page-break-remove {
+  background: #fed7d7;
+  color: #c53030;
+  border: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: all 0.2s ease;
+}
+
+.page-break-remove:hover {
+  background: #feb2b2;
+  transform: scale(1.1);
+}
+
+/* Ações do painel de miniaturas */
+.thumbnail-panel-actions {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 12px;
+  margin-top: auto;
+}
+
+.thumbnail-panel-actions .add-page-button {
+  width: 100%;
+  justify-content: center;
+  margin: 0;
+  font-size: 11px;
+  padding: 6px 8px;
+}
+
+/* Controles de página na toolbar */
+.page-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f7fafc;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.page-nav-button {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #4a5568;
+  transition: all 0.15s ease;
+}
+
+.page-nav-button:hover:not(:disabled) {
+  background: #edf2f7;
+  color: #2d3748;
+}
+
+.page-nav-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-indicator-toolbar {
+  font-size: 12px;
+  color: #4a5568;
+  font-weight: 500;
+  margin: 0 4px;
+}
+
+/* Zoom controls */
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zoom-button {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #4a5568;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-button:hover:not(:disabled) {
+  background: #edf2f7;
+  border-color: #cbd5e0;
+}
+
+.zoom-indicator {
+  font-size: 12px;
+  color: #4a5568;
+  font-weight: 500;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Responsividade otimizada */
+@media (max-width: 1024px) {
+  .pages-thumbnail-panel {
+    width: 140px;
+  }
+  
+  .page-thumbnail-content {
+    font-size: 4px;
+  }
+  
+  .abnt-toolbar {
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pages-thumbnail-panel {
+    display: none;
+  }
+  
+  .editor-with-rulers-advanced {
+    padding: 20px 10px;
+  }
+  
+  .page-a4-container {
+    max-width: 100%;
+  }
+  
+  .page-content-area {
+    padding: 16px;
+  }
+  
+  .abnt-toolbar {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+  
+  .toolbar-main,
+  .toolbar-secondary {
+    justify-content: center;
+  }
+}
+
+/* Animações suaves para performance */
+.page-a4-container {
+  will-change: auto;
+}
+
+.page-thumbnail {
+  will-change: transform;
+}
+
+/* Otimizações de performance */
+.pages-container-advanced {
+  contain: layout style;
+}
+
+.page-editor-textarea {
+  contain: layout style;
+}
+
+/* Scrollbar customizada e sutil */
+.pages-thumbnail-panel::-webkit-scrollbar,
+.editor-with-rulers-advanced::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pages-thumbnail-panel::-webkit-scrollbar-track,
+.editor-with-rulers-advanced::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pages-thumbnail-panel::-webkit-scrollbar-thumb,
+.editor-with-rulers-advanced::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+.pages-thumbnail-panel::-webkit-scrollbar-thumb:hover,
+.editor-with-rulers-advanced::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Word-Like Editor Styles */
+.word-like-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f5f5f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Toolbar Superior */
+.word-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  min-height: 50px;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  border-right: 1px solid #e0e0e0;
+  position: relative;
+}
+
+.toolbar-group:last-child {
+  border-right: none;
+}
+
+.toolbar-group button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #333;
+}
+
+.toolbar-group button:hover {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+}
+
+.toolbar-group button:active {
+  background: #e0e0e0;
+  transform: translateY(0);
+}
+
+.toolbar-group button[title*="Negrito"]:hover,
+.toolbar-group button[title*="Itálico"]:hover,
+.toolbar-group button[title*="Sublinhado"]:hover {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+/* Dropdown para Elementos Legislativos */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  display: flex !important;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px !important;
+  background: #f8f9fa !important;
+  border: 1px solid #dee2e6 !important;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  width: auto !important;
+  height: auto !important;
+}
+
+.dropdown-toggle:hover {
+  background: #e9ecef !important;
+  border-color: #adb5bd !important;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  min-width: 200px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 4px 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu button {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  width: 100% !important;
+  height: auto !important;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.dropdown-menu button:hover {
+  background: #f8f9fa;
+  color: #2c5aa0;
+}
+
+.dropdown-menu hr {
+  margin: 4px 0;
+  border: none;
+  border-top: 1px solid #e9ecef;
+}
+
+/* Zoom Controls */
+.zoom-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* Container Principal */
+.word-main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar de Páginas */
+.pages-sidebar {
+  width: 200px;
+  background: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8f9fa;
+}
+
+.sidebar-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.add-page-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: #2c5aa0;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.add-page-btn:hover {
+  background: #1e3f72;
+}
+
+.pages-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.page-thumbnail {
+  position: relative;
+  margin-bottom: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.page-thumbnail:hover {
+  border-color: #2c5aa0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.page-thumbnail.active {
+  border-color: #2c5aa0;
+  box-shadow: 0 0 0 1px #2c5aa0;
+}
+
+.page-preview {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  height: 120px;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-number {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(44, 90, 160, 0.8);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.page-content-preview {
+  padding: 8px;
+  font-size: 8px;
+  line-height: 1.2;
+  color: #666;
+  overflow: hidden;
+  height: 100%;
+}
+
+.delete-page-btn {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: rgba(244, 67, 54, 0.8);
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.page-thumbnail:hover .delete-page-btn {
+  opacity: 1;
+}
+
+.delete-page-btn:hover {
+  background: rgba(244, 67, 54, 1);
+}
+
+/* Container das Páginas */
+.pages-container {
+  flex: 1;
+  overflow: auto;
+  padding: 40px;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Régua */
+.ruler {
+  position: sticky;
+  top: 0;
+  width: 794px; /* Largura A4 */
+  height: 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.ruler-mark {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-left: 1px solid #999;
+  font-size: 10px;
+  color: #666;
+  padding-left: 2px;
+  line-height: 20px;
+}
+
+/* Página A4 */
+.a4-page {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 40px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transform-origin: top center;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+/* Cabeçalho da Página */
+.page-header {
+  min-height: 60px;
+  border-bottom: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+  padding: 0 50px;
+  background: rgba(248, 249, 250, 0.5);
+}
+
+.header-content {
+  width: 100%;
+  outline: none;
+  font-size: 12px;
+  color: #666;
+  min-height: 20px;
+}
+
+.header-content:empty:before {
+  content: attr(placeholder);
+  color: #999;
+  font-style: italic;
+}
+
+/* Conteúdo da Página */
+.page-content {
+  flex: 1;
+  outline: none;
+  font-family: 'Times New Roman', Times, serif;
+  line-height: 1.6;
+  color: #333;
+  background: #ffffff;
+}
+
+.page-content:empty:before {
+  content: 'Digite seu documento aqui...';
+  color: #999;
+  font-style: italic;
+}
+
+/* Rodapé da Página */
+.page-footer {
+  min-height: 60px;
+  border-top: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 50px;
+  background: rgba(248, 249, 250, 0.5);
+}
+
+.footer-content {
+  flex: 1;
+  outline: none;
+  font-size: 12px;
+  color: #666;
+  min-height: 20px;
+}
+
+.footer-content:empty:before {
+  content: attr(placeholder);
+  color: #999;
+  font-style: italic;
+}
+
+.page-footer .page-number {
+  position: static;
+  background: none;
+  color: #666;
+  font-size: 12px;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Estilos para elementos de formatação */
+.page-content strong {
+  font-weight: 600;
+}
+
+.page-content em {
+  font-style: italic;
+}
+
+.page-content u {
+  text-decoration: underline;
+}
+
+.page-content h1, .page-content h2, .page-content h3 {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.page-content h2 {
+  font-size: 20px;
+  margin: 18px 0 14px 0;
+  font-weight: 600;
+}
+
+.page-content h3 {
+  font-size: 16px;
+  margin: 16px 0 12px 0;
+  font-weight: 600;
+}
+
+.page-content p {
+  margin: 12px 0;
+  text-align: justify;
+}
+
+.page-content ul,
+.page-content ol {
+  margin: 12px 0;
+  padding-left: 40px;
+}
+
+.page-content li {
+  margin: 4px 0;
+}
+
+/* Scrollbar customizada */
+.pages-list::-webkit-scrollbar,
+.pages-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pages-list::-webkit-scrollbar-track,
+.pages-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.pages-list::-webkit-scrollbar-thumb,
+.pages-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.pages-list::-webkit-scrollbar-thumb:hover,
+.pages-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+  .pages-sidebar {
+    width: 160px;
+  }
+  
+  .pages-container {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .word-toolbar {
+    padding: 4px 8px;
+  }
+  
+  .toolbar-group {
+    padding: 0 4px;
+  }
+  
+  .toolbar-group button {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .pages-sidebar {
+    width: 120px;
+  }
+  
+  .pages-container {
+    padding: 10px;
+  }
+  
+  .a4-page {
+    transform: scale(0.8);
+  }
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.a4-page {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Print styles */
+@media print {
+  .word-toolbar,
+  .pages-sidebar {
+    display: none !important;
+  }
+  
+  .pages-container {
+    padding: 0 !important;
+    background: white !important;
+  }
+  
+  .a4-page {
+    box-shadow: none !important;
+    margin: 0 !important;
+    transform: none !important;
+    page-break-after: always;
+  }
+  
+  .ruler {
+    display: none !important;
+  }
+}
+
+/* ================================
+   NOVA ESTRUTURA DE EDITOR ÚNICO
+   =============================== */
+
+.editor-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f0f2f5; /* Fundo mais suave */
+}
+
+.editor-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.editor-scroller {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 32px;
+  background: #e0e0e0;
+}
+
+.editor {
+  margin: 0 auto;
+}
+
+.ContentEditable__root {
+  outline: none;
+  min-height: 150px;
+  position: relative;
+  tab-size: 1;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  color: #000;
+}
+
+/* A classe .page aplicada ao PageNode */
+.page {
+  position: relative; /* ESSENCIAL para a medição de offsetTop */
+  background: white;
+  width: 794px; /* 21cm a 96 DPI */
+  height: 1123px; /* 29.7cm a 96 DPI */
+  margin: 0 auto 32px auto; /* Centraliza e adiciona espaço entre as páginas */
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  padding: 113px 76px 76px; /* Margens ABNT 3cm superior/esquerda, 2cm inferior/direita */
+  box-sizing: border-box;
+  overflow: hidden; /* Importante: impede que o conteúdo vaze visualmente */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Estilização para elementos dentro da página */
+.page p {
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+  text-align: justify;
+}
+
+.page h1, .page h2, .page h3 {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+/* Garante que os elementos dentro da página sejam medidos corretamente */
+.page > * {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Indicador visual de limite da página */
+.page::after {
+  content: "";
+  position: absolute;
+  bottom: 76px; /* Alinha com a margem inferior */
+  left: 76px; /* Alinha com a margem esquerda */
+  right: 76px; /* Alinha com a margem direita */
+  height: 1px;
+  background: rgba(200, 200, 200, 0.5);
+  pointer-events: none;
+}
+
+/* Placeholder do editor */
+.editor-placeholder {
+  color: #999;
+  overflow: hidden;
+  position: absolute;
+  text-overflow: ellipsis;
+  top: 113px;
+  left: 76px;
+  right: 76px;
+  user-select: none;
+  white-space: nowrap;
+  display: inline-block;
+  pointer-events: none;
+}
+
+/* Estilos para a barra de ferramentas */
+.toolbar {
+  display: flex;
+  padding: 8px 16px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  gap: 4px;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.toolbar-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  color: #333;
+  transition: all 0.2s;
+}
+
+.toolbar-item:hover {
+  background: #e0e0e0;
+  border-color: #d0d0d0;
+}
+
+.toolbar-item:active,
+.toolbar-item.active {
+  background: #d0d0d0;
+  border-color: #c0c0c0;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: #e0e0e0;
+  margin: 0 8px;
+}
+
+@media print {
+  .editor-scroller {
+    overflow: visible;
+    padding: 0;
+  }
+  .page {
+    margin: 0;
+    box-shadow: none;
+    break-after: page;
+  }
+} 
