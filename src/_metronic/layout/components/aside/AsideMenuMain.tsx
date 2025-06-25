@@ -122,6 +122,7 @@ export function AsideMenuMain() {
               icon='code'
             >
               <AsideMenuItem to='/admin/api-docs' title='Documentação da API' hasBullet={true} />
+              <AsideMenuItem to='/admin/documentacao' title='Documentação do Sistema' hasBullet={true} />
               
               {/* Atalho para Banco de Dados */}
               <div className='menu-item'>

@@ -18,6 +18,7 @@ import AdminUsuarios from '../admin/usuarios/page'
 import AdminConfiguracoes from '../admin/configuracoes/page'
 import AdminRelatorios from '../admin/relatorios/page'
 import AdminApiDocs from '../admin/api-docs/page'
+import AdminDocumentacao from '../admin/documentacao/page'
 
 // Import das páginas de configurações específicas
 import SistemaBasico from '../admin/configuracoes/sistema-basico/page'
@@ -52,8 +53,9 @@ const PrivateRoutes = () => {
 
   return (
     <Routes>
-      {/* Rota especial para o editor - SEM MasterLayout (tela cheia) */}
+      {/* Rotas especiais SEM MasterLayout (tela cheia) */}
       <Route path='admin/configuracoes/documentos-templates/editor' element={<DocumentosTemplatesEditor />} />
+      <Route path='admin/documentacao' element={<AdminDocumentacao />} />
       
       {/* Todas as outras rotas COM MasterLayout */}
       <Route element={<MasterLayout />}>
