@@ -233,63 +233,37 @@ export default function DocumentosTemplatesPage() {
         Documentos e Templates
       </PageTitle>
       
-      <div className="container-fluid">
-        {/* Header */}
-        <div className="d-flex flex-wrap flex-stack pb-7">
-          <div className="d-flex flex-wrap align-items-center">
-            <h1 className="fw-bold me-10 my-2">Documentos e Templates</h1>
-            <div className="border-gray-300 border-1 rounded py-2 px-3 bg-body d-flex flex-row align-items-center">
-              <i className="ki-duotone ki-information-4 fs-6 text-gray-600 me-2">
-                <span className="path1"></span>
-                <span className="path2"></span>
-                <span className="path3"></span>
-              </i>
-              <span className="text-gray-600 fw-semibold fs-7">
-                Configure templates e crie documentos legislativos padronizados
-              </span>
-            </div>
-          </div>
-          <div className="d-flex align-items-center">
-            <button 
-              className="btn btn-sm fw-bold btn-primary"
-              onClick={() => setActiveTab('templates')}
-            >
-              <i className="ki-duotone ki-plus fs-2 me-2">
-                <span className="path1"></span>
-                <span className="path2"></span>
-                <span className="path3"></span>
-              </i>
-              Novo Documento
-            </button>
-          </div>
-        </div>
+      <div className="container-xxl px-4 px-md-6 px-lg-8">
+
 
         {/* Navigation Tabs */}
-        <div className="row g-6 g-xl-9">
+        <div className="row g-4 g-md-6 g-xl-9 mb-5">
           <div className="col-12">
-            <ul className="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold">
-              <li className="nav-item">
+            <ul className="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-6 fs-md-5 fw-bold flex-nowrap overflow-auto">
+              <li className="nav-item flex-shrink-0">
                 <a
-                  className={`nav-link text-active-primary cursor-pointer ${activeTab === 'documentos' ? 'active' : ''}`}
+                  className={`nav-link text-active-primary cursor-pointer d-flex align-items-center ${activeTab === 'documentos' ? 'active' : ''}`}
                   onClick={() => setActiveTab('documentos')}
                 >
-                  <i className="ki-duotone ki-document fs-2 me-2">
+                  <i className="ki-duotone ki-document fs-3 fs-md-2 me-2">
                     <span className="path1"></span>
                     <span className="path2"></span>
                   </i>
-                  Meus Documentos
+                  <span className="d-none d-sm-inline">Meus Documentos</span>
+                  <span className="d-inline d-sm-none">Documentos</span>
                 </a>
               </li>
-              <li className="nav-item">
+              <li className="nav-item flex-shrink-0">
                 <a
-                  className={`nav-link text-active-primary cursor-pointer ${activeTab === 'templates' ? 'active' : ''}`}
+                  className={`nav-link text-active-primary cursor-pointer d-flex align-items-center ${activeTab === 'templates' ? 'active' : ''}`}
                   onClick={() => setActiveTab('templates')}
                 >
-                  <i className="ki-duotone ki-setting-2 fs-2 me-2">
+                  <i className="ki-duotone ki-setting-2 fs-3 fs-md-2 me-2">
                     <span className="path1"></span>
                     <span className="path2"></span>
                   </i>
-                  Templates Disponíveis
+                  <span className="d-none d-sm-inline">Templates Disponíveis</span>
+                  <span className="d-inline d-sm-none">Templates</span>
                 </a>
               </li>
             </ul>
@@ -303,31 +277,32 @@ export default function DocumentosTemplatesPage() {
             <div className="tab-pane fade show active">
               <div className="card">
                 <div className="card-header border-0 pt-6">
-                  <div className="card-title">
-                    <div className="d-flex align-items-center position-relative my-1">
-                      <i className="ki-duotone ki-magnifier fs-3 position-absolute ms-5">
-                        <span className="path1"></span>
-                        <span className="path2"></span>
-                      </i>
-                      <input
-                        type="text"
-                        className="form-control form-control-solid w-250px ps-13"
-                        placeholder="Buscar documentos..."
-                      />
+                  <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between w-100 gap-3">
+                    <div className="card-title mb-0">
+                      <div className="d-flex align-items-center position-relative">
+                        <i className="ki-duotone ki-magnifier fs-3 position-absolute ms-5">
+                          <span className="path1"></span>
+                          <span className="path2"></span>
+                        </i>
+                        <input
+                          type="text"
+                          className="form-control form-control-solid w-100 w-sm-250px ps-13"
+                          placeholder="Buscar documentos..."
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="card-toolbar">
-                    <div className="d-flex justify-content-end">
+                    <div className="card-toolbar">
                       <button
-                        className="btn btn-light-primary me-3"
+                        className="btn btn-light-primary btn-sm d-flex align-items-center"
                         onClick={() => setActiveTab('templates')}
                       >
-                        <i className="ki-duotone ki-plus fs-2 me-2">
+                        <i className="ki-duotone ki-plus fs-3 me-2">
                           <span className="path1"></span>
                           <span className="path2"></span>
                           <span className="path3"></span>
                         </i>
-                        Novo Documento
+                        <span className="d-none d-sm-inline">Novo Documento</span>
+                        <span className="d-inline d-sm-none">Novo</span>
                       </button>
                     </div>
                   </div>
@@ -345,10 +320,10 @@ export default function DocumentosTemplatesPage() {
                         <thead>
                           <tr className="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                             <th className="min-w-125px">Título</th>
-                            <th className="min-w-100px">Template</th>
+                            <th className="min-w-100px d-none d-md-table-cell">Template</th>
                             <th className="min-w-100px">Status</th>
-                            <th className="min-w-100px">Autor</th>
-                            <th className="min-w-100px">Atualizado</th>
+                            <th className="min-w-100px d-none d-lg-table-cell">Autor</th>
+                            <th className="min-w-100px d-none d-xl-table-cell">Atualizado</th>
                             <th className="text-end min-w-100px">Ações</th>
                           </tr>
                         </thead>
@@ -359,7 +334,7 @@ export default function DocumentosTemplatesPage() {
                                 <div className="d-flex flex-column">
                                   <a 
                                     href="#" 
-                                    className="text-gray-800 text-hover-primary mb-1"
+                                    className="text-gray-800 text-hover-primary mb-1 fw-bold"
                                     onClick={(e) => {
                                       e.preventDefault()
                                       handleEditarDocumento(documento.id)
@@ -367,9 +342,20 @@ export default function DocumentosTemplatesPage() {
                                   >
                                     {documento.titulo}
                                   </a>
+                                  <div className="d-flex d-md-none gap-2 mt-1">
+                                    <span className="badge badge-light-info fs-8">
+                                      {templates.find(t => t.id === documento.template)?.nome || documento.template}
+                                    </span>
+                                    <span className="d-lg-none badge badge-light fs-8">
+                                      {documento.autor}
+                                    </span>
+                                  </div>
+                                  <small className="text-muted d-xl-none">
+                                    {new Date(documento.atualizadoEm).toLocaleDateString('pt-BR')}
+                                  </small>
                                 </div>
                               </td>
-                              <td>
+                              <td className="d-none d-md-table-cell">
                                 <span className="badge badge-light-info">
                                   {templates.find(t => t.id === documento.template)?.nome || documento.template}
                                 </span>
@@ -379,8 +365,8 @@ export default function DocumentosTemplatesPage() {
                                   {getStatusText(documento.status)}
                                 </span>
                               </td>
-                              <td>{documento.autor}</td>
-                              <td>{new Date(documento.atualizadoEm).toLocaleDateString('pt-BR')}</td>
+                              <td className="d-none d-lg-table-cell">{documento.autor}</td>
+                              <td className="d-none d-xl-table-cell">{new Date(documento.atualizadoEm).toLocaleDateString('pt-BR')}</td>
                               <td className="text-end">
                                 <a
                                   href="#"
@@ -390,7 +376,11 @@ export default function DocumentosTemplatesPage() {
                                     handleEditarDocumento(documento.id)
                                   }}
                                 >
-                                  Editar
+                                  <span className="d-none d-sm-inline">Editar</span>
+                                  <i className="ki-duotone ki-pencil d-inline d-sm-none fs-4">
+                                    <span className="path1"></span>
+                                    <span className="path2"></span>
+                                  </i>
                                 </a>
                               </td>
                             </tr>
@@ -506,14 +496,14 @@ export default function DocumentosTemplatesPage() {
                   Templates básicos que abrem diretamente no editor para edição livre.
                 </p>
                 
-                <div className="row g-6 g-xl-9">
+                <div className="row g-4 g-md-6 g-xl-9">
                   {templates.map((template) => {
                     const categoryColor = getCategoryColor(template.categoria)
                     const categoryIcon = getCategoryIcon(template.categoria)
                     const isBlank = template.id === 'blank'
                     
                     return (
-                      <div key={template.id} className="col-md-6 col-lg-4 col-xl-3">
+                      <div key={template.id} className="col-12 col-sm-6 col-lg-4 col-xl-3">
                         <div className={`card h-100 ${isBlank ? 'border-2 border-primary bg-light-primary' : 'card-hover'}`}>
                           <div className="card-body d-flex flex-column text-center">
                             <div className="flex-grow-1">
@@ -560,89 +550,92 @@ export default function DocumentosTemplatesPage() {
               </div>
 
               {/* Seção de Configuração de Templates */}
-              <div className="card mt-10">
+              <div className="card mt-6 mt-md-10">
                 <div className="card-header">
                   <div className="card-title">
-                    <h3 className="fw-bold">Configuração de Templates</h3>
+                    <h3 className="fw-bold fs-4 fs-md-3">Configuração de Templates</h3>
                   </div>
                 </div>
                 <div className="card-body">
-                  <div className="row">
-                    <div className="col-lg-6">
-                      <div className="mb-10">
-                        <label className="form-label fw-semibold">Informações da Câmara</label>
+                  <div className="row g-4 g-md-6 g-lg-10">
+                    <div className="col-12 col-lg-6">
+                      <div className="mb-6 mb-lg-10">
+                        <label className="form-label fw-semibold fs-6">Informações da Câmara</label>
                         <div className="form-text mb-5">Configure as informações que aparecerão no header e footer dos documentos</div>
                         
-                        <div className="mb-5">
+                        <div className="mb-4 mb-md-5">
                           <label className="form-label">Nome da Câmara</label>
                           <input type="text" className="form-control" placeholder="CÂMARA MUNICIPAL DE [MUNICÍPIO]" />
                         </div>
                         
-                        <div className="mb-5">
+                        <div className="mb-4 mb-md-5">
                           <label className="form-label">Endereço</label>
                           <input type="text" className="form-control" placeholder="Rua [Nome da Rua], nº [Número] - Centro" />
                         </div>
                         
-                        <div className="row">
-                          <div className="col-md-6">
-                            <div className="mb-5">
+                        <div className="row g-3 g-md-4">
+                          <div className="col-12 col-sm-6">
+                            <div className="mb-4 mb-md-5">
                               <label className="form-label">Telefone</label>
                               <input type="text" className="form-control" placeholder="(xx) xxxx-xxxx" />
                             </div>
                           </div>
-                          <div className="col-md-6">
-                            <div className="mb-5">
+                          <div className="col-12 col-sm-6">
+                            <div className="mb-4 mb-md-5">
                               <label className="form-label">Email</label>
                               <input type="email" className="form-control" placeholder="contato@camaramunicipal.gov.br" />
                             </div>
                           </div>
                         </div>
                         
-                        <div className="mb-5">
+                        <div className="mb-4 mb-md-5">
                           <label className="form-label">Site</label>
                           <input type="text" className="form-control" placeholder="www.camaramunicipal.gov.br" />
                         </div>
                       </div>
                     </div>
                     
-                    <div className="col-lg-6">
-                      <div className="mb-10">
-                        <label className="form-label fw-semibold">Logo da Câmara</label>
+                    <div className="col-12 col-lg-6">
+                      <div className="mb-6 mb-lg-10">
+                        <label className="form-label fw-semibold fs-6">Logo da Câmara</label>
                         <div className="form-text mb-5">Faça upload do logo que aparecerá nos documentos</div>
                         
-                        <div className="image-input image-input-outline" data-kt-image-input="true">
-                          <div className="image-input-wrapper w-125px h-125px" style={{ backgroundImage: "url('/media/logos/custom-1.png')" }}></div>
-                          <label className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Alterar logo">
-                            <i className="ki-duotone ki-pencil fs-7">
-                              <span className="path1"></span>
-                              <span className="path2"></span>
-                            </i>
-                            <input type="file" name="logo" accept=".png, .jpg, .jpeg" />
-                            <input type="hidden" name="logo_remove" />
-                          </label>
-                          <span className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancelar logo">
-                            <i className="ki-duotone ki-cross fs-2">
-                              <span className="path1"></span>
-                              <span className="path2"></span>
-                            </i>
-                          </span>
-                          <span className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover logo">
-                            <i className="ki-duotone ki-cross fs-2">
-                              <span className="path1"></span>
-                              <span className="path2"></span>
-                            </i>
-                          </span>
+                        <div className="d-flex flex-column align-items-center">
+                          <div className="image-input image-input-outline mb-5" data-kt-image-input="true">
+                            <div className="image-input-wrapper w-100px w-sm-125px h-100px h-sm-125px" style={{ backgroundImage: "url('/media/logos/custom-1.png')" }}></div>
+                            <label className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Alterar logo">
+                              <i className="ki-duotone ki-pencil fs-7">
+                                <span className="path1"></span>
+                                <span className="path2"></span>
+                              </i>
+                              <input type="file" name="logo" accept=".png, .jpg, .jpeg" />
+                              <input type="hidden" name="logo_remove" />
+                            </label>
+                            <span className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancelar logo">
+                              <i className="ki-duotone ki-cross fs-2">
+                                <span className="path1"></span>
+                                <span className="path2"></span>
+                              </i>
+                            </span>
+                            <span className="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remover logo">
+                              <i className="ki-duotone ki-cross fs-2">
+                                <span className="path1"></span>
+                                <span className="path2"></span>
+                              </i>
+                            </span>
+                          </div>
+                          <div className="form-text text-center">Tipos permitidos: png, jpg, jpeg. Tamanho máximo: 2MB</div>
                         </div>
-                        <div className="form-text">Tipos permitidos: png, jpg, jpeg. Tamanho máximo: 2MB</div>
                       </div>
                       
-                      <div className="d-flex justify-content-end">
-                        <button className="btn btn-primary">
-                          <i className="ki-duotone ki-check fs-2 me-2">
+                      <div className="d-flex justify-content-center justify-content-lg-end">
+                        <button className="btn btn-primary btn-sm btn-md-primary d-flex align-items-center">
+                          <i className="ki-duotone ki-check fs-3 fs-md-2 me-2">
                             <span className="path1"></span>
                             <span className="path2"></span>
                           </i>
-                          Salvar Configurações
+                          <span className="d-none d-sm-inline">Salvar Configurações</span>
+                          <span className="d-inline d-sm-none">Salvar</span>
                         </button>
                       </div>
                     </div>

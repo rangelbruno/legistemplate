@@ -53,14 +53,22 @@ type Props = {
 
 const PageTitle: FC<Props & WithChildren> = ({children, description, breadcrumbs}) => {
   const {setPageTitle, setPageDescription, setPageBreadcrumbs} = usePageData()
+  
   useEffect(() => {
+    // Força a limpeza imediata antes de definir novo título
+    setPageTitle('')
+    setPageDescription('')
+    setPageBreadcrumbs([])
+    
+    // Define o novo título
     if (children) {
       setPageTitle(children.toString())
     }
+    
     return () => {
       setPageTitle('')
     }
-  }, [children])
+  }, [children, setPageTitle, setPageDescription, setPageBreadcrumbs])
 
   useEffect(() => {
     if (description) {
@@ -69,7 +77,7 @@ const PageTitle: FC<Props & WithChildren> = ({children, description, breadcrumbs
     return () => {
       setPageDescription('')
     }
-  }, [description])
+  }, [description, setPageDescription])
 
   useEffect(() => {
     if (breadcrumbs) {
@@ -78,7 +86,7 @@ const PageTitle: FC<Props & WithChildren> = ({children, description, breadcrumbs
     return () => {
       setPageBreadcrumbs([])
     }
-  }, [breadcrumbs])
+  }, [breadcrumbs, setPageBreadcrumbs])
 
   return <></>
 }
