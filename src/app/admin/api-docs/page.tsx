@@ -9,16 +9,7 @@ interface CodeExampleProps {
   language?: string
 }
 
-interface FaqItem {
-  id: string
-  question: string
-  answer: string
-  example?: {
-    title: string
-    code: string
-    language?: string
-  }
-}
+// Interface removida - não estava sendo utilizada
 
 const CodeExample: React.FC<CodeExampleProps> = ({ title, code, language = 'json' }) => (
   <div className="bg-light-dark rounded p-4 mt-3">

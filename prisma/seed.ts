@@ -50,6 +50,7 @@ async function main() {
   
   // 3. Criar comissões
   console.log('🏛️ Criando comissões...')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const comissoes: any[] = []
   const comissoesData = [
     { nome: 'Comissão de Constituição e Justiça', sigla: 'CCJ', tipo: TipoComissao.PERMANENTE },
@@ -68,6 +69,7 @@ async function main() {
   
   // 4. Criar parlamentares
   console.log('🏛️ Criando parlamentares...')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const parlamentares: any[] = []
   const partidos = ['PT', 'PSDB', 'MDB', 'PP', 'PSL', 'PDT', 'PSB', 'PODE', 'PL', 'UNIÃO']
   const ufs = ['SP', 'RJ', 'MG', 'RS', 'PR', 'SC', 'BA', 'GO', 'PE', 'CE']

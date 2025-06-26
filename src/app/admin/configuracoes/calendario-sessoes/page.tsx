@@ -10,7 +10,7 @@ import ListaSessoes from '../../../../components/admin/config/sections/ListaSess
 export default function CalendarioSessoesPage() {
   const [activeView, setActiveView] = useState<'calendario' | 'agenda'>('calendario')
   const [isLoading, setIsLoading] = useState(false)
-  const [configurations, setConfigurations] = useState<any>({})
+  const [configurations] = useState<Record<string, unknown>>({})
 
   const handleConfigChange = () => {
     // Callback para quando as configurações mudarem

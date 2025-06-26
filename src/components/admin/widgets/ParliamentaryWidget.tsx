@@ -28,7 +28,7 @@ export const UsersStatsWidget: FC<UserStatsProps> = ({
         chart.destroy()
       }
     }
-  }, [chartRef, mode])
+  }, [chartRef, mode, refreshChart])
 
   const refreshChart = () => {
     if (!chartRef.current) {
@@ -93,7 +93,7 @@ export const PropositionStatsWidget: FC<PropositionStatsProps> = ({
         chart.destroy()
       }
     }
-  }, [chartRef, mode])
+  }, [chartRef, mode, refreshChart])
 
   const refreshChart = () => {
     if (!chartRef.current) {
@@ -160,7 +160,7 @@ export const SessionStatsWidget: FC<SessionStatsProps> = ({
         chart.destroy()
       }
     }
-  }, [chartRef, mode])
+  }, [chartRef, mode, refreshChart])
 
   const refreshChart = () => {
     if (!chartRef.current) {

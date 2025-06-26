@@ -182,7 +182,7 @@ export default function AdminVereadoresPage() {
     carregarVereadores()
     carregarPresidente()
     carregarPartidos()
-  }, [page, filters])
+  }, [page, filters, carregarVereadores])
 
   // Criar/editar vereador
   const salvarVereador = async () => {

@@ -104,7 +104,7 @@ export function AdminQuickActions() {
     }
   ]
 
-  const handleActionClick = async (action: any) => {
+  const handleActionClick = async (action: { type: string; action?: () => Promise<void> | void }) => {
     if (action.type === 'action' && action.action) {
       setIsLoading(true)
       try {

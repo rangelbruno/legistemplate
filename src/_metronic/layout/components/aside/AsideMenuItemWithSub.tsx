@@ -24,7 +24,7 @@ const AsideMenuItemWithSub: React.FC<Props & WithChildren> = ({
   const isActive = checkIsActive(pathname, to)
   const {config} = useLayout()
   const {aside} = config
-  const scrollPositionRef = useRef<number>(0)
+  // const scrollPositionRef = useRef<number>(0) // Não utilizado atualmente
 
   // Função simples para prevenir scroll indesejado (aplicada apenas se necessário)
   useEffect(() => {

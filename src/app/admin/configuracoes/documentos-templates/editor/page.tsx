@@ -199,7 +199,7 @@ const EditorPage: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [content, setContent] = useState('')
-  const [title, setTitle] = useState('')
+  const [, setTitle] = useState('')
   const [saving, setSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)

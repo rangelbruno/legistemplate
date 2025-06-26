@@ -2,7 +2,7 @@
 import {Link} from 'react-router-dom'
 import {useAuth} from '../../../../app/modules/auth'
 import {toAbsoluteUrl} from '../../../helpers'
-import {Languages} from '../header-menus/Languages'
+// import {Languages} from '../header-menus/Languages' // Não utilizado
 
 const UserMenu = () => {
   const {currentUser, logout} = useAuth()

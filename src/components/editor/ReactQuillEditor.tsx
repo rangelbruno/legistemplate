@@ -50,7 +50,7 @@ const StableQuillEditor: React.FC<ReactQuillEditorProps> = ({
     }, 100)
     
     return () => clearTimeout(timer)
-  }, []) // Dependências vazias - NUNCA re-executar
+  }, [initialContent]) // Incluir initialContent nas dependências
 
   // Função para salvar (com Ctrl+S)
   const handleSave = useCallback(() => {

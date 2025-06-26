@@ -73,8 +73,8 @@ const ProseMirrorEditor = forwardRef<EditorMethods, ProseMirrorEditorProps>(({
   const [activeFormats, setActiveFormats] = useState<Set<string>>(new Set())
 
   // Otimização: debounce para onChange
-  const debouncedOnChange = useCallback(
-    debounce((content: string, html: string) => {
+  const debouncedOnChange = useMemo(
+    () => debounce((content: string, html: string) => {
       onChange?.(content, html)
     }, 300),
     [onChange]

@@ -83,7 +83,7 @@ export default function AdminPartidosPage() {
 
   useEffect(() => {
     fetchPartidos()
-  }, [page, search, ativo])
+  }, [fetchPartidos])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

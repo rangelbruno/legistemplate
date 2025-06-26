@@ -7,7 +7,7 @@ import {AdminQuickActions} from '../../../partials/AdminQuickActions'
 import {openPrismaStudio} from '../../../../lib/database-access'
 
 export function AsideMenuMain() {
-  const intl = useIntl()
+  // const intl = useIntl() // Não utilizado atualmente
 
   // Configurar comportamento do menu para melhor performance (desabilitado temporariamente)
   useEffect(() => {
