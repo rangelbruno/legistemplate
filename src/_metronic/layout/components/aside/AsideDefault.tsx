@@ -5,6 +5,7 @@ import {toAbsoluteUrl} from '../../../helpers'
 import {AsideMenu} from './AsideMenu'
 import {AsideUserMenu} from '../../../partials'
 import {useThemeMode} from '../../../partials/layout/theme-mode/ThemeModeProvider'
+import Brand from '../../../../components/ui/Brand'
 
 const AsideDefault = () => {
   const {classes} = useLayout()
@@ -24,23 +25,7 @@ const AsideDefault = () => {
       {/* begin::Brand */}
       <div className='aside-logo flex-column-auto px-9 mb-0' id='kt_aside_logo'>
         {/* begin::Logo */}
-        <Link to='/dashboard'>
-          {mode === 'light' && (
-            <img
-              alt='Logo'
-              className='h-100px logo theme-light-show'
-              src={toAbsoluteUrl('media/logos/trace.svg')}
-            />
-          )}
-
-          {mode === 'dark' && (
-            <img
-              alt='Logo'
-              className='h-100px logo theme-dark-show'
-              src={toAbsoluteUrl('media/logos/trace.svg')}
-            />
-          )}
-        </Link>
+                  <Brand variant='sidebar' to='/admin/dashboard' />
         {/* end::Logo */}
       </div>
       {/* end::Brand */}

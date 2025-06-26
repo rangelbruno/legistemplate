@@ -6,6 +6,7 @@ import {KTIcon, toAbsoluteUrl} from '../../../helpers'
 import {IHeader, useLayout} from '../../core'
 import {DefaultTitle} from './page-title/DefaultTitle'
 import {Topbar} from './Topbar'
+import Brand from '../../../../components/ui/Brand'
 
 const calculateStickyOffset = (header: IHeader): string => {
   if (header.fixed.desktop && header.fixed.tabletAndMobile) {
@@ -65,11 +66,7 @@ export function HeaderWrapper() {
           {/* end::Aside mobile toggle */}
 
           {/* begin::Logo */}
-
-          <Link to='/dashboard' className='d-flex align-items-center'>
-            <img alt='Logo' src={toAbsoluteUrl('media/logos/trace.svg')} className='theme-light-show h-30px' />
-            <img alt='Logo' src={toAbsoluteUrl('media/logos/trace.svg')} className='theme-dark-show h-30px' />
-          </Link>
+          <Brand variant='compact' to='/admin/dashboard' />
           {/* end::Logo */}
         </div>
         {/* end::Wrapper */}

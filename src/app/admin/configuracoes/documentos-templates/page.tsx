@@ -6,6 +6,7 @@ import AdministradorLayout from '../../layout'
 import { PageTitle } from '../../../../_metronic/layout/core'
 import { DocumentUrls } from '../../../../lib/utils/url-helpers'
 import WordLikeEditor from '../../../../components/editor/WordLikeEditor'
+import { usePageTitle } from '../../../../hooks/usePageTitle'
 // import { smartTemplates, getSmartTemplate } from '../../../../components/editor/smart-templates'
 // import SmartTemplateForm from '../../../../components/editor/SmartTemplateForm'
 
@@ -127,6 +128,9 @@ export default function DocumentosTemplatesPage() {
   const [showSmartForm, setShowSmartForm] = useState(false)
   const [selectedSmartTemplate, setSelectedSmartTemplate] = useState<any>(null)
   const navigate = useNavigate()
+
+  // Definir título da página
+  usePageTitle('Documentos e Templates')
 
   useEffect(() => {
     // Simular carregamento de documentos (substituir por API real)
