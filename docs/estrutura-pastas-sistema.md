@@ -96,6 +96,7 @@ legistemplate/
 │   │       │   │   │   │   └── route.ts
 │   │       │   │   │   └── agenda/
 │   │       │   │   │       └── route.ts
+│   │       │   │   │   └── route.ts
 │   │       │   │   └── route.ts
 │   │       │   ├── proposicoes/
 │   │       │   │   ├── route.ts
@@ -206,7 +207,7 @@ legistemplate/
 ## 🎯 **Princípios da Estrutura**
 
 ### 📂 **Organização por Domínio**
-- **Parlamentar**: Área específica para deputados/senadores
+- **Parlamentar**: Área específica para vereadores
 - **Admin**: Gestão administrativa e configurações
 - **Publico**: Interface pública para transparência
 - **Auth**: Autenticação e autorização

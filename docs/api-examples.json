@@ -1,0 +1,638 @@
+{
+  "api_examples": {
+    "authentication": {
+      "login": {
+        "description": "Autenticar usuário no sistema",
+        "method": "POST",
+        "url": "/api/v1/auth/login",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "email": "parlamentar@exemplo.com",
+          "password": "minhasenha123"
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQ1NjciLCJlbWFpbCI6InBhcmxhbWVudGFyQGV4ZW1wbG8uY29tIiwicm9sZSI6IlBBUkxBTUVOVEFSIiwiaWF0IjoxNjQwOTk1MjAwLCJleHAiOjE2NDA5OTg4MDB9...",
+            "user": {
+              "id": "1234567",
+              "email": "parlamentar@exemplo.com",
+              "name": "João Silva",
+              "role": "PARLAMENTAR",
+              "ativo": true,
+              "createdAt": "2024-01-15T10:00:00Z"
+            }
+          }
+        }
+      },
+      "refresh_token": {
+        "description": "Renovar token de autenticação",
+        "method": "POST",
+        "url": "/api/v1/auth/refresh",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.NEW_TOKEN..."
+          }
+        }
+      }
+    },
+    "public_endpoints": {
+      "list_public_propositions": {
+        "description": "Listar proposições públicas com filtros",
+        "method": "GET",
+        "url": "/api/v1/publico/proposicoes?tipo=PL&ano=2024&page=1&limit=10",
+        "response": {
+          "status": 200,
+          "body": {
+            "data": [
+              {
+                "id": "prop_001",
+                "numero": "001",
+                "ano": 2024,
+                "tipo": "PL",
+                "ementa": "Dispõe sobre a criação de parques municipais",
+                "estadoAtual": "IN_COMMITTEE_REVIEW",
+                "dataApresentacao": "2024-01-15T10:00:00Z",
+                "autor": {
+                  "nome": "João Silva",
+                  "partido": "PT"
+                }
+              }
+            ],
+            "pagination": {
+              "page": 1,
+              "limit": 10,
+              "total": 25,
+              "totalPages": 3,
+              "hasNext": true,
+              "hasPrev": false
+            }
+          }
+        }
+      },
+      "get_public_proposition_details": {
+        "description": "Obter detalhes de uma proposição pública",
+        "method": "GET",
+        "url": "/api/v1/publico/proposicoes/prop_001",
+        "response": {
+          "status": 200,
+          "body": {
+            "id": "prop_001",
+            "numero": "001",
+            "ano": 2024,
+            "tipo": "PL",
+            "ementa": "Dispõe sobre a criação de parques municipais",
+            "justificacao": "É necessário ampliar as áreas verdes da cidade...",
+            "estadoAtual": "IN_COMMITTEE_REVIEW",
+            "dataApresentacao": "2024-01-15T10:00:00Z",
+            "autor": {
+              "id": "parl_001",
+              "nome": "João Silva",
+              "partido": "PT",
+              "uf": "SP"
+            },
+            "tramitacoes": [
+              {
+                "id": "tram_001",
+                "estadoAnterior": "DRAFT_INITIATED",
+                "estadoNovo": "UNDER_FORMAL_REVIEW",
+                "dataEvento": "2024-01-16T09:00:00Z",
+                "observacoes": "Proposição protocolada e enviada para análise formal"
+              }
+            ],
+            "relatorias": [
+              {
+                "id": "rel_001",
+                "parlamentar": {
+                  "nome": "Maria Santos",
+                  "partido": "PSDB"
+                },
+                "comissao": {
+                  "nome": "Comissão de Meio Ambiente",
+                  "sigla": "CMEIO"
+                },
+                "status": "DESIGNADO",
+                "dataDesignacao": "2024-01-17T14:00:00Z"
+              }
+            ]
+          }
+        }
+      },
+      "list_public_parliamentarians": {
+        "description": "Listar parlamentares ativos",
+        "method": "GET",
+        "url": "/api/v1/publico/parlamentares?ativo=true",
+        "response": {
+          "status": 200,
+          "body": [
+            {
+              "id": "parl_001",
+              "nome": "João Silva",
+              "partido": {
+                "sigla": "PT",
+                "nome": "Partido dos Trabalhadores"
+              },
+              "uf": "SP",
+              "cargo": "VEREADOR",
+              "foto": "/uploads/fotos/joao-silva.jpg",
+              "ativo": true
+            },
+            {
+              "id": "parl_002",
+              "nome": "Maria Santos",
+              "partido": {
+                "sigla": "PSDB",
+                "nome": "Partido da Social Democracia Brasileira"
+              },
+              "uf": "SP",
+              "cargo": "VEREADOR",
+              "foto": "/uploads/fotos/maria-santos.jpg",
+              "ativo": true
+            }
+          ]
+        }
+      }
+    },
+    "propositions": {
+      "create_proposition": {
+        "description": "Criar nova proposição",
+        "method": "POST",
+        "url": "/api/v1/proposicoes",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "numero": "002",
+          "ano": 2024,
+          "tipo": "PL",
+          "ementa": "Institui o programa de coleta seletiva no município",
+          "justificacao": "A coleta seletiva é fundamental para a preservação do meio ambiente e redução dos resíduos sólidos...",
+          "autorId": "parl_001",
+          "dataApresentacao": "2024-01-20T10:00:00Z"
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "id": "prop_002",
+            "numero": "002",
+            "ano": 2024,
+            "tipo": "PL",
+            "ementa": "Institui o programa de coleta seletiva no município",
+            "justificacao": "A coleta seletiva é fundamental para a preservação do meio ambiente...",
+            "estadoAtual": "DRAFT_INITIATED",
+            "dataApresentacao": "2024-01-20T10:00:00Z",
+            "autor": {
+              "id": "parl_001",
+              "nome": "João Silva",
+              "partido": "PT",
+              "uf": "SP"
+            },
+            "createdAt": "2024-01-20T10:00:00Z",
+            "updatedAt": "2024-01-20T10:00:00Z"
+          }
+        }
+      },
+      "update_proposition": {
+        "description": "Atualizar proposição existente",
+        "method": "PUT",
+        "url": "/api/v1/proposicoes/prop_002",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "ementa": "Institui o programa municipal de coleta seletiva e reciclagem",
+          "justificacao": "A coleta seletiva é fundamental para a preservação do meio ambiente, redução dos resíduos sólidos e promoção da economia circular..."
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "message": "Proposição atualizada com sucesso"
+          }
+        }
+      },
+      "list_propositions_with_filters": {
+        "description": "Listar proposições com filtros específicos",
+        "method": "GET",
+        "url": "/api/v1/proposicoes?estado=IN_COMMITTEE_REVIEW&autor=parl_001&page=1&limit=5",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "data": [
+              {
+                "id": "prop_001",
+                "numero": "001",
+                "ano": 2024,
+                "tipo": "PL",
+                "ementa": "Dispõe sobre a criação de parques municipais",
+                "estadoAtual": "IN_COMMITTEE_REVIEW",
+                "dataApresentacao": "2024-01-15T10:00:00Z",
+                "autor": {
+                  "id": "parl_001",
+                  "nome": "João Silva",
+                  "partido": "PT",
+                  "uf": "SP"
+                }
+              }
+            ],
+            "pagination": {
+              "page": 1,
+              "limit": 5,
+              "total": 1,
+              "totalPages": 1,
+              "hasNext": false,
+              "hasPrev": false
+            }
+          }
+        }
+      }
+    },
+    "tramitacao": {
+      "get_tramitacao_history": {
+        "description": "Obter histórico de tramitação de uma proposição",
+        "method": "GET",
+        "url": "/api/v1/tramitacao/prop_001/eventos",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        },
+        "response": {
+          "status": 200,
+          "body": [
+            {
+              "id": "tram_001",
+              "proposicaoId": "prop_001",
+              "estadoAnterior": "DRAFT_INITIATED",
+              "estadoNovo": "UNDER_FORMAL_REVIEW",
+              "dataEvento": "2024-01-16T09:00:00Z",
+              "observacoes": "Proposição protocolada e enviada para análise formal",
+              "createdAt": "2024-01-16T09:00:00Z"
+            },
+            {
+              "id": "tram_002",
+              "proposicaoId": "prop_001",
+              "estadoAnterior": "UNDER_FORMAL_REVIEW",
+              "estadoNovo": "COMMITTEE_ASSIGNED",
+              "comissaoId": "com_001",
+              "comissao": {
+                "nome": "Comissão de Meio Ambiente",
+                "sigla": "CMEIO"
+              },
+              "dataEvento": "2024-01-17T10:00:00Z",
+              "observacoes": "Distribuída para a Comissão de Meio Ambiente",
+              "createdAt": "2024-01-17T10:00:00Z"
+            }
+          ]
+        }
+      },
+      "add_tramitacao_event": {
+        "description": "Adicionar novo evento de tramitação",
+        "method": "POST",
+        "url": "/api/v1/tramitacao/prop_001/eventos",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "estadoNovo": "IN_COMMITTEE_REVIEW",
+          "comissaoId": "com_001",
+          "responsavelId": "admin_001",
+          "observacoes": "Iniciada análise na comissão",
+          "dataEvento": "2024-01-18T14:30:00Z"
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "message": "Evento de tramitação criado com sucesso",
+            "id": "tram_003"
+          }
+        }
+      }
+    },
+    "parlamentar": {
+      "get_parlamentar_propositions": {
+        "description": "Obter proposições do parlamentar logado",
+        "method": "GET",
+        "url": "/api/v1/parlamentar/proposicoes",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        },
+        "response": {
+          "status": 200,
+          "body": [
+            {
+              "id": "prop_001",
+              "numero": "001",
+              "ano": 2024,
+              "tipo": "PL",
+              "ementa": "Dispõe sobre a criação de parques municipais",
+              "estadoAtual": "IN_COMMITTEE_REVIEW",
+              "dataApresentacao": "2024-01-15T10:00:00Z"
+            },
+            {
+              "id": "prop_002",
+              "numero": "002",
+              "ano": 2024,
+              "tipo": "PL",
+              "ementa": "Institui o programa municipal de coleta seletiva",
+              "estadoAtual": "DRAFT_INITIATED",
+              "dataApresentacao": "2024-01-20T10:00:00Z"
+            }
+          ]
+        }
+      },
+      "get_parlamentar_relatorias": {
+        "description": "Obter relatorias do parlamentar",
+        "method": "GET",
+        "url": "/api/v1/parlamentar/relatorias",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        },
+        "response": {
+          "status": 200,
+          "body": [
+            {
+              "id": "rel_001",
+              "proposicaoId": "prop_003",
+              "comissao": {
+                "nome": "Comissão de Educação",
+                "sigla": "CEDU"
+              },
+              "status": "EM_ELABORACAO",
+              "dataDesignacao": "2024-01-15T14:00:00Z",
+              "parecer": "Parecer em elaboração..."
+            }
+          ]
+        }
+      },
+      "register_vote": {
+        "description": "Registrar voto em uma votação",
+        "method": "POST",
+        "url": "/api/v1/parlamentar/votos",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "votacaoId": "vot_001",
+          "tipo": "FAVORAVEL",
+          "observacoes": "Voto favorável pela importância da matéria para o meio ambiente"
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "message": "Voto registrado com sucesso",
+            "id": "voto_001"
+          }
+        }
+      }
+    },
+    "emendas": {
+      "create_emenda": {
+        "description": "Criar nova emenda",
+        "method": "POST",
+        "url": "/api/v1/emendas",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "proposicaoId": "prop_001",
+          "tipo": "ADITIVA",
+          "texto": "Art. 5º - Fica instituído o Conselho Municipal de Meio Ambiente...",
+          "justificativa": "A criação do conselho é fundamental para a participação da sociedade civil na gestão ambiental..."
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "message": "Emenda criada com sucesso",
+            "id": "emen_001"
+          }
+        }
+      },
+      "list_emendas": {
+        "description": "Listar emendas de uma proposição",
+        "method": "GET",
+        "url": "/api/v1/emendas?proposicaoId=prop_001",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        },
+        "response": {
+          "status": 200,
+          "body": [
+            {
+              "id": "emen_001",
+              "proposicaoId": "prop_001",
+              "numero": 1,
+              "tipo": "ADITIVA",
+              "autor": {
+                "nome": "Maria Santos",
+                "partido": "PSDB"
+              },
+              "texto": "Art. 5º - Fica instituído o Conselho Municipal de Meio Ambiente...",
+              "justificativa": "A criação do conselho é fundamental...",
+              "dataApresentacao": "2024-01-19T15:00:00Z",
+              "status": "APRESENTADA"
+            }
+          ]
+        }
+      }
+    },
+    "admin": {
+      "get_system_configurations": {
+        "description": "Obter configurações do sistema (Admin)",
+        "method": "GET",
+        "url": "/api/v1/admin/configuracoes",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "nomeInstituicao": "Câmara Municipal de São Paulo",
+            "siglaInstituicao": "CMSP",
+            "endereco": "Viaduto Jacareí, 100 - Bela Vista, São Paulo - SP",
+            "telefone": "(11) 3396-4000",
+            "email": "contato@saopaulo.sp.leg.br",
+            "website": "https://www.saopaulo.sp.leg.br",
+            "logo": "/uploads/logo/camara-sp.png",
+            "configuracoesTramitacao": {
+              "prazoPadrao": 30,
+              "notificacoesEmail": true,
+              "workflow": {
+                "estadosObrigatorios": ["UNDER_FORMAL_REVIEW", "COMMITTEE_ASSIGNED"],
+                "aprovacaoAutomatica": false
+              }
+            }
+          }
+        }
+      },
+      "create_user": {
+        "description": "Criar novo usuário (Admin)",
+        "method": "POST",
+        "url": "/api/v1/admin/usuarios",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "email": "novo.parlamentar@exemplo.com",
+          "name": "Carlos Oliveira",
+          "role": "PARLAMENTAR",
+          "password": "senha123456"
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "message": "Usuário criado com sucesso",
+            "id": "user_003"
+          }
+        }
+      },
+      "create_document_template": {
+        "description": "Criar template de documento (Admin)",
+        "method": "POST",
+        "url": "/api/v1/admin/documentos/templates",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "nome": "Parecer de Comissão",
+          "tipo": "parecer",
+          "template": "<html><body><h1>PARECER Nº {{numero}}/{{ano}}</h1><p>Comissão: {{comissao}}</p><p>Relator: {{relator}}</p><p>{{conteudo}}</p></body></html>",
+          "variaveis": ["numero", "ano", "comissao", "relator", "conteudo"]
+        },
+        "response": {
+          "status": 201,
+          "body": {
+            "message": "Template criado com sucesso",
+            "id": "template_001"
+          }
+        }
+      }
+    },
+    "documents": {
+      "generate_document": {
+        "description": "Gerar documento a partir de template",
+        "method": "POST",
+        "url": "/api/v1/docs/gerar/parecer",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+          "Content-Type": "application/json"
+        },
+        "request_body": {
+          "templateId": "template_001",
+          "dados": {
+            "numero": "001",
+            "ano": "2024",
+            "comissao": "Comissão de Meio Ambiente",
+            "relator": "Maria Santos",
+            "conteudo": "Após análise da matéria, este relator manifesta-se favoravelmente à aprovação da proposição..."
+          },
+          "formato": "pdf"
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "url": "/downloads/parecer-001-2024.pdf",
+            "filename": "parecer-001-2024.pdf",
+            "size": 125678
+          }
+        }
+      }
+    },
+    "upload": {
+      "upload_document": {
+        "description": "Upload de documento",
+        "method": "POST",
+        "url": "/api/v1/upload/documento",
+        "headers": {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        },
+        "request_body": {
+          "content_type": "multipart/form-data",
+          "fields": {
+            "file": "[BINARY FILE DATA]",
+            "tipo": "proposicao",
+            "proposicaoId": "prop_001"
+          }
+        },
+        "response": {
+          "status": 200,
+          "body": {
+            "url": "/uploads/documentos/prop_001/documento.pdf",
+            "filename": "documento.pdf",
+            "size": 256789
+          }
+        }
+      }
+    },
+    "error_examples": {
+      "validation_error": {
+        "description": "Erro de validação de dados",
+        "status": 400,
+        "body": {
+          "error": {
+            "code": "VALIDATION_ERROR",
+            "message": "Dados de entrada inválidos",
+            "details": [
+              "Campo 'ementa' é obrigatório",
+              "Campo 'tipo' deve ser um dos valores: PL, PLP, PEC, PDC, PRC, MSC, PLV",
+              "Campo 'ano' deve ser um número entre 2000 e 2030"
+            ]
+          }
+        }
+      },
+      "unauthorized_error": {
+        "description": "Erro de autenticação",
+        "status": 401,
+        "body": {
+          "error": {
+            "code": "UNAUTHORIZED",
+            "message": "Token de acesso inválido"
+          }
+        }
+      },
+      "forbidden_error": {
+        "description": "Erro de autorização",
+        "status": 403,
+        "body": {
+          "error": {
+            "code": "FORBIDDEN",
+            "message": "Acesso negado para esta operação"
+          }
+        }
+      },
+      "not_found_error": {
+        "description": "Recurso não encontrado",
+        "status": 404,
+        "body": {
+          "error": {
+            "code": "NOT_FOUND",
+            "message": "Proposição não encontrada"
+          }
+        }
+      },
+      "rate_limit_error": {
+        "description": "Limite de taxa excedido",
+        "status": 429,
+        "body": {
+          "error": {
+            "code": "RATE_LIMIT_EXCEEDED",
+            "message": "Muitas requisições. Tente novamente em alguns minutos."
+          }
+        }
+      }
+    }
+  }
+}

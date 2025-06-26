@@ -21,15 +21,6 @@ export const UsersStatsWidget: FC<UserStatsProps> = ({
   const chartRef = useRef<HTMLDivElement | null>(null)
   const { mode } = useThemeMode()
 
-  useEffect(() => {
-    const chart = refreshChart()
-    return () => {
-      if (chart) {
-        chart.destroy()
-      }
-    }
-  }, [chartRef, mode, refreshChart])
-
   const refreshChart = () => {
     if (!chartRef.current) {
       return
@@ -41,6 +32,15 @@ export const UsersStatsWidget: FC<UserStatsProps> = ({
     }
     return chart
   }
+
+  useEffect(() => {
+    const chart = refreshChart()
+    return () => {
+      if (chart) {
+        chart.destroy()
+      }
+    }
+  }, [chartRef, mode])
 
   return (
     <div
@@ -86,15 +86,6 @@ export const PropositionStatsWidget: FC<PropositionStatsProps> = ({
   const chartRef = useRef<HTMLDivElement | null>(null)
   const { mode } = useThemeMode()
 
-  useEffect(() => {
-    const chart = refreshChart()
-    return () => {
-      if (chart) {
-        chart.destroy()
-      }
-    }
-  }, [chartRef, mode, refreshChart])
-
   const refreshChart = () => {
     if (!chartRef.current) {
       return
@@ -106,6 +97,15 @@ export const PropositionStatsWidget: FC<PropositionStatsProps> = ({
     }
     return chart
   }
+
+  useEffect(() => {
+    const chart = refreshChart()
+    return () => {
+      if (chart) {
+        chart.destroy()
+      }
+    }
+  }, [chartRef, mode])
 
   return (
     <div
@@ -153,15 +153,6 @@ export const SessionStatsWidget: FC<SessionStatsProps> = ({
   const chartRef = useRef<HTMLDivElement | null>(null)
   const { mode } = useThemeMode()
 
-  useEffect(() => {
-    const chart = refreshChart()
-    return () => {
-      if (chart) {
-        chart.destroy()
-      }
-    }
-  }, [chartRef, mode, refreshChart])
-
   const refreshChart = () => {
     if (!chartRef.current) {
       return
@@ -173,6 +164,15 @@ export const SessionStatsWidget: FC<SessionStatsProps> = ({
     }
     return chart
   }
+
+  useEffect(() => {
+    const chart = refreshChart()
+    return () => {
+      if (chart) {
+        chart.destroy()
+      }
+    }
+  }, [chartRef, mode])
 
   return (
     <div

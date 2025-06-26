@@ -98,9 +98,11 @@ html, body {
 }
 
 .markdown-content pre code {
-  background-color: transparent;
-  padding: 0;
-  color: inherit;
+  background: transparent !important;
+  padding: 0 !important;
+  color: inherit !important;
+  border: none !important;
+  font-size: inherit !important;
 }
 
 .markdown-content blockquote {
@@ -508,6 +510,9 @@ html, body {
 .docs-category-green { background: #f0fdf4; color: #16a34a; }
 .docs-category-purple { background: #faf5ff; color: #9333ea; }
 .docs-category-orange { background: #fff7ed; color: #ea580c; }
+.docs-category-indigo { background: #eef2ff; color: #4f46e5; }
+.docs-category-teal { background: #f0fdfa; color: #0d9488; }
+.docs-category-yellow { background: #fefce8; color: #ca8a04; }
 .docs-category-gray { background: #f8fafc; color: #475569; }
 
 .docs-category-info h3 {
@@ -709,25 +714,32 @@ html, body {
 }
 
 .docs-markdown code {
-  background: #f1f5f9;
+  background: #334155;
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.9em;
-  color: #e11d48;
+  color: #fbbf24;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  border: 1px solid #475569;
 }
 
 .docs-markdown pre {
   background: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
   border-radius: 8px;
+  padding: 16px;
   overflow-x: auto;
   margin: 20px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .docs-markdown pre code {
-  background: none;
-  padding: 0;
-  color: inherit;
+  background: transparent !important;
+  padding: 0 !important;
+  color: inherit !important;
+  border: none !important;
+  font-size: inherit !important;
 }
 
 .docs-markdown table {
@@ -1744,4 +1756,96 @@ html, body {
 
 .phase-indicator:hover .phase-title {
   color: #3b82f6;
+}
+
+/* Força remoção completa de backgrounds do syntax highlighter */
+.docs-markdown pre *,
+.docs-markdown pre[class*="language-"] *,
+.markdown-content pre *,
+.markdown-content pre[class*="language-"] * {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Especificamente para elementos do Prism/SyntaxHighlighter */
+.docs-markdown .token,
+.markdown-content .token,
+pre .token,
+pre[class*="language-"] .token {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Remove qualquer background inline style incluindo rgb(45, 45, 45) */
+.docs-markdown pre[style*="background"],
+.markdown-content pre[style*="background"],
+.docs-markdown pre *[style*="background"],
+.markdown-content pre *[style*="background"] {
+  background: #1e293b !important;
+  background-color: #1e293b !important;
+}
+
+/* Regra super específica para remover rgb(45, 45, 45) e similares */
+.docs-markdown pre *[style*="rgb(45, 45, 45)"],
+.markdown-content pre *[style*="rgb(45, 45, 45)"],
+.docs-markdown pre span,
+.markdown-content pre span,
+pre span[style*="background"],
+pre code span {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Estilos para fundo escuro com letras claras - Visual elegante */
+.docs-markdown pre,
+.docs-markdown pre[class*="language-"],
+.markdown-content pre,
+.markdown-content pre[class*="language-"] {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #e2e8f0 !important;
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 20px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Código inline com fundo escuro suave */
+.docs-markdown code,
+.markdown-content code {
+  background: #334155 !important;
+  color: #fbbf24 !important;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border: 1px solid #475569;
+}
+
+/* Estilos específicos para syntax highlighter - texto claro */
+.docs-markdown pre code,
+.markdown-content pre code {
+  background: transparent !important;
+  padding: 0 !important;
+  color: inherit !important;
+  border: none !important;
+  font-size: inherit !important;
+}
+
+/* Regra específica para eliminar qualquer fundo duplo em blocos de código */
+pre code,
+pre[class*="language-"] code,
+.docs-markdown pre code,
+.docs-markdown pre[class*="language-"] code,
+.markdown-content pre code,
+.markdown-content pre[class*="language-"] code {
+  background: transparent !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
 } 

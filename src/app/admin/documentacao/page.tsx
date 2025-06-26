@@ -497,8 +497,8 @@ export default function DocumentacaoPage() {
       case 'Administração': return 'red'
       case 'Editor': return 'purple'
       case 'Cronograma': return 'orange'
-      case 'Backend': return 'gray'
-      case 'Sistema': return 'yellow'
+      case 'Backend': return 'indigo'
+      case 'Sistema': return 'teal'
       default: return 'gray'
     }
   }, []);
@@ -527,13 +527,45 @@ export default function DocumentacaoPage() {
       categoryMap.get(cat)!.push(file)
     })
     
-    const newCategories = Array.from(categoryMap.keys()).map(name => ({
-      name,
-      files: categoryMap.get(name)!,
-      icon: getCategoryIcon(name),
-      color: getCategoryColor(name),
-      description: getCategoryDescription(name),
-    }))
+    // Definir ordem específica das categorias - Backend e Cronograma no topo
+    const categoryOrder = [
+      'Backend',
+      'Cronograma',
+      'Memory Bank', 
+      'Documentação', 
+      'Administração', 
+      'Editor', 
+      'Sistema'
+    ]
+    
+    // Criar categorias na ordem especificada
+    const newCategories: DocCategory[] = []
+    
+    // Adicionar categorias na ordem definida
+    categoryOrder.forEach(categoryName => {
+      if (categoryMap.has(categoryName)) {
+        newCategories.push({
+          name: categoryName,
+          files: categoryMap.get(categoryName)!,
+          icon: getCategoryIcon(categoryName),
+          color: getCategoryColor(categoryName),
+          description: getCategoryDescription(categoryName),
+        })
+      }
+    })
+    
+    // Adicionar qualquer categoria restante que não estava na ordem definida
+    Array.from(categoryMap.keys()).forEach(categoryName => {
+      if (!categoryOrder.includes(categoryName)) {
+        newCategories.push({
+          name: categoryName,
+          files: categoryMap.get(categoryName)!,
+          icon: getCategoryIcon(categoryName),
+          color: getCategoryColor(categoryName),
+          description: getCategoryDescription(categoryName),
+        })
+      }
+    })
 
     setCategories(newCategories)
   }, [getCategoryIcon, getCategoryColor, getCategoryDescription]);

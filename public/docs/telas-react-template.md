@@ -27,7 +27,7 @@ Este documento detalha a construção de todas as telas do sistema parlamentar a
 **Rota**: `/parlamentar/dashboard`
 
 #### 📋 Finalidade da Tela
-Dashboard principal para parlamentares (deputados/senadores) com visão consolidada de:
+Dashboard principal para parlamentares com visão consolidada de:
 - Atividade legislativa pessoal
 - Projetos em tramitação
 - Agenda de sessões e compromissos

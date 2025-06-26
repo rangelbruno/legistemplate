@@ -1,0 +1,1536 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Sistema de Tramitação Parlamentar - API",
+    "description": "API completa para sistema de tramitação parlamentar com funcionalidades de gestão de proposições, parlamentares, comissões, votações e documentos.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Equipe de Desenvolvimento",
+      "email": "dev@sistemaparlamentar.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.sistemaparlamentar.com/v1",
+      "description": "Servidor de Produção"
+    },
+    {
+      "url": "http://localhost:3000/api/v1",
+      "description": "Servidor de Desenvolvimento"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Login de usuário",
+        "description": "Autentica um usuário no sistema",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "usuario@exemplo.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "example": "senha123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais inválidas"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Refresh do token",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Token renovado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publico/proposicoes": {
+      "get": {
+        "tags": ["Público"],
+        "summary": "Lista proposições públicas",
+        "description": "Retorna lista de proposições visíveis ao público",
+        "parameters": [
+          {
+            "name": "tipo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["PL", "PLP", "PEC", "PDC", "PRC", "MSC", "PLV"]
+            }
+          },
+          {
+            "name": "ano",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 2000,
+              "maximum": 2030
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de proposições",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ProposicaoPublica"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/publico/proposicoes/{id}": {
+      "get": {
+        "tags": ["Público"],
+        "summary": "Detalhes de uma proposição",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes da proposição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProposicaoDetalhada"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Proposição não encontrada"
+          }
+        }
+      }
+    },
+    "/publico/parlamentares": {
+      "get": {
+        "tags": ["Público"],
+        "summary": "Lista parlamentares",
+        "parameters": [
+          {
+            "name": "partido",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ativo",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de parlamentares",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ParlamentarPublico"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/proposicoes": {
+      "get": {
+        "tags": ["Proposições"],
+        "summary": "Lista proposições (autenticado)",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "estado",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["DRAFT_INITIATED", "UNDER_FORMAL_REVIEW", "COMMITTEE_ASSIGNED", "IN_COMMITTEE_REVIEW", "COMMITTEE_APPROVED", "IN_PLENARY_DISCUSSION", "APPROVED_PLENARY", "SANCTIONED", "PROMULGATED"]
+            }
+          },
+          {
+            "name": "autor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "comissao",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de proposições",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Proposicao"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Proposições"],
+        "summary": "Criar nova proposição",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProposicao"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Proposição criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Proposicao"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "401": {
+            "description": "Não autorizado"
+          }
+        }
+      }
+    },
+    "/proposicoes/{id}": {
+      "get": {
+        "tags": ["Proposições"],
+        "summary": "Detalhes de uma proposição",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes da proposição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProposicaoDetalhada"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Proposições"],
+        "summary": "Atualizar proposição",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProposicao"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Proposição atualizada com sucesso"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Proposições"],
+        "summary": "Excluir proposição",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Proposição excluída com sucesso"
+          }
+        }
+      }
+    },
+    "/tramitacao/{proposicaoId}/eventos": {
+      "get": {
+        "tags": ["Tramitação"],
+        "summary": "Histórico de tramitação",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "proposicaoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Histórico de tramitação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TramitacaoEvento"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Tramitação"],
+        "summary": "Adicionar evento de tramitação",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "proposicaoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTramitacaoEvento"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Evento de tramitação criado com sucesso"
+          }
+        }
+      }
+    },
+    "/parlamentar/proposicoes": {
+      "get": {
+        "tags": ["Parlamentar"],
+        "summary": "Proposições do parlamentar logado",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Lista de proposições do parlamentar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Proposicao"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/parlamentar/relatorias": {
+      "get": {
+        "tags": ["Parlamentar"],
+        "summary": "Relatorias do parlamentar",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Lista de relatorias",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Relatoria"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/parlamentar/votacoes": {
+      "get": {
+        "tags": ["Parlamentar"],
+        "summary": "Votações disponíveis",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Lista de votações",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Votacao"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/parlamentar/votos": {
+      "post": {
+        "tags": ["Parlamentar"],
+        "summary": "Registrar voto",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVoto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Voto registrado com sucesso"
+          }
+        }
+      }
+    },
+    "/emendas": {
+      "get": {
+        "tags": ["Emendas"],
+        "summary": "Lista emendas",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "proposicaoId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de emendas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Emenda"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Emendas"],
+        "summary": "Criar emenda",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmenda"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Emenda criada com sucesso"
+          }
+        }
+      }
+    },
+    "/admin/configuracoes": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Configurações do sistema",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Configurações do sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SistemaConfiguracoes"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Atualizar configurações",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateConfiguracoes"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Configurações atualizadas com sucesso"
+          }
+        }
+      }
+    },
+    "/admin/usuarios": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Lista usuários",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Lista de usuários",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Criar usuário",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso"
+          }
+        }
+      }
+    },
+    "/admin/documentos/templates": {
+      "get": {
+        "tags": ["Admin - Documentos"],
+        "summary": "Lista templates de documentos",
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Lista de templates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentoTemplate"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Admin - Documentos"],
+        "summary": "Criar template",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDocumentoTemplate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Template criado com sucesso"
+          }
+        }
+      }
+    },
+    "/docs/gerar/{tipo}": {
+      "post": {
+        "tags": ["Documentos"],
+        "summary": "Gerar documento",
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {
+            "name": "tipo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["ata", "parecer", "relatorio", "oficio"]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GerarDocumento"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Documento gerado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "description": "URL para download do documento"
+                    },
+                    "filename": {
+                      "type": "string"
+                    },
+                    "size": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/upload/documento": {
+      "post": {
+        "tags": ["Upload"],
+        "summary": "Upload de documento",
+        "security": [{"bearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "tipo": {
+                    "type": "string",
+                    "enum": ["proposicao", "emenda", "parecer", "outros"]
+                  },
+                  "proposicaoId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Documento enviado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "filename": {
+                      "type": "string"
+                    },
+                    "size": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["PUBLIC", "PARLAMENTAR", "ADMIN"]
+          },
+          "ativo": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateUser": {
+        "type": "object",
+        "required": ["email", "name", "role"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["PUBLIC", "PARLAMENTAR", "ADMIN"]
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6
+          }
+        }
+      },
+      "Proposicao": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          },
+          "ano": {
+            "type": "integer"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": ["PL", "PLP", "PEC", "PDC", "PRC", "MSC", "PLV"]
+          },
+          "ementa": {
+            "type": "string"
+          },
+          "justificacao": {
+            "type": "string"
+          },
+          "estadoAtual": {
+            "type": "string",
+            "enum": ["DRAFT_INITIATED", "UNDER_FORMAL_REVIEW", "PENDING_CORRECTIONS", "REJECTED_PRELIMINARY", "COMMITTEE_ASSIGNED", "IN_COMMITTEE_REVIEW", "UNDER_RAPPORTEUR_ANALYSIS", "AMENDMENT_PERIOD_OPEN", "AMENDMENT_PERIOD_CLOSED", "COMMITTEE_DISCUSSION", "COMMITTEE_VOTING", "COMMITTEE_APPROVED", "COMMITTEE_REJECTED", "READY_FOR_PLENARY", "IN_PLENARY_DISCUSSION", "IN_VOTING", "APPROVED_PLENARY", "REJECTED_PLENARY", "IN_REVIEWING_HOUSE", "SENT_TO_EXECUTIVE", "UNDER_EXECUTIVE_REVIEW", "SANCTIONED", "PARTIALLY_VETOED", "TOTALLY_VETOED", "PROMULGATED", "PUBLISHED_ACTIVE"]
+          },
+          "dataApresentacao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "autor": {
+            "$ref": "#/components/schemas/ParlamentarSimples"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateProposicao": {
+        "type": "object",
+        "required": ["numero", "ano", "tipo", "ementa", "autorId"],
+        "properties": {
+          "numero": {
+            "type": "string"
+          },
+          "ano": {
+            "type": "integer"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": ["PL", "PLP", "PEC", "PDC", "PRC", "MSC", "PLV"]
+          },
+          "ementa": {
+            "type": "string"
+          },
+          "justificacao": {
+            "type": "string"
+          },
+          "autorId": {
+            "type": "string"
+          },
+          "dataApresentacao": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UpdateProposicao": {
+        "type": "object",
+        "properties": {
+          "ementa": {
+            "type": "string"
+          },
+          "justificacao": {
+            "type": "string"
+          },
+          "estadoAtual": {
+            "type": "string"
+          }
+        }
+      },
+      "ProposicaoPublica": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          },
+          "ano": {
+            "type": "integer"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "ementa": {
+            "type": "string"
+          },
+          "estadoAtual": {
+            "type": "string"
+          },
+          "dataApresentacao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "autor": {
+            "type": "object",
+            "properties": {
+              "nome": {
+                "type": "string"
+              },
+              "partido": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ProposicaoDetalhada": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Proposicao"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "tramitacoes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TramitacaoEvento"
+                }
+              },
+              "emendas": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Emenda"
+                }
+              },
+              "relatorias": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Relatoria"
+                }
+              },
+              "votacoes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Votacao"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "TramitacaoEvento": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "proposicaoId": {
+            "type": "string"
+          },
+          "estadoAnterior": {
+            "type": "string"
+          },
+          "estadoNovo": {
+            "type": "string"
+          },
+          "comissaoId": {
+            "type": "string"
+          },
+          "comissao": {
+            "$ref": "#/components/schemas/Comissao"
+          },
+          "responsavelId": {
+            "type": "string"
+          },
+          "observacoes": {
+            "type": "string"
+          },
+          "dataEvento": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateTramitacaoEvento": {
+        "type": "object",
+        "required": ["estadoNovo", "dataEvento"],
+        "properties": {
+          "estadoNovo": {
+            "type": "string"
+          },
+          "comissaoId": {
+            "type": "string"
+          },
+          "responsavelId": {
+            "type": "string"
+          },
+          "observacoes": {
+            "type": "string"
+          },
+          "dataEvento": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ParlamentarSimples": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "partido": {
+            "type": "string"
+          },
+          "uf": {
+            "type": "string"
+          }
+        }
+      },
+      "ParlamentarPublico": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "partido": {
+            "type": "object",
+            "properties": {
+              "sigla": {
+                "type": "string"
+              },
+              "nome": {
+                "type": "string"
+              }
+            }
+          },
+          "uf": {
+            "type": "string"
+          },
+          "cargo": {
+            "type": "string"
+          },
+          "foto": {
+            "type": "string"
+          },
+          "ativo": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Comissao": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "sigla": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": ["CCJ", "CDHM", "CFT", "CEDU", "CSAUDE", "CMEIO", "CTASP", "CAPADR"]
+          },
+          "ativa": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Relatoria": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "proposicaoId": {
+            "type": "string"
+          },
+          "parlamentarId": {
+            "type": "string"
+          },
+          "parlamentar": {
+            "$ref": "#/components/schemas/ParlamentarSimples"
+          },
+          "comissaoId": {
+            "type": "string"
+          },
+          "comissao": {
+            "$ref": "#/components/schemas/Comissao"
+          },
+          "parecer": {
+            "type": "string"
+          },
+          "dataDesignacao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataEntrega": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["DESIGNADO", "EM_ELABORACAO", "ENTREGUE", "APROVADO", "REJEITADO"]
+          }
+        }
+      },
+      "Votacao": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "proposicaoId": {
+            "type": "string"
+          },
+          "proposicao": {
+            "$ref": "#/components/schemas/Proposicao"
+          },
+          "comissaoId": {
+            "type": "string"
+          },
+          "comissao": {
+            "$ref": "#/components/schemas/Comissao"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": ["SIMBOLICA", "NOMINAL", "SECRETA"]
+          },
+          "resultado": {
+            "type": "string",
+            "enum": ["APROVADO", "REJEITADO", "PREJUDICADO", "ADIADO"]
+          },
+          "dataVotacao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "votosFavoraveis": {
+            "type": "integer"
+          },
+          "votosContrarios": {
+            "type": "integer"
+          },
+          "abstencoes": {
+            "type": "integer"
+          },
+          "observacoes": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateVoto": {
+        "type": "object",
+        "required": ["votacaoId", "tipo"],
+        "properties": {
+          "votacaoId": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": ["FAVORAVEL", "CONTRARIO", "ABSTENCAO"]
+          },
+          "observacoes": {
+            "type": "string"
+          }
+        }
+      },
+      "Emenda": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "proposicaoId": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "integer"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": ["SUPRESSIVA", "SUBSTITUTIVA", "ADITIVA", "MODIFICATIVA", "AGLUTINATIVA"]
+          },
+          "autorId": {
+            "type": "string"
+          },
+          "autor": {
+            "$ref": "#/components/schemas/ParlamentarSimples"
+          },
+          "texto": {
+            "type": "string"
+          },
+          "justificativa": {
+            "type": "string"
+          },
+          "dataApresentacao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["APRESENTADA", "APROVADA", "REJEITADA", "PREJUDICADA"]
+          }
+        }
+      },
+      "CreateEmenda": {
+        "type": "object",
+        "required": ["proposicaoId", "tipo", "texto", "justificativa"],
+        "properties": {
+          "proposicaoId": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": ["SUPRESSIVA", "SUBSTITUTIVA", "ADITIVA", "MODIFICATIVA", "AGLUTINATIVA"]
+          },
+          "texto": {
+            "type": "string"
+          },
+          "justificativa": {
+            "type": "string"
+          }
+        }
+      },
+      "SistemaConfiguracoes": {
+        "type": "object",
+        "properties": {
+          "nomeInstituicao": {
+            "type": "string"
+          },
+          "siglaInstituicao": {
+            "type": "string"
+          },
+          "endereco": {
+            "type": "string"
+          },
+          "telefone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "configuracoesTramitacao": {
+            "type": "object",
+            "properties": {
+              "prazoPadrao": {
+                "type": "integer"
+              },
+              "notificacoesEmail": {
+                "type": "boolean"
+              },
+              "workflow": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "UpdateConfiguracoes": {
+        "type": "object",
+        "properties": {
+          "nomeInstituicao": {
+            "type": "string"
+          },
+          "siglaInstituicao": {
+            "type": "string"
+          },
+          "endereco": {
+            "type": "string"
+          },
+          "telefone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          }
+        }
+      },
+      "DocumentoTemplate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": ["ata", "parecer", "relatorio", "oficio", "requerimento"]
+          },
+          "template": {
+            "type": "string",
+            "description": "Template HTML com placeholders"
+          },
+          "variaveis": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Lista de variáveis disponíveis no template"
+          },
+          "ativo": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateDocumentoTemplate": {
+        "type": "object",
+        "required": ["nome", "tipo", "template"],
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": ["ata", "parecer", "relatorio", "oficio", "requerimento"]
+          },
+          "template": {
+            "type": "string"
+          },
+          "variaveis": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GerarDocumento": {
+        "type": "object",
+        "required": ["templateId", "dados"],
+        "properties": {
+          "templateId": {
+            "type": "string"
+          },
+          "dados": {
+            "type": "object",
+            "description": "Dados para substituir no template"
+          },
+          "formato": {
+            "type": "string",
+            "enum": ["pdf", "docx", "html"],
+            "default": "pdf"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "hasNext": {
+            "type": "boolean"
+          },
+          "hasPrev": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Autenticação",
+      "description": "Endpoints para autenticação e autorização"
+    },
+    {
+      "name": "Público",
+      "description": "Endpoints públicos sem necessidade de autenticação"
+    },
+    {
+      "name": "Proposições",
+      "description": "Gestão de proposições legislativas"
+    },
+    {
+      "name": "Tramitação",
+      "description": "Controle de tramitação de proposições"
+    },
+    {
+      "name": "Parlamentar",
+      "description": "Funcionalidades específicas para parlamentares"
+    },
+    {
+      "name": "Emendas",
+      "description": "Gestão de emendas às proposições"
+    },
+    {
+      "name": "Admin",
+      "description": "Funcionalidades administrativas"
+    },
+    {
+      "name": "Admin - Documentos",
+      "description": "Gestão de templates e documentos"
+    },
+    {
+      "name": "Documentos",
+      "description": "Geração de documentos"
+    },
+    {
+      "name": "Upload",
+      "description": "Upload de arquivos"
+    }
+  ]
+}

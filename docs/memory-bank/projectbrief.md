@@ -11,7 +11,7 @@ Portal de transparência e gestão legislativa que permite o acompanhamento em t
 
 ### 🎭 **Personas e Áreas de Acesso**
 
-#### 👨‍💼 **1. Parlamentar (Deputados/Senadores)**
+#### 👨‍💼 **1. Parlamentar**
 - Dashboard pessoal com indicadores de atividade
 - Gestão de proposições de autoria própria
 - Acompanhamento de relatorias e prazos
