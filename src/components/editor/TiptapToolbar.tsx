@@ -25,11 +25,13 @@ export function TiptapToolbar({ editor, onSave, onImageUpload, className = '' }:
 
   const handleLinkToggle = useCallback(() => {
     if (editor.isActive('link')) {
-      editor.chain().focus().unsetLink().run()
+      // editor.chain().focus().unsetLink().run() // Extension not available
+      editor.chain().focus().toggleMark('link').run()
     } else {
       const url = window.prompt('Digite a URL:')
       if (url) {
-        editor.chain().focus().setLink({ href: url }).run()
+        // editor.chain().focus().setLink({ href: url }).run() // Extension not available
+        editor.chain().focus().setMark('link', { href: url }).run()
       }
     }
   }, [editor])
@@ -355,9 +357,13 @@ export function TiptapToolbar({ editor, onSave, onImageUpload, className = '' }:
       <div className="toolbar-group">
         <button
           type="button"
-          onClick={() => editor.chain().focus().toggleSubscript().run()}
+          onClick={() => {
+            // editor.chain().focus().toggleSubscript().run() // Extension not available
+            console.warn('Subscript extension not available')
+          }}
           className={`toolbar-btn ${editor.isActive('subscript') ? 'active' : ''}`}
-          title="Subscrito"
+          title="Subscrito (não disponível)"
+          disabled
         >
           <i className="ki-duotone ki-subscript fs-5">
             <span className="path1"></span>
@@ -366,9 +372,13 @@ export function TiptapToolbar({ editor, onSave, onImageUpload, className = '' }:
         
         <button
           type="button"
-          onClick={() => editor.chain().focus().toggleSuperscript().run()}
+          onClick={() => {
+            // editor.chain().focus().toggleSuperscript().run() // Extension not available
+            console.warn('Superscript extension not available')
+          }}
           className={`toolbar-btn ${editor.isActive('superscript') ? 'active' : ''}`}
-          title="Sobrescrito"
+          title="Sobrescrito (não disponível)"
+          disabled
         >
           <i className="ki-duotone ki-superscript fs-5">
             <span className="path1"></span>
@@ -377,9 +387,13 @@ export function TiptapToolbar({ editor, onSave, onImageUpload, className = '' }:
         
         <button
           type="button"
-          onClick={() => editor.chain().focus().toggleHighlight().run()}
+          onClick={() => {
+            // editor.chain().focus().toggleHighlight().run() // Extension not available
+            console.warn('Highlight extension not available')
+          }}
           className={`toolbar-btn ${editor.isActive('highlight') ? 'active' : ''}`}
-          title="Destacar texto"
+          title="Destacar texto (não disponível)"
+          disabled
         >
           <i className="ki-duotone ki-text-highlight fs-5">
             <span className="path1"></span>

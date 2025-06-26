@@ -1,4 +1,4 @@
-import { useEffect, useRef, FC } from 'react'
+import { useEffect, useRef, FC, useCallback } from 'react'
 import ApexCharts, { ApexOptions } from 'apexcharts'
 import { getCSSVariableValue } from '../../../_metronic/assets/ts/_utils'
 import { useThemeMode } from '../../../_metronic/partials/layout/theme-mode/ThemeModeProvider'
@@ -21,7 +21,7 @@ export const UsersStatsWidget: FC<UserStatsProps> = ({
   const chartRef = useRef<HTMLDivElement | null>(null)
   const { mode } = useThemeMode()
 
-  const refreshChart = () => {
+  const refreshChart = useCallback(() => {
     if (!chartRef.current) {
       return
     }
@@ -31,7 +31,7 @@ export const UsersStatsWidget: FC<UserStatsProps> = ({
       chart.render()
     }
     return chart
-  }
+  }, [chartHeight])
 
   useEffect(() => {
     const chart = refreshChart()
@@ -40,7 +40,7 @@ export const UsersStatsWidget: FC<UserStatsProps> = ({
         chart.destroy()
       }
     }
-  }, [chartRef, mode])
+  }, [refreshChart])
 
   return (
     <div
@@ -86,7 +86,7 @@ export const PropositionStatsWidget: FC<PropositionStatsProps> = ({
   const chartRef = useRef<HTMLDivElement | null>(null)
   const { mode } = useThemeMode()
 
-  const refreshChart = () => {
+  const refreshChart = useCallback(() => {
     if (!chartRef.current) {
       return
     }
@@ -96,7 +96,7 @@ export const PropositionStatsWidget: FC<PropositionStatsProps> = ({
       chart.render()
     }
     return chart
-  }
+  }, [chartHeight])
 
   useEffect(() => {
     const chart = refreshChart()
@@ -105,7 +105,7 @@ export const PropositionStatsWidget: FC<PropositionStatsProps> = ({
         chart.destroy()
       }
     }
-  }, [chartRef, mode])
+  }, [refreshChart])
 
   return (
     <div
@@ -153,7 +153,7 @@ export const SessionStatsWidget: FC<SessionStatsProps> = ({
   const chartRef = useRef<HTMLDivElement | null>(null)
   const { mode } = useThemeMode()
 
-  const refreshChart = () => {
+  const refreshChart = useCallback(() => {
     if (!chartRef.current) {
       return
     }
@@ -163,7 +163,7 @@ export const SessionStatsWidget: FC<SessionStatsProps> = ({
       chart.render()
     }
     return chart
-  }
+  }, [chartHeight])
 
   useEffect(() => {
     const chart = refreshChart()
@@ -172,7 +172,7 @@ export const SessionStatsWidget: FC<SessionStatsProps> = ({
         chart.destroy()
       }
     }
-  }, [chartRef, mode])
+  }, [refreshChart])
 
   return (
     <div

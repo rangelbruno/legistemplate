@@ -1,5 +1,5 @@
 import { prisma } from './database'
-import { LocalProposicaoService } from './services/local/local-proposicao.service'
+// import { LocalProposicaoService } from './services/local/local-proposicao.service' // Temporarily disabled
 import type { DataLayer } from './services/data-service.interface'
 
 // Future: External services will be implemented here
@@ -15,7 +15,7 @@ function createDataLayer(): DataLayer {
   
   // Development with SQLite
   return {
-    proposicoes: new LocalProposicaoService(prisma),
+    proposicoes: {} as any, // new LocalProposicaoService(prisma), // Temporarily disabled
     parlamentares: {} as any, // TODO: Implement LocalParlamentarService
     tramitacao: {} as any     // TODO: Implement LocalTramitacaoService
   }

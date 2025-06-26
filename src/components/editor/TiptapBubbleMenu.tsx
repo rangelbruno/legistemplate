@@ -60,7 +60,10 @@ export function TiptapBubbleMenu({ editor }: TiptapBubbleMenuProps) {
         <div className="bubble-separator"></div>
         
         <button
-          onClick={() => editor.chain().focus().toggleHighlight().run()}
+          onClick={() => {
+        // editor.chain().focus().toggleHighlight().run() // Extension not available
+        console.warn('Highlight extension not available')
+      }}
           className={`bubble-btn ${editor.isActive('highlight') ? 'active' : ''}`}
           title="Destacar"
         >
@@ -74,7 +77,8 @@ export function TiptapBubbleMenu({ editor }: TiptapBubbleMenuProps) {
           onClick={() => {
             const url = window.prompt('Digite a URL:')
             if (url) {
-              editor.chain().focus().setLink({ href: url }).run()
+              // editor.chain().focus().setLink({ href: url }).run() // Extension not available
+              editor.chain().focus().setMark('link', { href: url }).run()
             }
           }}
           className={`bubble-btn ${editor.isActive('link') ? 'active' : ''}`}

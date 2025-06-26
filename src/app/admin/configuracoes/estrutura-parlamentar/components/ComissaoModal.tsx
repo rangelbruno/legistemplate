@@ -29,6 +29,21 @@ interface ComissaoForm {
   status: Comissao['status']
 }
 
+interface ComissaoFormErrors {
+  nome?: string
+  tipo?: string
+  descricao?: string
+  finalidade?: string
+  presidenteId?: string
+  vicePresidenteId?: string
+  relatorId?: string
+  membrosIds?: string
+  dataConstituicao?: string
+  mandatoInicio?: string
+  mandatoFim?: string
+  status?: string
+}
+
 const TIPOS_COMISSAO: { value: Comissao['tipo']; label: string; color: string }[] = [
   { value: 'PERMANENTE', label: 'Permanente', color: 'primary' },
   { value: 'TEMPORARIA', label: 'Temporária', color: 'info' },
@@ -65,7 +80,7 @@ export default function ComissaoModal({
   })
 
   const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState<Partial<ComissaoForm>>({})
+  const [errors, setErrors] = useState<ComissaoFormErrors>({})
 
   // Preencher formulário com dados existentes
   useEffect(() => {
@@ -111,8 +126,8 @@ export default function ComissaoModal({
     setForm(prev => ({ ...prev, [field]: value }))
     
     // Limpar erro do campo ao alterar
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }))
+    if (errors[field as keyof ComissaoFormErrors]) {
+      setErrors(prev => ({ ...prev, [field as keyof ComissaoFormErrors]: undefined }))
     }
   }
 
@@ -125,7 +140,7 @@ export default function ComissaoModal({
   }
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<ComissaoForm> = {}
+    const newErrors: ComissaoFormErrors = {}
 
     // Campos obrigatórios
     if (!form.nome.trim()) {

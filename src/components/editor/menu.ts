@@ -4,8 +4,6 @@ import {
   toggleMark,
   setBlockType,
   chainCommands,
-  toggleBold,
-  toggleItalic,
   wrapIn,
   lift,
   selectParentNode,
@@ -74,7 +72,6 @@ export function buildMenuItems(schema: Schema) {
   if (schema.marks.link) {
     r.toggleLink = new MenuItem({
       title: "Adicionar/remover link",
-      icon: "🔗",
       active(state: any) { return markActive(state, schema.marks.link) },
       enable(state: any) { return !state.selection.empty },
       run(state: any, dispatch: any, view: any) {

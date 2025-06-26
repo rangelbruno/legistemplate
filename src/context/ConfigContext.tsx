@@ -98,11 +98,11 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
       if (response.ok) {
         const result = await response.json()
         // Atualizar configurações locais
-        setConfigurations(prev => ({
+        setConfigurations((prev: any) => ({
           ...prev,
           [categoria]: result.data
         }))
-        setOriginalConfigurations(prev => ({
+        setOriginalConfigurations((prev: any) => ({
           ...prev,
           [categoria]: JSON.parse(JSON.stringify(result.data))
         }))
@@ -231,7 +231,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
 
   // Definir configuração (uso interno)
   const setConfiguration = (categoria: string, dados: any) => {
-    setConfigurations(prev => ({
+    setConfigurations((prev: any) => ({
       ...prev,
       [categoria]: dados
     }))

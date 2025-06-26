@@ -49,7 +49,7 @@ import {
   $insertNodes,
   $createTextNode
 } from 'lexical'
-import { ImageNode, $createImageNode } from './ImageNode'
+import { ImageNode, $createImageNode } from './nodes/ImageNode'
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary'
 import './LexicalEditor.css'
 
