@@ -3,9 +3,9 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, context: any) {
   try {
-    const { id } = params
+    const { id } = context.params
 
     const partido = await prisma.partido.findUnique({
       where: { id },
@@ -42,9 +42,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, context: any) {
   try {
-    const { id } = params
+    const { id } = context.params
     const body = await request.json()
     
     const { sigla, nome, numero, fundacao, presidente, website, logo, ativo } = body
@@ -115,9 +115,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, context: any) {
   try {
-    const { id } = params
+    const { id } = context.params
 
     // Verificar se o partido existe
     const partidoExistente = await prisma.partido.findUnique({
