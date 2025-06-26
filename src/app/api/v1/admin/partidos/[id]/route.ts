@@ -3,13 +3,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-interface RouteParams {
-  params: {
-    id: string
-  }
-}
-
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params
 
@@ -48,7 +42,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params
     const body = await request.json()
@@ -121,7 +115,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params
 
