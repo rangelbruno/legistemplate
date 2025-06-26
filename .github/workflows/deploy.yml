@@ -1,0 +1,223 @@
+name: Deploy para VPS
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+    types: [ closed ]
+
+env:
+  NODE_VERSION: '18'
+  APP_NAME: 'legistemplate'
+
+jobs:
+  # Job de Build e Testes
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Instalar dependências
+      run: npm ci
+
+    - name: Executar linting
+      run: npm run lint
+
+    - name: Executar build
+      run: npm run build
+
+    - name: Executar testes (se existirem)
+      run: |
+        if [ -f "package.json" ] && grep -q '"test"' package.json; then
+          npm test
+        else
+          echo "Nenhum script de teste encontrado"
+        fi
+      continue-on-error: true
+
+    - name: Criar artefato de build
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-files
+        path: |
+          dist/
+          package.json
+          package-lock.json
+          prisma/
+          .env.example
+        retention-days: 1
+
+  # Job de Deploy para VPS
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    - name: Download dos artefatos de build
+      uses: actions/download-artifact@v4
+      with:
+        name: build-files
+
+    - name: Preparar chave SSH
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+
+    - name: Adicionar host conhecido
+      run: |
+        ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Criar backup da versão atual
+      run: |
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+          cd ${{ secrets.VPS_APP_PATH }} &&
+          if [ -d 'current' ]; then
+            sudo rm -rf backup_$(date +%Y%m%d_%H%M%S) || true
+            sudo mv current backup_$(date +%Y%m%d_%H%M%S) || true
+          fi
+        "
+      continue-on-error: true
+
+    - name: Criar diretório da aplicação
+      run: |
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+          sudo mkdir -p ${{ secrets.VPS_APP_PATH }}/current &&
+          sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} ${{ secrets.VPS_APP_PATH }}
+        "
+
+    - name: Sincronizar arquivos via rsync
+      run: |
+        rsync -avz --delete \
+          --exclude='.git/' \
+          --exclude='node_modules/' \
+          --exclude='.env' \
+          --exclude='*.log' \
+          ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_APP_PATH }}/current/
+
+    - name: Instalar dependências no servidor
+      run: |
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+          cd ${{ secrets.VPS_APP_PATH }}/current &&
+          npm ci --production &&
+          npm run build
+        "
+
+    - name: Configurar variáveis de ambiente
+      run: |
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+          cd ${{ secrets.VPS_APP_PATH }}/current &&
+          if [ ! -f '.env' ]; then
+            cp .env.example .env || echo 'Arquivo .env.example não encontrado'
+          fi
+        "
+
+    - name: Executar migrações do banco (Prisma)
+      run: |
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+          cd ${{ secrets.VPS_APP_PATH }}/current &&
+          if [ -f 'prisma/schema.prisma' ]; then
+            npx prisma migrate deploy
+            echo 'Migrações do Prisma executadas'
+          else
+            echo 'Schema do Prisma não encontrado'
+          fi
+        "
+      continue-on-error: true
+
+    - name: Reiniciar aplicação (PM2)
+      run: |
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+          cd ${{ secrets.VPS_APP_PATH }}/current &&
+          
+          # Verificar se PM2 está instalado
+          if command -v pm2 >/dev/null 2>&1; then
+            # Parar aplicação se estiver rodando
+            pm2 stop ${{ env.APP_NAME }} || true
+            pm2 delete ${{ env.APP_NAME }} || true
+            
+            # Iniciar aplicação
+            pm2 start npm --name '${{ env.APP_NAME }}' -- start
+            pm2 save
+            
+            echo 'Aplicação reiniciada com PM2'
+          else
+            echo 'PM2 não encontrado. Instale PM2 no servidor: npm install -g pm2'
+            
+            # Alternativa com nohup
+            pkill -f 'node.*${{ env.APP_NAME }}' || true
+            nohup npm start > app.log 2>&1 &
+            echo 'Aplicação iniciada com nohup'
+          fi
+        "
+
+    - name: Reiniciar Nginx (se necessário)
+      run: |
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+          if command -v nginx >/dev/null 2>&1; then
+            sudo nginx -t && sudo systemctl reload nginx
+            echo 'Nginx recarregado'
+          else
+            echo 'Nginx não encontrado'
+          fi
+        "
+      continue-on-error: true
+
+    - name: Verificar status da aplicação
+      run: |
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+          cd ${{ secrets.VPS_APP_PATH }}/current &&
+          
+          # Aguardar alguns segundos para a aplicação iniciar
+          sleep 10
+          
+          # Verificar se a aplicação está rodando
+          if command -v pm2 >/dev/null 2>&1; then
+            pm2 status ${{ env.APP_NAME }}
+          fi
+          
+          # Verificar se a porta está ativa (assumindo porta 3000)
+          if netstat -tlnp | grep :3000; then
+            echo 'Aplicação está rodando na porta 3000'
+          else
+            echo 'Aplicação pode não estar rodando na porta 3000'
+          fi
+        "
+
+    - name: Limpar builds antigos
+      run: |
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "
+          cd ${{ secrets.VPS_APP_PATH }} &&
+          # Manter apenas os 3 backups mais recentes
+          ls -t backup_* 2>/dev/null | tail -n +4 | xargs rm -rf || true
+        "
+      continue-on-error: true
+
+  # Job de notificação
+  notify:
+    needs: [build-and-test, deploy]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Notificar status do deploy
+      run: |
+        if [ "${{ needs.deploy.result }}" == "success" ]; then
+          echo "✅ Deploy realizado com sucesso!"
+          echo "🚀 Aplicação ${{ env.APP_NAME }} atualizada no VPS"
+        else
+          echo "❌ Falha no deploy!"
+          echo "🔧 Verifique os logs para mais detalhes"
+        fi
