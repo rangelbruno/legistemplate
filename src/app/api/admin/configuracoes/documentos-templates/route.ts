@@ -1,5 +1,5 @@
 // Mock de dados - substituir por banco de dados real
-let documentos = [
+const documentos = [
   {
     id: '1',
     titulo: 'Ata da 15ª Sessão Ordinária',

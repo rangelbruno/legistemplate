@@ -33,7 +33,7 @@ export const DocumentUrls = {
   // Páginas
   list: () => buildUrl('admin/configuracoes/documentos-templates'),
   editor: (params?: { template?: string; id?: string; novo?: boolean; content?: string }) => {
-    let url = 'admin/configuracoes/documentos-templates/editor'
+    const url = 'admin/configuracoes/documentos-templates/editor'
     const searchParams = new URLSearchParams()
     
     if (params?.template) searchParams.set('template', params.template)

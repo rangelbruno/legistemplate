@@ -22,12 +22,12 @@ function canExecute(state: any, cmd: any) {
 
 // Função para criar item de menu
 function cmdItem(cmd: any, options: any) {
-  let passedOptions: any = {
+  const passedOptions: any = {
     label: options.title,
     run: cmd
   }
   
-  for (let prop in options) passedOptions[prop] = options[prop]
+  for (const prop in options) passedOptions[prop] = options[prop]
   
   if ((!options.enable || options.enable === true) && !options.select)
     passedOptions[options.enable ? 'enable' : 'select'] = (state: any) => cmd(state)
@@ -37,20 +37,20 @@ function cmdItem(cmd: any, options: any) {
 
 // Função para criar separador
 function markActive(state: any, type: any) {
-  let {from, $from, to, empty} = state.selection
+  const {from, $from, to, empty} = state.selection
   if (empty) return type.isInSet(state.storedMarks || $from.marks())
   else return state.doc.rangeHasMark(from, to, type)
 }
 
 function blockActive(state: any, type: any, attrs?: any) {
-  let {$from, to, node} = state.selection
+  const {$from, to, node} = state.selection
   if (node) return node.hasMarkup(type, attrs)
   return to <= $from.end() && $from.parent.hasMarkup(type, attrs)
 }
 
 export function buildMenuItems(schema: Schema) {
-  let r: any = {}
-  let mark = (markType: any, options: any) => {
+  const r: any = {}
+  const mark = (markType: any, options: any) => {
     return cmdItem(toggleMark(markType), {
       title: options.title,
       icon: options.icon,
@@ -79,7 +79,7 @@ export function buildMenuItems(schema: Schema) {
           toggleMark(schema.marks.link)(state, dispatch)
           return true
         }
-        let href = prompt("URL do link:", "")
+        const href = prompt("URL do link:", "")
         if (href) {
           toggleMark(schema.marks.link, {href})(state, dispatch)
           view.focus()
@@ -132,12 +132,12 @@ export function buildMenuItems(schema: Schema) {
       title: "Inserir Artigo",
       label: "Art.",
       run(state: any, dispatch: any) {
-        let {$head} = state.selection
-        let article = schema.nodes.article_section.create({}, [
+        const {$head} = state.selection
+        const article = schema.nodes.article_section.create({}, [
           schema.nodes.article_title.create({}, schema.text("Art. [NÚMERO]º")),
           schema.nodes.caput.create({}, schema.text("[CAPUT DO ARTIGO]"))
         ])
-        let tr = state.tr.replaceSelectionWith(article)
+        const tr = state.tr.replaceSelectionWith(article)
         dispatch(tr)
       }
     })
@@ -148,11 +148,11 @@ export function buildMenuItems(schema: Schema) {
       title: "Inserir Inciso",
       label: "I -",
       run(state: any, dispatch: any) {
-        let inciso = schema.nodes.inciso.create({}, [
+        const inciso = schema.nodes.inciso.create({}, [
           schema.nodes.inciso_number.create({}, schema.text("I -")),
           schema.nodes.inciso_text.create({}, schema.text("[TEXTO DO INCISO]"))
         ])
-        let tr = state.tr.replaceSelectionWith(inciso)
+        const tr = state.tr.replaceSelectionWith(inciso)
         dispatch(tr)
       }
     })
@@ -163,11 +163,11 @@ export function buildMenuItems(schema: Schema) {
       title: "Inserir Alínea",
       label: "a)",
       run(state: any, dispatch: any) {
-        let alinea = schema.nodes.alinea.create({}, [
+        const alinea = schema.nodes.alinea.create({}, [
           schema.nodes.alinea_letter.create({}, schema.text("a)")),
           schema.nodes.alinea_text.create({}, schema.text("[TEXTO DA ALÍNEA]"))
         ])
-        let tr = state.tr.replaceSelectionWith(alinea)
+        const tr = state.tr.replaceSelectionWith(alinea)
         dispatch(tr)
       }
     })
@@ -178,12 +178,12 @@ export function buildMenuItems(schema: Schema) {
       title: "Inserir Bloco de Assinatura",
       label: "Ass.",
       run(state: any, dispatch: any) {
-        let signature = schema.nodes.signature_block.create({}, [
+        const signature = schema.nodes.signature_block.create({}, [
           schema.nodes.signature_line.create({}, schema.text("_".repeat(50))),
           schema.nodes.signature_name.create({}, schema.text("[NOME]")),
           schema.nodes.signature_title.create({}, schema.text("[CARGO]"))
         ])
-        let tr = state.tr.replaceSelectionWith(signature)
+        const tr = state.tr.replaceSelectionWith(signature)
         dispatch(tr)
       }
     })

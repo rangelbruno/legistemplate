@@ -319,7 +319,7 @@ export function Registration() {
             <a
               href='https://keenthemes.com/metronic/?page=faq'
               target='_blank'
-              className='ms-1 link-primary'
+              className='ms-1 link-primary' rel="noreferrer"
             >
               Terms
             </a>

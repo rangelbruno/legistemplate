@@ -187,7 +187,7 @@ export function AsideMenuMain() {
         <a
           target='_blank'
           className='menu-link'
-          href={import.meta.env.VITE_APP_PREVIEW_DOCS_URL + '/changelog'}
+          href={import.meta.env.VITE_APP_PREVIEW_DOCS_URL + '/changelog'} rel="noreferrer"
         >
           <span className='menu-icon'>
             <KTIcon iconName='document' className='fs-2' />

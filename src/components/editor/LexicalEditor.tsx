@@ -646,7 +646,7 @@ function ToolbarPlugin({
     const selection = $getSelection()
     if ($isRangeSelection(selection)) {
       const anchorNode = selection.anchor.getNode()
-      let element = 
+      const element = 
         anchorNode.getKey() === 'root'
           ? anchorNode
           : anchorNode.getTopLevelElementOrThrow()

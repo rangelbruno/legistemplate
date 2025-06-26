@@ -235,7 +235,7 @@ let MOCK_MESA_DIRETORA: MesaDiretora = {
 /**
  * Dados mock das Comissões
  */
-let MOCK_COMISSOES: Comissao[] = [
+const MOCK_COMISSOES: Comissao[] = [
   {
     id: 'comissao-educacao',
     nome: 'Comissão de Educação, Cultura e Esporte',
